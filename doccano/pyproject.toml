@@ -1,0 +1,11 @@
+[project]
+name = "ir-lab-doccano"
+requires-python = ">=3.11"
+dependencies = [
+    "click~=8.1",
+    "doccano-client==1.2.8",
+    "ir_datasets",
+    "tira",
+    "urllib3~=1.26",
+]
+version = "0.1.0"

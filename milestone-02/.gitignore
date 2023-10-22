@@ -1,0 +1,6 @@
+iranthology-dataset-tira/
+index/
+.ipynb_checkpoints/
+tira-output/
+bm25-output/
+multi-field/
