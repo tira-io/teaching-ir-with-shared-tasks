@@ -24,6 +24,12 @@ For tutors: The tutor repository contains a directory [sample-solutions](sample-
 - Tutorial 8: Query Segmentation (In progress by Maik)
 - [Tutorial 9 (research oriented): Query Expansion with LLMs](tutorial-09-query-expansion-with-llms.ipynb) (Open in [GitHub](tutorial-09-query-expansion-with-llms.ipynb) or ToDo Add Google Colab)
 
+Open:
+- Grid Search with Trectools, etc: Lukas 30.10.
+- Query Performance Prediction: Maik 13.11.
+- LTR: Maik 13.11.
+- Cross-Encoder / Bi-Encoder: Heinrich 18.12
+- 
 ### Changes to the Dev-Container
 
 We are happy if you find ways to improve the dev container. You can adjust the image as you like, if you think your changes might be helpful to others, please let us know so that we can adjust the published image.
