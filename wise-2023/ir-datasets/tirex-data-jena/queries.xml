@@ -90,7 +90,7 @@
     What tipping is considered appropriate for whom in the US?
    </description>
    <narrative>
-    We ask for some guidelines of how to correctly tip in the US. The results should be of recent nature in order to account for inflation. ,us' should be recognized as an acronym for the United States. How to tip in other countries is not of interest.
+    We ask for some guidelines of how to correctly tip in the US. The results should be of recent nature in order to account for inflation. The term "us" should be recognized as an acronym for the United States. How to tip in other countries is not of interest.
    </narrative>
   </original_query>
  </topic>
@@ -356,7 +356,7 @@
     The user wants to find a selection of science fiction books.
    </description>
    <narrative>
-    Relevant topics include bookstores or collections of free books. Topics that focus on anything else than science fiction or any books that don't feature any elements known for science fiction are less relevant.
+    Relevant topics include bookstores or collections of free books. Topics that focus on anything else than science fiction or any books that do not feature any elements known for science fiction are less relevant.
    </narrative>
   </original_query>
  </topic>
@@ -432,7 +432,7 @@
     The user is seeking information about the Friedrich Schiller University of Jena (FSU Jena), including its history, notable programs, and notable alumni.
    </description>
    <narrative>
-    Relevant topics include the official website of FSU Jena, academic programs and research areas offered by the university, and profiles of notable alumni. Sources that provide insights into the university's history, achievements, and it's role in the academic world are considered relevant. However, topics unrelated to FSU Jena or sources promoting other institutions are not relevant.
+    Relevant topics include the official website of FSU Jena, academic programs and research areas offered by the university, and profiles of notable alumni. Sources that provide insights into the university's history, achievements, and its role in the academic world are considered relevant. However, topics unrelated to FSU Jena or sources promoting other institutions are not relevant.
    </narrative>
   </original_query>
  </topic>
@@ -622,7 +622,7 @@
     Which tools are available for the Architecture Analysis and Design Language?
    </description>
    <narrative>
-    Relevant sources include information about the Architecture Analysis and Design language(AADL) and tools that can  be used to work with AADL. Not relevant are resources which also use the acronym AADL but don't refer to the Architecture analysis and Design language.
+    Relevant sources include information about the Architecture Analysis and Design language(AADL) and tools that can  be used to work with AADL. Not relevant are resources which also use the acronym AADL but do not refer to the Architecture analysis and Design language.
    </narrative>
   </original_query>
  </topic>
@@ -964,7 +964,7 @@
     How can mindfulness meditation alleviates stress and anxiety?
    </description>
    <narrative>
-    Relevant documents should provide insights into how mindfulness meditation is integrated into everyday life to effectively reduce stress, including practical information on small daily exercises and techniques. Irrelevant documents include unrelated forms of therapy or  general meditation techniques lacking the application of mindfulness meditation specific for stress. Furthermore, sources merely selling courses or presenting some meditation gurus are considered irrelevant as well. Finally, materials that solely contain anecdotal experiences or lack credible sources and scientific backing are excluded.
+    Relevant documents should provide insights into how mindfulness meditation is integrated into everyday life to effectively reduce stress, including practical information on small daily exercises and techniques. Irrelevant documents include unrelated forms of therapy or  general meditation techniques lacking the application of mindfulness meditation specific for stress. Furthermore, sources merely selling courses or presenting some meditation gurus are considered irrelevant as well.
    </narrative>
   </original_query>
  </topic>
@@ -983,7 +983,7 @@
     How is plastic pollution in the oceans has developed through the years and what is it expected to look like?
    </description>
    <narrative>
-    Relevant documents include information about how plastic in oceans has increased in the last years based on graphs and data reliably collected by reasearch institutes, together with some prognostic for the future. If data are collected only up to a certain year, are not up-to-date anyrmore or are not scientifically justified, then the document is considered irrelevant. Also irrelevant are sources containing information about how plastic can be avoided in everyday life or selling eco-friendly products.
+    Relevant documents include information about how plastic in oceans has increased in the last years based on graphs and data, together with some prognostic for the future. If data are collected only up to a certain year or are not up-to-date anymore, then the document is considered irrelevant. Also irrelevant are sources containing information about how plastic can be avoided in everyday life or selling eco-friendly products.
    </narrative>
   </original_query>
  </topic>
@@ -1002,7 +1002,7 @@
     What are some key nutrients and recipes for a balanced vegan diet?
    </description>
    <narrative>
-    Relevant sources offer insights into essential nutrients to integrate into recipes for vegans, such as protein sources, iron, vitamin B12, and calcium, along with strategies for a balanced vegan lifestyle by dieticians or nutritionists. Irrelevant documents include materials that focus on unrelated dietary practices or lack practical information, for examples if they just expose some health advantages associated with a vegan diet without comprehensive practical guidance on adopting and sustaining a vegan lifestyle.
+    Relevant sources offer insights into essential nutrients to integrate into recipes for vegans, such as protein sources, iron, vitamin B12, and calcium, along with strategies for a balanced vegan lifestyle. Irrelevant documents include materials that focus on unrelated dietary practices or lack practical information, for examples if they just expose some health advantages associated with a vegan diet without comprehensive practical guidance on adopting and sustaining a vegan lifestyle.
    </narrative>
   </original_query>
  </topic>
@@ -1021,7 +1021,7 @@
     What job opportunities are available for Business Informatics graduates in Asti (Italy)?
    </description>
    <narrative>
-    Relevant documents provide information on the current job opportunities and career prospects for graduates with a degree in Business Informatics in the city of Asti in Italy, with details on the types of roles, industries, and companies hiring individuals with this qualification. Irrelevant documents does not provide substantial information about the jobs. Additionally, sources promoting job positions unrelated to the field of Business Informatics or not specific to the Asti region should be considered irrelevant.
+    Relevant documents provide information on the current job opportunities and career prospects for graduates with a degree in Business Informatics in the city of Asti in Italy, with details on the tasks of the roles, salaries, working times, and companies hiring individuals with this qualification. Irrelevant documents do not contain information about the role, working time, salary, or the hiring company. Additionally, sources promoting job positions unrelated to the field of Business Informatics or not specific to the Asti region should be considered irrelevant.
    </narrative>
   </original_query>
  </topic>
@@ -1040,7 +1040,7 @@
     What are some creative and budget-friendly interior decorating ideas for a house with small spaces?
    </description>
    <narrative>
-    Relevant documents should provide a variety of creative and budget-friendly house decorating ideas with pictures, tailored to small spaces, including tips on maximizing storage, optimizing furniture arrangement, and choosing color schemes to enhance the perception of space. Additionally, relevant materials should offer insights into DIY projects, repurposing techniques, and cost-effective decor solutions. Irrelevant documents encompass house decorating ideas unrelated to interior decoration, such as gardening, or unrelated to residential properties, like office spaces, as well as those lacking substantial information on budget-friendly solutions, only promoting high-cost or luxury decor options.
+    Relevant documents should provide a variety of creative and budget-friendly house decorating ideas with pictures, tailored to small spaces, including tips on maximizing storage, optimizing furniture arrangement, and choosing color schemes to enhance the perception of space. Additionally, relevant materials should offer insights into DIY projects, repurposing techniques, and cost-effective decor solutions. Irrelevant documents encompass house decorating ideas unrelated to interior decoration, such as gardening, or unrelated to residential properties, like office spaces, as well as those lacking budget-friendly solutions and only promoting high-cost or luxury decor options.
    </narrative>
   </original_query>
  </topic>
