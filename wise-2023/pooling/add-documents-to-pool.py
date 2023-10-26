@@ -10,7 +10,7 @@ for dataset in ['leipzig-topics-20231025-test', 'jena-topics-20231026-test']:
     data = json.load(open(f'{dataset}-pool.json', 'r'))
     for topic in data.keys():
         docs = [docs_store.get(i) for i in tqdm(data[topic]['pool'])]
-        data['pool_wit_docs'] = docs
+        data[topic]['pool_wit_docs'] = docs
     
     json.dump(open(f'{dataset}-pool-with-docs.json', 'w'), data)
 

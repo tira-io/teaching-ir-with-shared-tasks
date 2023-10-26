@@ -18,5 +18,5 @@ docker run --rm -ti \
 	-v /mnt/ceph/tira/state/ir_datasets/:/root/.ir_datasets:ro \
 	-v ${PWD}/pooling:/workspace -w /workspace \
 	--entrypoint python3 \
-	mam10eks/ows-long-eval-ir-datasets-integration:0.0.3
+	mam10eks/ows-long-eval-ir-datasets-integration:0.0.3 \
 	add-documents-to-pool.py
