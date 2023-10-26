@@ -18,12 +18,12 @@ tmp = {i['original_query']['query_id']: i['original_query'] for _, i in tmp.iter
 topics['jena-topics-20231026-test'] = tmp
 
 
-for dataset in ['leipzig-topics-20231025-test']:
+for dataset in ['leipzig-topics-20231025-test', 'jena-topics-20231026-test']:
     runs = []
     for approach in ['TF-IDF', 'DFIC', 'DirichletLM', 'DLH', 'DPH', 'BM25', 'IFB2', 'HiemstraLM', 'PL2', 'LGD']:
         run = tira.get_run_output(f'ir-lab-jena-leipzig-wise-2023/ir-lab-sose-2023-tutors/{approach}', dataset, True)
         runs += [TrecRun(run +'/run.txt')]
-    pool = TrecPoolMaker().make_pool(runs, strategy="topX", topX=25)
+    pool = TrecPoolMaker().make_pool(runs, strategy="topX", topX=25 if 'leipzig' in dataset else 20)
     print(pool)
     with open(f'{dataset}-pool.json', 'w') as f:
         pool = {k: {'pool': list(v)} for k, v in pool.pool.items()}
