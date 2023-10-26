@@ -16,3 +16,9 @@ ir_datasets.registry.register('longeval-tutors', Dataset(
     TrecXmlQueries(ir_datasets.util.PackageDataFile(path='datasets_in_progress/topics.xml'), lang='en'),
     TrecQrels(ir_datasets.util.PackageDataFile(path='datasets_in_progress/qrels.txt'), {0: 'Not Relevant', 1: 'Relevant'})
 ))
+
+ir_datasets.registry.register('longeval-tutors-jena', Dataset(
+    JsonlDocs(ir_datasets.util.PackageDataFile(path='datasets_in_progress/longeval-docs.jsonl'), doc_cls=LongEvalDocument, lang='en'),
+    TrecXmlQueries(ir_datasets.util.PackageDataFile(path='datasets_in_progress/topics-jena.xml'), lang='en'),
+    TrecQrels(ir_datasets.util.PackageDataFile(path='datasets_in_progress/qrels.txt'), {0: 'Not Relevant', 1: 'Relevant'})
+))
