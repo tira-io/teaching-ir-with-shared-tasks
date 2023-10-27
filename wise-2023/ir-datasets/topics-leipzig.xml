@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <topics>
   <topic>
-    <query_id>1</query_id>
+    <number>1</number>
     <title>develop film at home</title>
     <description>
       what is the mechanical and chemical process of developing analog film at home?
@@ -14,7 +14,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>2</query_id>
+    <number>2</number>
     <title>wildfire prevention</title>
     <description>
       what are the various techniques and strategies available to mitigate the occurrence and spread of wildfires?
@@ -27,7 +27,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>3</query_id>
+    <number>3</number>
     <title>drone legislation</title>
     <description>
       in which manner is a person allowed to fly a drone over public property?
@@ -40,7 +40,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>4</query_id>
+    <number>4</number>
     <title>artificial intelligence applications</title>
     <description>
       what are the practical use cases of artificial intelligence?
@@ -53,7 +53,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>5</query_id>
+    <number>5</number>
     <title>remove red wine couch</title>
     <description>
       what methods or solutions are recommended to effectively remove red wine from a couch?
@@ -66,7 +66,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>6</query_id>
+    <number>6</number>
     <title>spoken language in india</title>
     <description>
       which sources dive into the spoken languages and dialects spoken in india?
@@ -79,7 +79,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>7</query_id>
+    <number>7</number>
     <title>islands in japan</title>
     <description>
       which sources provide detailed information about islands in japan?
@@ -92,7 +92,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>8</query_id>
+    <number>8</number>
     <title>best restaurants new york</title>
     <description>
       which are the best restaurants in new york city right now?
@@ -105,7 +105,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>9</query_id>
+    <number>9</number>
     <title>vegan alternatives to common dairy products</title>
     <description>
       what sources provide information on vegan substitutes for traditional dairy products in cooking and baking?
@@ -118,7 +118,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>10</query_id>
+    <number>10</number>
     <title>autonomous cars in real traffic conditions</title>
     <description>
       how do self-driving cars work, how do they adapt and respond to real driving situations, and what are the biggest challenges and advances in this context?
@@ -131,7 +131,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>11</query_id>
+    <number>11</number>
     <title>origins and spread of the silk road trade routes</title>
     <description>
       what documents provide information about the origins of the silk road trade routes and how they fostered cultural exchange and economic interactions between civilizations?
@@ -144,7 +144,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>12</query_id>
+    <number>12</number>
     <title>recommended daily step count for optimal health</title>
     <description>
       what is the recommended number of daily steps for achieving and maintaining optimal health?
@@ -157,7 +157,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>13</query_id>
+    <number>13</number>
     <title>recognize phishing attack</title>
     <description>
       what documents focus on approaches to recognize a phishing attack?
@@ -170,7 +170,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>14</query_id>
+    <number>14</number>
     <title>evolution of the alphabet</title>
     <description>
       what documents explore the historical development and evolution of the alphabet system?
@@ -183,7 +183,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>15</query_id>
+    <number>15</number>
     <title>dropshipping</title>
     <description>
       what document or page describes/offer solutions for the business model dropshipping
@@ -196,7 +196,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>16</query_id>
+    <number>16</number>
     <title>install linux on windows machine</title>
     <description>
       what documents/pages focus on the process of installing a linux system on a machine running windows.
@@ -209,7 +209,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>17</query_id>
+    <number>17</number>
     <title>improving image quality using generative adversarial networks</title>
     <description>
       what documents discuss the improvement of image quality using generative adversarial networks?
@@ -222,7 +222,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>18</query_id>
+    <number>18</number>
     <title>hate speech detection</title>
     <description>
       what papers focus on hate speech detection?
@@ -235,7 +235,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>19</query_id>
+    <number>19</number>
     <title>entity recognition for managing great amounts of data</title>
     <description>
       how can entity recognition be used to help manage great amounts of data?
@@ -248,7 +248,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>20</query_id>
+    <number>20</number>
     <title>fine-tuning large language models</title>
     <description>
       which methods can be used to fine-tune a large language model to a specific use case?
@@ -261,7 +261,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>21</query_id>
+    <number>21</number>
     <title>reduce risk cardiovascular disease</title>
     <description>
       what are methods, habits or lifestyle decisions that will reduce the risk of a cardiovascular disease?
@@ -274,7 +274,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>22</query_id>
+    <number>22</number>
     <title>risks and benefits of nuclear energy</title>
     <description>
       what are risks and benefits of using nuclear energy solutions?
@@ -287,7 +287,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>23</query_id>
+    <number>23</number>
     <title>impact social media</title>
     <description>
       what are the effects of social media on society, encompassing communication, relationships, information dissemination, and mental health?
@@ -300,7 +300,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>24</query_id>
+    <number>24</number>
     <title>how to fix broken windows</title>
     <description>
       information on how to fix broken glass windows
@@ -313,7 +313,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>25</query_id>
+    <number>25</number>
     <title>technical university of munich</title>
     <description>
       what information is available about the technical university of munich?
@@ -326,7 +326,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>26</query_id>
+    <number>26</number>
     <title>concerns for artificial intelligence in healthcare</title>
     <description>
       what information is available about concerns related to the use of artificial intelligence in healthcare?
@@ -339,7 +339,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>27</query_id>
+    <number>27</number>
     <title>good practice software testing</title>
     <description>
       what are good practices in testing software?
@@ -352,7 +352,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>28</query_id>
+    <number>28</number>
     <title>cat fur care</title>
     <description>
       what can one do to better take care of the fur of a cat?
@@ -365,7 +365,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>29</query_id>
+    <number>29</number>
     <title>wind turbine power generation</title>
     <description>
       how much power do different kinds of wind turbines produce?
@@ -378,7 +378,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>30</query_id>
+    <number>30</number>
     <title>privacy protection strategies on social media</title>
     <description>
       what papers and articles focus on strategies to protect personal privacy on social media?
@@ -391,7 +391,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>31</query_id>
+    <number>31</number>
     <title>artificial intelligence in healthcare</title>
     <description>
       what research papers focus on artificial intelligence in healthcare?
@@ -404,7 +404,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>32</query_id>
+    <number>32</number>
     <title>super mario cosmic ray bit flip</title>
     <description>
       which articles or other results discuss the event, in which a cosmic ray bit flip aided a super mario 64 speedrunner?
@@ -417,7 +417,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>33</query_id>
+    <number>33</number>
     <title>current inflation explanation</title>
     <description>
       what documents focus on an explanation for the current inflation?
@@ -430,7 +430,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>34</query_id>
+    <number>34</number>
     <title>techno music history</title>
     <description>
       history of techno music
@@ -443,7 +443,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>35</query_id>
+    <number>35</number>
     <title>cycling race rules</title>
     <description>
       rules for cycling races
@@ -456,7 +456,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>36</query_id>
+    <number>36</number>
     <title>disc brake repair</title>
     <description>
       how to repair or replace disc brakes on bicycles
@@ -469,7 +469,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>37</query_id>
+    <number>37</number>
     <title>marathon training plan intermediate</title>
     <description>
       how to train for a marathon as an intermediate runner?
@@ -482,7 +482,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>38</query_id>
+    <number>38</number>
     <title>image recognition automobile</title>
     <description>
       what papers focus on image recognition algorithms and techniques used in automobiles?
@@ -495,7 +495,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>39</query_id>
+    <number>39</number>
     <title>generative adversarial machine translation</title>
     <description>
       what papers focus on applying the generative adversarial network paradigm on machine translation?
@@ -508,7 +508,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>40</query_id>
+    <number>40</number>
     <title>impact of social media on mental health</title>
     <description>
       provide research papers that assess the influence of social media usage on mental health.
@@ -521,7 +521,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>41</query_id>
+    <number>41</number>
     <title>foundations of chemical engineering</title>
     <description>
       all papers, books or articles concerning different aspects of chemical engineering.
@@ -534,7 +534,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>42</query_id>
+    <number>42</number>
     <title>methods for protein structure analysis</title>
     <description>
       which methods are there to analyse protein structures and how do they work/perform?
@@ -547,7 +547,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>43</query_id>
+    <number>43</number>
     <title>ai ethical downsides</title>
     <description>
       what are ethical problems and concerns in the field of artificial intelligence?
@@ -560,7 +560,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>44</query_id>
+    <number>44</number>
     <title>using cnns for image data</title>
     <description>
       which entries describe why convolutional neural networks are useful for image data?
@@ -573,7 +573,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>45</query_id>
+    <number>45</number>
     <title>social media bot influence</title>
     <description>
       why do bot accounts on social media exist and how are they influential?
@@ -586,7 +586,7 @@
     <university>Leipzig University</university>
   </topic>
   <topic>
-    <query_id>46</query_id>
+    <number>46</number>
     <title>machine learning in energy system analysis</title>
     <description>
       what publications explore the use of machine learning algorithms to improve the modeling and analysis of energy systems?
