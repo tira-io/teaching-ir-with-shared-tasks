@@ -1,17 +1,18 @@
-<topics>
+<topics>    <topic>
+  <university>Friedrich-Schiller-Universität Jena</university>
+  <group>Galapagos Tortoise</group>
+  <author>Malte Weber</author>
+  <number>1</number>
+  <title>the frequency of solar storms with impact on electric circuits on earth</title>
+  <description>
+    How often do solar storms occur which have a noticeable impact on electric circuits on earth?
+  </description>
+  <narrative>
+    Scientific publications or articles which describe how often solar storms occur (or how likely it is that such a storm occurs), which have an impact on our modern civilization in the form of damaging or destroying electrical circuits such as power supply or communication infrastructure. Especially sources which say how often these occurred in the past should be retrieved as relevant.
+  </narrative>
+</topic>
   <topic>
-    <group>Galapagos Tortoise</group>
-    <author>Malte Weber</author>
-    <number>1</number>
-    <title>the frequency of solar storms with impact on electric circuits on earth</title>
-    <description>
-      How often do solar storms occur which have a noticeable impact on electric circuits on earth?
-    </description>
-    <narrative>
-      Scientific publications or articles which describe how often solar storms occur (or how likely it is that such a storm occurs), which have an impact on our modern civilization in the form of damaging or destroying electrical circuits such as power supply or communication infrastructure. Especially sources which say how often these occurred in the past should be retrieved as relevant.
-    </narrative>
-  </topic>
-  <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
     <author>Malte Weber</author>
     <number>2</number>
@@ -24,8 +25,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Marlene Gr�ndel</author>
+    <author>Marlene Gründel</author>
     <number>3</number>
     <title>flights Frankfurt to Rome</title>
     <description>
@@ -36,8 +38,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Marlene Gr�ndel</author>
+    <author>Marlene Gründel</author>
     <number>4</number>
     <title>remove wine stains</title>
     <description>
@@ -48,8 +51,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Marlene Gr�ndel</author>
+    <author>Marlene Gründel</author>
     <number>5</number>
     <title>tipping in us</title>
     <description>
@@ -60,8 +64,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Marlene Gr�ndel</author>
+    <author>Marlene Gründel</author>
     <number>6</number>
     <title>download python</title>
     <description>
@@ -72,8 +77,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Marlene Gr�ndel</author>
+    <author>Marlene Gründel</author>
     <number>7</number>
     <title>buy bicycle lock Jena</title>
     <description>
@@ -84,6 +90,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
     <author>Malte Weber</author>
     <number>8</number>
@@ -96,8 +103,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Ricardo Rei�ner</author>
+    <author>Ricardo Reißner</author>
     <number>9</number>
     <title>fastest route jena leipzig</title>
     <description>
@@ -108,8 +116,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Ricardo Rei�ner</author>
+    <author>Ricardo Reißner</author>
     <number>10</number>
     <title>lost my keys what now</title>
     <description>
@@ -120,8 +129,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Ricardo Rei�ner</author>
+    <author>Ricardo Reißner</author>
     <number>11</number>
     <title>an apple everyday healthy?</title>
     <description>
@@ -132,6 +142,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
     <author>Malte Weber</author>
     <number>12</number>
@@ -144,6 +155,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
     <author>Malte Weber</author>
     <number>13</number>
@@ -156,8 +168,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Ricardo Rei�ner</author>
+    <author>Ricardo Reiüner</author>
     <number>14</number>
     <title>how to screenshot windows</title>
     <description>
@@ -168,8 +181,9 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Galapagos Tortoise</group>
-    <author>Ricardo Rei�ner</author>
+    <author>Ricardo Reiüner</author>
     <number>15</number>
     <title>what is my ip address</title>
     <description>
@@ -180,6 +194,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Johannes Franke</author>
     <number>16</number>
@@ -192,6 +207,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Johannes Franke</author>
     <number>17</number>
@@ -204,6 +220,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Johannes Franke</author>
     <number>18</number>
@@ -216,6 +233,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Johannes Franke</author>
     <number>19</number>
@@ -228,6 +246,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Johannes Franke</author>
     <number>20</number>
@@ -240,6 +259,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Paul Kucera</author>
     <number>21</number>
@@ -252,6 +272,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Paul Kucera</author>
     <number>22</number>
@@ -264,6 +285,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Paul Kucera</author>
     <number>23</number>
@@ -276,6 +298,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Paul Kucera</author>
     <number>24</number>
@@ -288,6 +311,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Paul Kucera</author>
     <number>25</number>
@@ -300,6 +324,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Tim Niederhausen</author>
     <number>26</number>
@@ -312,6 +337,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Tim Niederhausen</author>
     <number>27</number>
@@ -324,6 +350,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Tim Niederhausen</author>
     <number>28</number>
@@ -336,6 +363,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Tim Niederhausen</author>
     <number>29</number>
@@ -348,6 +376,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Tim Niederhausen</author>
     <number>30</number>
@@ -360,6 +389,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Till Fleisch</author>
     <number>31</number>
@@ -372,6 +402,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Till Fleisch</author>
     <number>32</number>
@@ -384,6 +415,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Till Fleisch</author>
     <number>33</number>
@@ -392,10 +424,11 @@
       Which tools are available for the Architecture Analysis and Design Language?
     </description>
     <narrative>
-      Relevant sources include information about the Architecture Analysis and Design language(AADL) and tools that can  be used to work with AADL. Not relevant are resources which also use the acronym AADL but do not refer to the Architecture analysis and Design language.
+      Relevant sources include information about the Architecture Analysis and Design language(AADL) and tools that can be used to work with AADL. Not relevant are resources which also use the acronym AADL but do not refer to the Architecture analysis and Design language.
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Till Fleisch</author>
     <number>34</number>
@@ -408,6 +441,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Spotted Turtle</group>
     <author>Till Fleisch</author>
     <number>35</number>
@@ -420,6 +454,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Paul Marschner</author>
     <number>36</number>
@@ -432,6 +467,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Paul Marschner</author>
     <number>37</number>
@@ -444,6 +480,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Paul Marschner</author>
     <number>38</number>
@@ -456,6 +493,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Paul Marschner</author>
     <number>39</number>
@@ -468,6 +506,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Paul Marschner</author>
     <number>40</number>
@@ -480,6 +519,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Dominic Wild</author>
     <number>41</number>
@@ -489,9 +529,10 @@
     </description>
     <narrative>
       Relevant documents include recipes for soups that use pumpkin as an ingredient. The most relevant recipes would use pumpkin as the main ingredient. Recipes that are not a soup or do not include pumpkin as an ingredient are not relevant. Reports about pumpkin soup, like restaurant recommendations, are also irrelevant.
-    </narrative> 
+    </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Dominic Wild</author>
     <number>42</number>
@@ -504,6 +545,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Dominic Wild</author>
     <number>43</number>
@@ -516,6 +558,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Dominic Wild</author>
     <number>44</number>
@@ -528,6 +571,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Dominic Wild</author>
     <number>45</number>
@@ -540,6 +584,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Hanno Barschel</author>
     <number>46</number>
@@ -552,6 +597,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Hanno Barschel</author>
     <number>47</number>
@@ -564,6 +610,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Hanno Barschel</author>
     <number>48</number>
@@ -576,6 +623,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Hanno Barschel</author>
     <number>49</number>
@@ -588,6 +636,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Hanno Barschel</author>
     <number>50</number>
@@ -600,6 +649,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Giuliana Lavagnino</author>
     <number>51</number>
@@ -608,10 +658,11 @@
       How can mindfulness meditation alleviates stress and anxiety?
     </description>
     <narrative>
-        Relevant documents should provide insights into how mindfulness meditation is integrated into everyday life to effectively reduce stress, including practical information on small daily exercises and techniques. Irrelevant documents include unrelated forms of therapy or  general meditation techniques lacking the application of mindfulness meditation specific for stress. Furthermore, sources merely selling courses or presenting some meditation gurus are considered irrelevant as well.
+      Relevant documents should provide insights into how mindfulness meditation is integrated into everyday life to effectively reduce stress, including practical information on small daily exercises and techniques. Irrelevant documents include unrelated forms of therapy or general meditation techniques lacking the application of mindfulness meditation specific for stress. Furthermore, sources merely selling courses or presenting some meditation gurus are considered irrelevant as well.
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Giuliana Lavagnino</author>
     <number>52</number>
@@ -624,6 +675,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Giuliana Lavagnino</author>
     <number>53</number>
@@ -632,10 +684,11 @@
       What are some key nutrients and recipes for a balanced vegan diet?
     </description>
     <narrative>
-        Relevant sources offer insights into essential nutrients to integrate into recipes for vegans, such as protein sources, iron, vitamin B12, and calcium, along with strategies for a balanced vegan lifestyle. Irrelevant documents include materials that focus on unrelated dietary practices or lack practical information, for examples if they just expose some health advantages associated with a vegan diet without comprehensive practical guidance on adopting and sustaining a vegan lifestyle.
+      Relevant sources offer insights into essential nutrients to integrate into recipes for vegans, such as protein sources, iron, vitamin B12, and calcium, along with strategies for a balanced vegan lifestyle. Irrelevant documents include materials that focus on unrelated dietary practices or lack practical information, for examples if they just expose some health advantages associated with a vegan diet without comprehensive practical guidance on adopting and sustaining a vegan lifestyle.
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Giuliana Lavagnino</author>
     <number>54</number>
@@ -648,6 +701,7 @@
     </narrative>
   </topic>
   <topic>
+    <university>Friedrich-Schiller-Universität Jena</university>
     <group>Geometric Tortoise</group>
     <author>Giuliana Lavagnino</author>
     <number>55</number>
