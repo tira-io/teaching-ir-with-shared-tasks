@@ -322,4 +322,21 @@
     <narrative>relevant papers include research on new approaches to energy system modeling and analysis using machine learning. papers that focus on traditional energy system analysis without machine learning approaches or research that focuses on machine learning without an application to energy system analysis are not relevant.</narrative>
     <group>12</group>
   </topic>
+  
+  
+  <topic>
+    <number>47</number>
+    <text>Artificial Intelligence in Farming</text>
+    <description>Which publications explore the use of Artificial Intelligence infarming?</description>
+    <narrative>Relevant publications investigate how Artificial Intelligence (AI) technologies
+    are being applied to enhance various aspects of farming. This includes optimizing crop management, improving livestock health and production, and increasing overall agricultural efficiency. These studies delve into the utilization of AI in precision agriculture, predictive analytics for weather and pest control, and the development of smart farming systems. The goal is to find innovative ways to increase crop yields, reduce resource wastage, and make farming more sustainable and productive.</narrative>
+    <group>12</group>
+  </topic>
+  <topic>
+      <number>48</number>
+      <text>Explainable AI (XAI) in Cyber Security</text>
+      <description>What publications explore the use of Explainable AI (XAI) to improve the detection and prevention of cyber attacks?</description>
+      <narrative>Relevant papers include research on new approaches to cyber security using Explainable AI (XAI). Papers that focus on traditional cyber security without XAI approaches or research that focuses on XAI without an application to cyber security are not relevant.</narrative>
+      <group>12</group>
+  </topic>
 </topics>
