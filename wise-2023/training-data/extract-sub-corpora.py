@@ -8,9 +8,9 @@ datasets = {'training': 'longeval/train', 'heldout': 'longeval/train', 'short-ju
 
 def main(k, v):
     docs_store = ir_datasets.load(v).docs_store()
-    doc_ids = json.load(open(f'docs-{f}.json', 'r'))
-    with gzip.open(f'{f}/documents.jsonl.gz', 'wt') as f:
-        for doc_id in tqdm(doc_ids):
+    doc_ids = json.load(open(f'docs-{k}.json', 'r'))
+    with gzip.open(f'{k}/documents.jsonl.gz', 'wt') as f:
+        for doc_id in tqdm(doc_ids, k):
             doc = docs_store.get(doc_id)
             f.write(json.dumps({"docno": doc_id, "text": doc.default_text()}) + '\n')
 
