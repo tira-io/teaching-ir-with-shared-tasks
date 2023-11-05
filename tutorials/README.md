@@ -15,6 +15,7 @@ To run the tutorials on your machine, please:
 ## Content
 
 For tutors: The tutor repository contains a directory [sample-solutions](sample-solutions) with all solutions.
+Please also have a a look at the official [PyTerrier tutorial](https://github.com/terrier-org/ecir2021tutorial).
 
 ### Tutorial 1: Topics, Documents, and Relevance Judgments
 - Jupyter Notebook in [GitHub](tutorial-01-ir-datasets.ipynb)
@@ -38,7 +39,7 @@ For tutors: The tutor repository contains a directory [sample-solutions](sample-
 
 ### Tutorial 6: Hyperparameter Tuning
 - Jupyter Notebook in [GitHub](tutorial-06-hyperparameter-tuning.ipynb)
-- ToDo Add Google Colab
+- Open in [Google Colab](https://colab.research.google.com/drive/1rEMHslBKKiSmWRRhzjtMG2jIN2vilt3T?usp=sharing)
 
 ### Tutorial 8: Query Segmentation (In progress by Maik)
 
