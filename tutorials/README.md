@@ -12,17 +12,39 @@ To run the tutorials on your machine, please:
 - Open this directory with VS Code (it should ask you to open the repository in a dev container)
 
 
-### Content
+## Content
 
 For tutors: The tutor repository contains a directory [sample-solutions](sample-solutions) with all solutions.
 
-- [Tutorial 1: Topics, Documents, and Relevance Judgments](tutorial-01-ir-datasets.ipynb) (Open in [GitHub](tutorial-01-ir-datasets.ipynb) or [Google Colab](https://colab.research.google.com/drive/1oWh9nFT6ZsGfZLRDG1QrwUgyMIzLbw_H?usp=sharing))
-- [Tutorial 2: Stopword Lists](tutorial-02-stopword-lists.ipynb) (Open in [GitHub](tutorial-02-stopword-lists.ipynb) or ToDo Add Google Colab)
-- [Tutorial 3 (in progress by Maik): Stemming](tutorial-03-stemming.ipynb) (Open in [GitHub](tutorial-03-stemming.ipynb) or ToDo Add Google Colab)
-- [Tutorial 4 (in progress by Maik): Lemmatization](tutorial-04-lemmatization.ipynb) (Open in [GitHub](tutorial-04-lemmatization.ipynb) or ToDo Add Google Colab)
-- [Tutorial 5: Query Expansion](tutorial-05-query-expansion.ipynb) (Open in [GitHub](tutorial-05-query-expansion.ipynb) or ToDo Add Google Colab)
-- Tutorial 8: Query Segmentation (In progress by Maik)
-- [Tutorial 9 (research oriented): Query Expansion with LLMs](tutorial-09-query-expansion-with-llms.ipynb) (Open in [GitHub](tutorial-09-query-expansion-with-llms.ipynb) or ToDo Add Google Colab)
+### Tutorial 1: Topics, Documents, and Relevance Judgments
+- Jupyter Notebook in [GitHub](tutorial-01-ir-datasets.ipynb)
+- Open in [Google Colab](https://colab.research.google.com/drive/1oWh9nFT6ZsGfZLRDG1QrwUgyMIzLbw_H?usp=sharing)
+
+### Tutorial 2: Stopword Lists
+- Jupyter Notebook in [GitHub](tutorial-02-stopword-lists.ipynb)
+- ToDo Add Google Colab
+
+### Tutorial 3 (in progress by Maik): Stemming
+- Jupyter Notebook in [GitHub](tutorial-03-stemming.ipynb)
+- ToDo Add Google Colab
+
+### Tutorial 4 (in progress by Maik): Lemmatization
+- Jupyter Notebook in [GitHub](tutorial-04-lemmatization.ipynb)
+- ToDo Add Google Colab
+
+### Tutorial 5: Query Expansion
+- Jupyter Notebook in [GitHub](tutorial-05-query-expansion.ipynb)
+- ToDo Add Google Colab
+
+### Tutorial 6: Hyperparameter Tuning
+- Jupyter Notebook in [GitHub](tutorial-06-hyperparameter-tuning.ipynb)
+- ToDo Add Google Colab
+
+### Tutorial 8: Query Segmentation (In progress by Maik)
+
+### Tutorial 9 (research oriented): Query Expansion with LLMs
+- Jupyter Notebook in [GitHub](tutorial-09-query-expansion-with-llms.ipynb)
+- ToDo Add Google Colab
 
 Open:
 - Grid Search with Trectools, etc: Lukas 30.10.
