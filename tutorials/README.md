@@ -52,6 +52,10 @@ Please also have a a look at the official [PyTerrier tutorial](https://github.co
 - Jupyter Notebook in [GitHub](tutorial-09-query-expansion-with-llms.ipynb)
 - ToDo Add Google Colab
 
+### Research Tutorial: Classification of Medical/Health Queries and Documents
+- Jupyter Notebook in [GitHub](tutorial-research-medical-classification.ipynb)
+- Todo Add Google Colab
+
 Open:
 - Grid Search with Trectools, etc: Lukas 30.10.
 - Query Performance Prediction: Maik 13.11.
