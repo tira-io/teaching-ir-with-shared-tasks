@@ -11,6 +11,11 @@ To run the tutorials on your machine, please:
 - Clone this repository: `git clone ...`
 - Open this directory with VS Code (it should ask you to open the repository in a dev container)
 
+If you do not want to use VS Code and dev containers, you can start a jupyter notebook via (please execute the command within this directory):
+
+```
+docker run --rm  -it -p 8888:8888 --entrypoint jupyter -w /workspace -v ${PWD}:/workspace webis/ir-lab-wise-2023:0.0.1 notebook --allow-root --ip 0.0.0.0
+```
 
 ## Content
 
