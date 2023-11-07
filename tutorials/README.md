@@ -47,6 +47,8 @@ Please also have a a look at the official [PyTerrier tutorial](https://github.co
 - Open in [Google Colab](https://colab.research.google.com/drive/1rEMHslBKKiSmWRRhzjtMG2jIN2vilt3T?usp=sharing)
 
 ### Tutorial 8: Query Segmentation (In progress by Maik)
+- Jupyter Notebook in [GitHub](tutorial-07-query-segmentation.ipynb)
+- ToDo Add Google Colab
 
 ### Tutorial 9 (research oriented): Query Expansion with LLMs
 - Jupyter Notebook in [GitHub](tutorial-09-query-expansion-with-llms.ipynb)
