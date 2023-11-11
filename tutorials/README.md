@@ -46,8 +46,12 @@ Please also have a a look at the official [PyTerrier tutorial](https://github.co
 - Jupyter Notebook in [GitHub](tutorial-06-hyperparameter-tuning.ipynb)
 - Open in [Google Colab](https://colab.research.google.com/drive/1rEMHslBKKiSmWRRhzjtMG2jIN2vilt3T?usp=sharing)
 
-### Tutorial 8: Query Segmentation (In progress by Maik)
+### Tutorial 7: Query Segmentation (In progress by Maik)
 - Jupyter Notebook in [GitHub](tutorial-07-query-segmentation.ipynb)
+- ToDo Add Google Colab
+
+### Tutorial 8: Query Performance Prediction (In progress by Maik)
+- Jupyter Notebook in [GitHub](tutorial-08-query-performance-prediction.ipynb)
 - ToDo Add Google Colab
 
 ### Tutorial 9 (research oriented): Query Expansion with LLMs
