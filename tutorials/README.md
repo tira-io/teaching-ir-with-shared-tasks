@@ -63,7 +63,6 @@ Please also have a a look at the official [PyTerrier tutorial](https://github.co
 - Todo Add Google Colab
 
 Open:
-- Grid Search with Trectools, etc: Lukas 30.10.
 - Query Performance Prediction: Maik 13.11.
 - LTR: Maik 13.11.
 - Cross-Encoder / Bi-Encoder: Heinrich 18.12
