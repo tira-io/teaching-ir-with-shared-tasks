@@ -2,8 +2,8 @@
 
 This directory contains the tutorials that we will use in the IR lab in WiSe 2023.
 
-We recommend that you run this tutorials using dev containers with Docker (please find a suitable installation instruction [here](https://code.visualstudio.com/docs/devcontainers/containers)).
-A dev container allows you to directly work in the prepared Docker container so that you do not have to install the dependencies (which can sometimes be a bit tricky) on your own. If you do not have Docker installed (we highly recommend that you have a look into Docker), you can run everything within Google Colab.
+You can easily run those tutorials online in a [Github Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main). If you want to learn more of the technical background, we recommend that you run this tutorials using dev containers with Docker (please find a suitable installation instruction [here](https://code.visualstudio.com/docs/devcontainers/containers)).
+A dev container allows you to directly work in the prepared Docker container so that you do not have to install the dependencies (which can sometimes be a bit tricky) on your own. If you do not have Docker installed (we highly recommend that you have a look into Docker), you can run everything within [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main).
 
 To run the tutorials on your machine, please:
 
@@ -24,43 +24,43 @@ Please also have a a look at the official [PyTerrier tutorial](https://github.co
 
 ### Tutorial 1: Topics, Documents, and Relevance Judgments
 - Jupyter Notebook in [GitHub](tutorial-01-ir-datasets.ipynb)
-- Open in [Google Colab](https://colab.research.google.com/drive/1oWh9nFT6ZsGfZLRDG1QrwUgyMIzLbw_H?usp=sharing)
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Tutorial 2: Stopword Lists
 - Jupyter Notebook in [GitHub](tutorial-02-stopword-lists.ipynb)
-- ToDo Add Google Colab
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Tutorial 3 (in progress by Maik): Stemming
 - Jupyter Notebook in [GitHub](tutorial-03-stemming.ipynb)
-- ToDo Add Google Colab
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Tutorial 4 (in progress by Maik): Lemmatization
 - Jupyter Notebook in [GitHub](tutorial-04-lemmatization.ipynb)
-- ToDo Add Google Colab
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Tutorial 5: Query Expansion
 - Jupyter Notebook in [GitHub](tutorial-05-query-expansion.ipynb)
-- ToDo Add Google Colab
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Tutorial 6: Hyperparameter Tuning
 - Jupyter Notebook in [GitHub](tutorial-06-hyperparameter-tuning.ipynb)
-- Open in [Google Colab](https://colab.research.google.com/drive/1rEMHslBKKiSmWRRhzjtMG2jIN2vilt3T?usp=sharing)
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Tutorial 7: Query Segmentation (In progress by Maik)
 - Jupyter Notebook in [GitHub](tutorial-07-query-segmentation.ipynb)
-- ToDo Add Google Colab
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Tutorial 8: Query Performance Prediction (In progress by Maik)
 - Jupyter Notebook in [GitHub](tutorial-08-query-performance-prediction.ipynb)
-- ToDo Add Google Colab
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Tutorial 9 (research oriented): Query Expansion with LLMs
 - Jupyter Notebook in [GitHub](tutorial-09-query-expansion-with-llms.ipynb)
-- ToDo Add Google Colab
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 ### Research Tutorial: Classification of Medical/Health Queries and Documents
 - Jupyter Notebook in [GitHub](tutorial-research-medical-classification.ipynb)
-- Todo Add Google Colab
+- Open in [Codespace](https://github.com/codespaces/new/webis-de/ir-pad/tree/main)
 
 Open:
 - Query Performance Prediction: Maik 13.11.
