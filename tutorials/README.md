@@ -74,7 +74,7 @@ We are happy if you find ways to improve the dev container. You can adjust the i
 Instructions to build and publish the image are:
 
 ```
-docker build -t webis/ir-lab-wise-2023:0.0.1 .
-docker push webis/ir-lab-wise-2023:0.0.1
+docker build -t webis/ir-lab-wise-2023:0.0.2 .
+docker push webis/ir-lab-wise-2023:0.0.2
 ```
 
