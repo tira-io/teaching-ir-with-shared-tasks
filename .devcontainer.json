@@ -1,0 +1,14 @@
+{
+  "image": "webis/ir-lab-wise-2023:0.0.2",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-python.vscode-pylance", "ms-toolsai.jupyter"]
+    },
+    "codespaces": {
+      "openFiles":[
+        "tutorials/README.md"
+      ]
+    }
+
+  }
+}
