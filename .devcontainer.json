@@ -1,5 +1,5 @@
 {
-  "image": "webis/ir-lab-wise-2023:0.0.2",
+  "image": "webis/ir-lab-wise-2023:0.0.3",
   "customizations": {
     "vscode": {
       "extensions": ["ms-python.python", "ms-python.vscode-pylance", "ms-toolsai.jupyter"]
