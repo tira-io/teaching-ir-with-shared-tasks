@@ -6,11 +6,7 @@
           Teaching IR with Shared Tasks
         </h1>
         <p class="mx-auto py-4 tira-explanation">
-        
-
-This contains a set of resources to x y practical part of , 
-ir_datasets and <a href="https://webis.de/publications.html?q=tira#froebe_2023e" target="_blank">TIREx</a>
-links to previous iterations in <a href="https://tira-io.github.io/ir-lab-sose-23/" target="_blank">summer term 2023</a> and <a href="https://tira-io.github.io/ir-lab-ws-23/" target="_blank">winter term 2023</a>.
+        This page contains resources coupled to  <a href="https://arxiv.org/pdf/2103.02280.pdf" target="_blank">ir_datasets</a> and <a href="https://webis.de/publications.html?q=tira#froebe_2023e" target="_blank">TIREx</a> for IR courses that focus their hands-on labs on shared tasks (previously in  <a href="https://tira-io.github.io/ir-lab-sose-23/" target="_blank">summer 23</a> and <a href="https://tira-io.github.io/ir-lab-ws-23/" target="_blank">winter 23/24</a>).
         </p>
         <v-row class="d-flex justify-center py-4">
           <v-col cols="auto">
