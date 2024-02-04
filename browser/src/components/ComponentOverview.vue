@@ -43,7 +43,6 @@
                   <template v-slot:default="{ isActive }">
                     <v-card class="bg-grey-darken-3">
                       <v-card-text content="code">
-                        <loading v-if="!code" loading="true"/>
                         <code-snippet v-if="code" :title="'Example code snippet for ' + vectorizedComponents[index][i-1]?.display_name" :code="code" expand_message=""/>
                       </v-card-text>
 
@@ -143,9 +142,7 @@ export default {
       return componentSet;
     },
     fetch_code(index: number, i: number) {
-      this.code = ''
-      get('/api/tirex-snippet?component='+ this.vectorizedComponents[index][i].tirex_submission_id)
-        .then((message) => {this.code = message['context']['snippet']})
+      this.code = this.vectorizedComponents[index][i].snippet
     },
     colorOfComponent(c:string) : string {
       return this.colors[c] ?? "grey"
@@ -171,8 +168,8 @@ export default {
     is_collapsed(component:any) {
       return !this.computed_expanded_entries.includes(component.display_name)
     },
-    filtered_sub_components(component:any) : {display_name: string, subItems: number, pos: number, links: any[], focus_type: string|undefined|null, component_type: string|undefined|null, tirex_submission_id: string|undefined|null}[] {
-      let ret: {display_name: string, subItems: number, pos: number, links: any[], focus_type: string|undefined|null, component_type: string|undefined|null, tirex_submission_id: string|undefined|null}[] = []
+    filtered_sub_components(component:any) : {display_name: string, subItems: number, pos: number, links: any[], focus_type: string|undefined|null, component_type: string|undefined|null, tirex_submission_id: string|undefined|null, snippet: string|undefined|null}[] {
+      let ret: {display_name: string, subItems: number, pos: number, links: any[], focus_type: string|undefined|null, component_type: string|undefined|null, tirex_submission_id: string|undefined|null, snippet: string|undefined|null}[] = []
 
       if (this.is_collapsed(component) || !component['components']) {
         return ret
@@ -187,7 +184,8 @@ export default {
             'links': c.hasOwnProperty('links') ? c['links'] : null,
             'focus_type': c.hasOwnProperty('focus_type') ? c['focus_type'] : null,
             'component_type': c.hasOwnProperty('component_type') ? c['component_type'] : null,
-            'tirex_submission_id': c['tirex_submission_id']
+            'tirex_submission_id': c['tirex_submission_id'],
+            'snippet': c['snippet'] || null,
           })
 
           for (let sub_c of this.filtered_sub_components(c)) {
@@ -198,7 +196,8 @@ export default {
               'links': sub_c['links'],
               'focus_type': sub_c.hasOwnProperty('focus_type') ? sub_c['focus_type'] : null,
               'component_type': sub_c.hasOwnProperty('component_type') ? sub_c['component_type'] : null,
-              'tirex_submission_id': sub_c['tirex_submission_id']
+              'tirex_submission_id': sub_c['tirex_submission_id'],
+              'snippet': sub_c['snippet'] || null,
             })
           }
         }
@@ -315,7 +314,8 @@ export default {
             'links': subcomponent.links,
             'collapsed': this.is_collapsed(subcomponent),
             'hide': this.hide_component(subcomponent),
-            'tirex_submission_id': subcomponent['tirex_submission_id'] || null
+            'tirex_submission_id': subcomponent['tirex_submission_id'] || null,
+            'snippet': subcomponent['snippet'] || null
           }
         }
       }
