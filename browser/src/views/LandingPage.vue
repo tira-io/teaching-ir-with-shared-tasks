@@ -10,7 +10,7 @@
 
 This contains a set of resources to x y practical part of , 
 ir_datasets and <a href="https://webis.de/publications.html?q=tira#froebe_2023e" target="_blank">TIREx</a>
-links to previous iterations 
+links to previous iterations in <a href="https://tira-io.github.io/ir-lab-sose-23/" target="_blank">summer term 2023</a> and <a href="https://tira-io.github.io/ir-lab-ws-23/" target="_blank">winter term 2023</a>.
         </p>
         <v-row class="d-flex justify-center py-4">
           <v-col cols="auto">
