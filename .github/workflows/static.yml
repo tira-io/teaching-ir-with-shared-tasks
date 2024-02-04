@@ -41,8 +41,6 @@ jobs:
           mkdir -p static/dist
           make
           mv ./static/dist/index.html static/index.html
-          cp -r static test
-          mv test static/test
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
