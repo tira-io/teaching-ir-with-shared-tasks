@@ -34,24 +34,34 @@
     </v-container>
 
     <p>modern technology research oriented tools and industry xy. Stuff like people will learn docker, devcontainer.</p>
+    <component-overview />
   </template>
   
-  <style scoped>
-    .tira-explanation {
-      font-size: 1.25rem;
-      font-weight: 300;
-      max-width: 525px;
-    }
-    .home-button {
-      color: #fff;
-      background: #000;
-    }
-    .home-button:hover {
-      color: #fff;
-      background: #000;
-    }
-    .home-button:visited {
-      color: #fff;
-      background: #000;
-    }
-  </style>
+<script lang="ts">
+import ComponentOverview from "@/components/ComponentOverview.vue";
+
+export default {
+  name: "landing-page",
+  components: {ComponentOverview},
+}
+</script>
+
+<style scoped>
+  .tira-explanation {
+    font-size: 1.25rem;
+    font-weight: 300;
+    max-width: 525px;
+  }
+  .home-button {
+    color: #fff;
+    background: #000;
+  }
+  .home-button:hover {
+    color: #fff;
+    background: #000;
+  }
+  .home-button:visited {
+    color: #fff;
+    background: #000;
+  }
+</style>
