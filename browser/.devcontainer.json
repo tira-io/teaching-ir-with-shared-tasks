@@ -1,0 +1,8 @@
+{
+  "image": "mam10eks/github-page-tutorial:0.0.2",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-python.vscode-pylance", "ms-toolsai.jupyter"]
+    }
+  }
+}
