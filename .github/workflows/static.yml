@@ -38,6 +38,7 @@ jobs:
       - name: Compile Javascript assets
         run: |
           cd browser
+          mkdir -p static/dist
           make
           mv ./static/dist/index.html static/index.html
           mv ./ui/*.jsonl static/
