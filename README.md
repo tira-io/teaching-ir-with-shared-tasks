@@ -7,7 +7,7 @@
 [![Maintenance](https://img.shields.io/maintenance/yes/2024?style=flat-square)](https://github.com/webis-de/ir-pad/graphs/contributors)
 [![License](https://img.shields.io/github/license/webis-de/ir-pad?style=flat-square)](LICENSE)
 
-# 👩‍🔬 ir-pad
+# 🧪 ir-pad
 
 Resources for combining teaching and research in information retrieval coursework.
 
