@@ -4,15 +4,15 @@ This is intended as a blueprint directory for uploading the data artifacts  to [
 
 ## Already Published Artifacts
 
-The course concept was previously executed in [summer term 2023](https://tira-io.github.io/ir-lab-sose-23/) and [winter term 2023/2024](https://tira-io.github.io/ir-lab-ws-23/) with the corresponding Zenodo Artifacts described below.
+The course concept was previously executed in [summer term 2023](https://tira-io.github.io/ir-lab-sose-23/) and [winter term 2023/2024](https://tira-io.github.io/ir-lab-ws-23/) with the corresponding Zenodo Artifacts that you can use as blueprint.
 
 ### Resources of the Summer Term 2023
 
-> TODO
+> [https://zenodo.org/records/10628640](https://zenodo.org/records/10628640)
 
 ### Resources of the Winter Term 2023
 
-> TODO
+> [https://zenodo.org/records/10628882](https://zenodo.org/records/10628882)
 
 # The Datasets for the Information Retrieval Course at <UNIVERSITIES_HERE> in <YEAR>
 
