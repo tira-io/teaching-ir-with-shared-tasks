@@ -62,7 +62,7 @@ the [dashboard](#dashboard), the [tutorials](#tutorials), [reproducible experime
 
 ### Dashboard
 
-> TODO
+> [https://tira-io.github.io/teaching-ir-with-shared-tasks](https://tira-io.github.io/teaching-ir-with-shared-tasks)
 
 
 ### Screencasts
@@ -71,15 +71,11 @@ the [dashboard](#dashboard), the [tutorials](#tutorials), [reproducible experime
 
 ### Tutorials
 
-> TODO
-
-### Reproducible experiments
-
-> TODO
+> [tutorials](tutorials)
 
 ### Dataset browser
 
-> TODO
+> [https://tira-io.github.io/ir-dataset-browser](https://tira-io.github.io/ir-dataset-browser)
 
 The following datasets are already archived and ready to be explored:
 
