@@ -32,8 +32,6 @@
         </v-row>
       </section>
     </v-container>
-
-    <p>modern technology research oriented tools and industry xy. Stuff like people will learn docker, devcontainer.</p>
     <component-overview />
   </template>
   

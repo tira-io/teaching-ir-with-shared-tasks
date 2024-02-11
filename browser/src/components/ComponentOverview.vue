@@ -1,7 +1,9 @@
 <template>
   <v-container class="text-center">
     <section>
-      <h1 class="text-h3 text-sm-h3 py-4">TBD</h1>
+      <h1 class="text-h3 text-sm-h3 py-4">Dashboard</h1>
+      
+      <p>Throughout the lab, you will gain hands-on experience with modern technology, from research-oriented retrieval components (overviewed in the Dashboard) to Docker and Dev Containers, which are frequently used in the industry.</p>
     </section>
   </v-container>
   <div>
