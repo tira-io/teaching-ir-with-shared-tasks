@@ -1,6 +1,6 @@
 <!-- [![Paper DOI](https://img.shields.io/badge/DOI-10.1145%2F3477495.3531743-blue?style=flat-square)](https://doi.org/10.1145/3477495.3531743) -->
 <!-- [![arXiv preprint](https://img.shields.io/badge/arXiv-2304.00413-blue?style=flat-square)](https://arxiv.org/abs/2304.00413) -->
-<!-- [![CI status](https://img.shields.io/github/actions/workflow/status/tira-io/teaching-ir-with-shared-tasks/ci.yml?branch=main&style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/actions/workflows/ci.yml) -->
+[![CI status](https://img.shields.io/github/actions/workflow/status/tira-io/teaching-ir-with-shared-tasks/static.yml?branch=main&style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/actions/workflows/static.yml)
 [![Issues](https://img.shields.io/github/issues/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues)
 [![Pull requests](https://img.shields.io/github/issues-pr/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/pulls)
 [![Commit activity](https://img.shields.io/github/commit-activity/m/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/commits)
@@ -44,7 +44,6 @@ Resources for Combining Teaching and Research in Information Retrieval Coursewor
   - [`ir_datasets` browser](#ir_datasets-browser)
   - [Tutorials](#tutorials)
   - [Archived courses](#archived-courses)
-- [Testimonials](#testimonials)
 - [Contributing](#contributing)
 - [Contact/License/Abstract](#contact)
 
@@ -91,7 +90,7 @@ Our hands-on tutorials lower the barrier of entry to implementing IR models and 
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
 
-A full list of all covered tutorials and further information on how to run the tutorials on your local machine can be found in the [tutorial readme](tutorials/README.md).
+A full [list of all covered tutorials](tutorials/README.md#contents) and further information on how to run the tutorials on your local machine can be found in the [tutorial readme](tutorials/README.md).
 
 ## Archived courses
 
