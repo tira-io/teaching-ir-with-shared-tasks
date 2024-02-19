@@ -9,6 +9,9 @@ dataset:
       display_name: Args.me
       component_type: [TIREx]
       links:
+        - display_name: ir_datasets Browser
+          href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=argsme/2020-04-01/touche-2021-task-1,argsme/2020-04-01/touche-2020-task-1
+          target: _blank
         - display_name: Dataset Description
           href: https://webis.de/data/args-me-corpus.html
           target: _blank
@@ -16,14 +19,26 @@ dataset:
         touche_task_1:
           display_name: Touché 2020 Task 1
           component_type: [TIREx]
+          links:
+            - display_name: ir_datasets Browser
+              href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=argsme/2020-04-01/touche-2020-task-1
+              target: _blank
         touche_task_2:
           display_name: Touché 2021 Task 1
           component_type: [TIREx]
+          links:
+            - display_name: ir_datasets Browser
+              href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=argsme/2020-04-01/touche-2020-task-1
+              target: _blank
 
     antique:
       display_name: Antique
       component_type: [TIREx]
       ir_datasets_id: antique
+      links:
+        - display_name: ir_datasets Browser
+          href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=antique/test
+          target: _blank
 
     web_search:
       display_name: Web Search
@@ -132,27 +147,55 @@ dataset:
     medical_search:
       display_name: Medical Search
       component_type: [TIREx]
+      links:
+        - display_name: ir_datasets Browser
+          href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=medline/2004/trec-genomics-2004,medline/2004/trec-genomics-2005,medline/2017/trec-pm-2017,medline/2017/trec-pm-2018,cord19/fulltext/trec-covid,nfcorpus/test
+          target: _blank
       components:
         cord_19:
           display_name: CORD-19
           component_type: [TIREx]
+          links:
+            - display_name: ir_datasets Browser
+              href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=cord19/fulltext/trec-covid
+              target: _blank
         medline:
           display_name: MEDLINE
           component_type: [TIREx]
+          links:
+            - display_name: ir_datasets Browser
+              href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=medline/2004/trec-genomics-2004,medline/2004/trec-genomics-2005,medline/2017/trec-pm-2017,medline/2017/trec-pm-2018
+              target: _blank
         nfcorpus:
           display_name: NFCorpus
           component_type: [TIREx]
+          links:
+            - display_name: ir_datasets Browser
+              href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=nfcorpus/test
+              target: _blank
 
     ms_marco:
       display_name: MS MARCO
       component_type: [TIREx]
+      links:
+        - display_name: ir_datasets Browser
+          href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=msmarco-passage/trec-dl-2020/judged,msmarco-passage/trec-dl-2019/judged
+          target: _blank
       components:
         deep_learning_19:
           display_name: Deep Learning 19
           component_type: [TIREx]
+          links:
+            - display_name: ir_datasets Browser
+              href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=msmarco-passage/trec-dl-2019/judged
+              target: _blank
         deep_learning_20:
           display_name: Deep Learning 20
           component_type: [TIREx]
+          links:
+            - display_name: ir_datasets Browser
+              href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=msmarco-passage/trec-dl-2020/judged
+              target: _blank
 
     news_search:
       display_name: News Search
@@ -185,6 +228,10 @@ dataset:
     vaswani:
       display_name: Vaswani
       component_type: [TIREx]
+      links:
+        - display_name: ir_datasets Browser
+          href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=vaswani
+          target: _blank
 
 document_processing:
   display_name: Document Processing
