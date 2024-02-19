@@ -20,8 +20,6 @@ Our basic tutorials cover the most important concepts of information retrieval a
 | Lemmatization | [🔗](tutorial-lemmatization.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-lemmatization.ipynb?quickstart=1) |
 | Query expansion | [🔗](tutorial-query-expansion.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-expansion.ipynb?quickstart=1) |
 | Hyperparameter tuning | [🔗](tutorial-hyperparameter-tuning.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-hyperparameter-tuning.ipynb?quickstart=1) |
-| Query segmentation | [🔗](tutorial-query-segmentation.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-segmentation.ipynb?quickstart=1) |
-| Query performance prediction | [🔗](tutorial-query-performance-prediction.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-performance-prediction.ipynb?quickstart=1) |
 | Statistical analysis | [🔗](tutorial-statistical-analysis.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-statistical-analysis.ipynb?quickstart=1) |
 | Learning to rank ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
@@ -31,6 +29,8 @@ More complex topics that might not be suited to every IR course are still covere
 | Topic | Jupyter Notebook | Open in Codespaces |
 |:--|:-:|:-:|
 | Query expansion with LLMs | [🔗](tutorial-query-expansion-with-llms.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-expansion-with-llms.ipynb?quickstart=1) |
+| Query segmentation | [🔗](tutorial-query-segmentation.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-segmentation.ipynb?quickstart=1) |
+| Query performance prediction | [🔗](tutorial-query-performance-prediction.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-performance-prediction.ipynb?quickstart=1) |
 | Classification of medical/health queries and documents | [🔗](tutorial-medical-classification.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-medical-classification.ipynb?quickstart=1) |
 | Re-ranking with cross-encoders or bi-encoders ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
