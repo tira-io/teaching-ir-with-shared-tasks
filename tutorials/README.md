@@ -2,7 +2,7 @@
 
 Hands-on tutorials to kick-start the development and evaluation of information retrieval systems.
 
-In this directory, we provide plenty Jupyter notebooks that guide students through specific aspects of information retrieval experimentation starting from [data exploration](#TODO) over [simple retrieval approaches](#TODO) to [statistical analysis](#TODO).
+In this directory, we provide plenty Jupyter notebooks that guide students through specific aspects of information retrieval experimentation starting from [data exploration](tutorial-ir-datasets.ipynb) over [simple retrieval approaches](tutorial-query-expansion.ipynb) to [statistical analysis](tutorial-statistical-analysis.ipynb).
 
 The fastest and easiest way to run our tutorials is to use Github Codespaces. Just click on the button below which will start a remote session with everything installed already:
 
@@ -14,15 +14,15 @@ Our basic tutorials cover the most important concepts of information retrieval a
 
 | Topic | Jupyter Notebook | Open in Codespaces |
 |:--|:-:|:-:|
-| Topics, documents, and relevance judgments | [🔗](tutorial-01-ir-datasets.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-01-ir-datasets.ipynb?quickstart=1) |
-| Stopword lists | [🔗](tutorial-02-stopword-lists.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-02-stopword-lists.ipynb?quickstart=1) |
-| Stemming | [🔗](tutorial-03-stemming.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-03-stemming.ipynb?quickstart=1) |
-| Lemmatization | [🔗](tutorial-04-lemmatization.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-04-lemmatization.ipynb?quickstart=1) |
-| Query expansion | [🔗](tutorial-05-query-expansion.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-05-query-expansion.ipynb?quickstart=1) |
-| Hyperparameter tuning | [🔗](tutorial-06-hyperparameter-tuning.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-06-hyperparameter-tuning.ipynb?quickstart=1) |
-| Query segmentation | [🔗](tutorial-07-query-segmentation.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-07-query-segmentation.ipynb?quickstart=1) |
-| Query performance prediction | [🔗](tutorial-08-query-performance-prediction.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-08-query-performance-prediction.ipynb?quickstart=1) |
-| Statistical analysis | [🔗](tutorial-10-statistical-analysis.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-10-statistical-analysis.ipynb?quickstart=1) |
+| Topics, documents, and relevance judgments | [🔗](tutorial-ir-datasets.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-ir-datasets.ipynb?quickstart=1) |
+| Stopword lists | [🔗](tutorial-stopword-lists.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-stopword-lists.ipynb?quickstart=1) |
+| Stemming | [🔗](tutorial-stemming.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-stemming.ipynb?quickstart=1) |
+| Lemmatization | [🔗](tutorial-lemmatization.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-lemmatization.ipynb?quickstart=1) |
+| Query expansion | [🔗](tutorial-query-expansion.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-expansion.ipynb?quickstart=1) |
+| Hyperparameter tuning | [🔗](tutorial-hyperparameter-tuning.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-hyperparameter-tuning.ipynb?quickstart=1) |
+| Query segmentation | [🔗](tutorial-query-segmentation.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-segmentation.ipynb?quickstart=1) |
+| Query performance prediction | [🔗](tutorial-query-performance-prediction.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-performance-prediction.ipynb?quickstart=1) |
+| Statistical analysis | [🔗](tutorial-statistical-analysis.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-statistical-analysis.ipynb?quickstart=1) |
 | Learning to rank (work in progress) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
@@ -30,8 +30,8 @@ More complex topics that might not be suited to every IR course are still covere
 
 | Topic | Jupyter Notebook | Open in Codespaces |
 |:--|:-:|:-:|
-| Query expansion with LLMs | [🔗](tutorial-09-query-expansion-with-llms.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-09-query-expansion-with-llms.ipynb?quickstart=1) |
-| Classification of medical/health queries and documents | [🔗](tutorial-research-medical-classification.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-research-medical-classification.ipynb?quickstart=1) |
+| Query expansion with LLMs | [🔗](tutorial-query-expansion-with-llms.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-expansion-with-llms.ipynb?quickstart=1) |
+| Classification of medical/health queries and documents | [🔗](tutorial-medical-classification.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-medical-classification.ipynb?quickstart=1) |
 | Re-ranking with cross-encoders or bi-encoders (work in progress) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
@@ -43,7 +43,7 @@ For example, you could [request a tutorial](https://github.com/tira-io/teaching-
 
 This repository and the tutorials within are designed to be run and developed inside [Dev containers](https://containers.dev/). Though the easiest way to run Dev containers is to just [spin up a GitHub Codespace](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1), you can also run everything on your local machine with Visual Studio Code and Docker ([installation instructions](https://code.visualstudio.com/docs/devcontainers/containers#_installation)). (Some [other IDEs](https://containers.dev/supporting) might also work.) Even locally, our Dev container allows you to directly start coding without having to install dependencies on your own. To run the tutorials on your machine, follow these steps:
 
-- Install [Visual Studio Code](https://code.visualstudio.com/download) and [Docker](https://www.docker.com/get-started/).
+- Install [Visual Studio Code](https://code.visualstudio.com/download) and [Docker](https://docker.com/get-started/).
 - Clone this repository (`git clone`)
 - Open the cloned directory in Visual Studio Code
 - Once asked (VS Code popup), re-open the directory in a Dev container
