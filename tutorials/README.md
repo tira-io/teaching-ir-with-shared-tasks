@@ -23,7 +23,7 @@ Our basic tutorials cover the most important concepts of information retrieval a
 | Query segmentation | [🔗](tutorial-query-segmentation.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-segmentation.ipynb?quickstart=1) |
 | Query performance prediction | [🔗](tutorial-query-performance-prediction.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-performance-prediction.ipynb?quickstart=1) |
 | Statistical analysis | [🔗](tutorial-statistical-analysis.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-statistical-analysis.ipynb?quickstart=1) |
-| Learning to rank (work in progress) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) |
+| Learning to rank ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
 More complex topics that might not be suited to every IR course are still covered in our research-oriented tutorials. These tutorials are often more complex and require more prior knowledge, so they are best suited for Master's students:
@@ -32,7 +32,7 @@ More complex topics that might not be suited to every IR course are still covere
 |:--|:-:|:-:|
 | Query expansion with LLMs | [🔗](tutorial-query-expansion-with-llms.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-expansion-with-llms.ipynb?quickstart=1) |
 | Classification of medical/health queries and documents | [🔗](tutorial-medical-classification.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-medical-classification.ipynb?quickstart=1) |
-| Re-ranking with cross-encoders or bi-encoders (work in progress) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) |
+| Re-ranking with cross-encoders or bi-encoders ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
 Of course, this list can never be exhaustive, as paradigms shift and technologies change.
@@ -51,7 +51,7 @@ This repository and the tutorials within are designed to be run and developed in
 As another alternative, you could start up a Jupyter server to edit a notebook with Docker (run the command within the cloned directory):
 
 ```shell
-docker run --rm  -it -p 8888:8888 --entrypoint jupyter -w /workspace -v ${PWD}:/workspace webis/ir-lab-wise-2023:0.0.1 notebook --allow-root --ip 0.0.0.0
+docker run --rm  -it -p 8888:8888 --entrypoint jupyter -w /workspace -v ${PWD}:/workspace webis/ir-lab-wise-2023 notebook --allow-root --ip 0.0.0.0
 ```
 
 ## Contributing
