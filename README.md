@@ -47,9 +47,13 @@ Resources for Combining Teaching and Research in Information Retrieval Coursewor
 - [Contributing](#contributing)
 - [Contact/License/Abstract](#contact)
 
-## Screencasts
+## Screencast
 
-Please find an short screencast [showing our resources on youtube](https://youtu.be/JvbiPoyjZoc).
+| [![Overview screencast on YouTube](docs/screenshot-screencast.png)](https://youtu.be/JvbiPoyjZoc) |
+|:-:|
+| Overview screencast |
+
+Please watch our short screencast [showing our resources on YouTube](https://youtu.be/JvbiPoyjZoc) to get an overview of our teaching resources.
 
 ## Installation
 
@@ -68,7 +72,9 @@ The sections roughly follow the order as you would use the components in your co
 
 Check out the dashboard web app at: <https://tira-io.github.io/teaching-ir-with-shared-tasks>
 
-![Dashboard web app](docs/screenshot-dashboard.png)
+| [![Dashboard web app](docs/screenshot-dashboard.png)](https://tira-io.github.io/teaching-ir-with-shared-tasks) |
+|:-:|
+| Dashboard web app |
 
 Explore existing datasets, retrieval components, and evaluation measures with deep links to implementations and papers.
 Components can be filtered to only include, e.g., components with code available or with a corresponding [tutorial](#tutorials).
@@ -78,7 +84,9 @@ To focus your search on a specific goal, e.g., precision-oriented components, se
 
 The `ir_datasets` browser can be used to explore existing datasets: <https://tira-io.github.io/ir-dataset-browser>
 
-![`ir_datasets` browser web app](docs/screenshot-ir-datasets-browser.png)
+| [![`ir_datasets` browser web app](docs/screenshot-ir-datasets-browser.png)](https://tira-io.github.io/ir-dataset-browser) |
+|:-:|
+| `ir_datasets` browser web app |
 
 Here are some examples that can be found using the browser:
 
