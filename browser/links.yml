@@ -911,6 +911,9 @@ evaluation:
     - display_name: Tutorial Post-hoc Analysis of Test Collections with ir_datasets
       href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-01-ir-datasets.ipynb
       target: _blank
+    - display_name: Tutorial on Statistical Analysis
+      href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-10-statistical-analysis.ipynb
+      target: _blank
   components:
     bpref:
       display_name: Bpref
@@ -1020,4 +1023,11 @@ evaluation:
           target: _blank
         - display_name: ir_metadata to improve reproducibility
           href: https://ir.webis.de/anthology/2022.sigirconf_conference-2022.362/
+          target: _blank
+    statistics:
+      display_name: Statistical Analysis
+      component_type: [Code]
+      links:
+        - display_name: Tutorial
+          href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-10-statistical-analysis.ipynb
           target: _blank
