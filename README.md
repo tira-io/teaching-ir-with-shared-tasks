@@ -47,6 +47,10 @@ Resources for Combining Teaching and Research in Information Retrieval Coursewor
 - [Contributing](#contributing)
 - [Contact/License/Abstract](#contact)
 
+## Screencasts
+
+Please find an short screencast [showing our resources on youtube](https://youtu.be/JvbiPoyjZoc).
+
 ## Installation
 
 The easiest way to start with the tutorials is to open this repository in GitHub Codespaces: \
