@@ -11,7 +11,7 @@
 
 Resources for combining teaching and research in information retrieval coursework.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
 
 The resources are intended as a collection of supplementary materials for exercises in IR courses that let students experience the full research cycle in their course. We provide:
 
@@ -19,18 +19,18 @@ The resources are intended as a collection of supplementary materials for exerci
   - Explore datasets, approaches, and evaluation techniques
   - Easy to use [online](https://tira-io.github.io/teaching-ir-with-shared-tasks/)
   - Links to in-depth resources
+- An [`ir_datasets` browser](#ir_datasets-browser) to explore datasets and runs from TIREx
+  - Reuse and explore strong baselines from [TIREx](https://tira.io/tirex)
+  - Deep links for referencing in research papers
+  - Hosted on GitHub Pages and Zenodo
 - A set of [tutorials](#tutorials) covering IR concepts
   - Showcases a single concept using small example data
   - Takes about 15 minutes per tutorial
-  - Implemented as Jupyter notebooks in [GitHub Codespaces](https://codespaces.new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
-- An integration with TIREx to support [reproducible experiments](#reproducible-experiments)
-  - Reuse strong baselines from [TIREx](https://tira.io/tirex)
-  - Code submissions for reproducible experiments
-  - Leaderboards encourage competition between students
-- A [dataset browser](#dataset-browser) of the finished courses
+  - Implemented as Jupyter notebooks in [GitHub Codespaces](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
+- A way to [archive finished courses](#archived-courses)
   - Explore topics, documents, relevance judgments, and submitted runs
-  - Archived on Zenodo and GitHub Pages
-  - Deep links for referencing in research papers
+  - Leaderboards encourage competition between students
+  - Course results are easily re-usable for research
 
 Read more about the resources in our accompanying research paper: \
 Resources for Combining Teaching and Research in Information Retrieval Coursework
@@ -41,9 +41,9 @@ Resources for Combining Teaching and Research in Information Retrieval Coursewor
 - [Installation](#installation)
 - [Usage](#usage)
   - [Dashboard](#dashboard)
+  - [`ir_datasets` browser](#ir_datasets-browser)
   - [Tutorials](#tutorials)
-  - [Reproducible experiments](#reproducible-experiments)
-  - [Dataset browser](#dataset-browser)
+  - [Archived courses](#archived-courses)
 - [Testimonials](#testimonials)
 - [Contributing](#contributing)
 - [Contact/License/Abstract](#contact)
@@ -51,54 +51,64 @@ Resources for Combining Teaching and Research in Information Retrieval Coursewor
 ## Installation
 
 The easiest way to start with the tutorials is to open this repository in GitHub Codespaces: \
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tira-io/teaching-ir-with-shared-tasks?quickstart=1) \
-This will install all necessary software. Just wait until the editor window has fully loaded (i.e., no progress bars visible; may take a while). \
-The other resources (i.e., [dashboard](#dashboard), [reproducible experiments](#reproducible-experiments), and [dataset browser](#dataset-browser)) are just web apps that you can run in your web browser.
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1) \
+This will install all the necessary software. Just wait until the editor window has fully loaded (i.e., no progress bars visible; may take a while). \
+The other resources (i.e., [dashboard](#dashboard), [`ir_datasets` browser](#ir_datasets-browser), and [archived courses](#archived-courses)) are static web apps that you can run in your web browser.
 
 ## Usage
 
 In the following, you will learn how to use each of the four main components of our resources:
-the [dashboard](#dashboard), the [tutorials](#tutorials), [reproducible experiments](#reproducible-experiments), and the [dataset browser](#dataset-browser). The sections roughly follow the order as you would use the components in your course (either as student or teacher).
+the [dashboard](#dashboard), the [`ir_datasets` browser](#ir_datasets-browser), the [tutorials](#tutorials), and the [archived courses](#archived-courses).
+The sections roughly follow the order as you would use the components in your course (either as a student or teacher).
 
 ### Dashboard
 
-> [https://tira-io.github.io/teaching-ir-with-shared-tasks](https://tira-io.github.io/teaching-ir-with-shared-tasks)
+Check out the dashboard web app at: <https://tira-io.github.io/teaching-ir-with-shared-tasks>
 
+![Dashboard web app](docs/screenshot-dashboard.png)
 
-### Screencasts
+Explore existing datasets, retrieval components, and evaluation measures with deep links to implementations and papers.
+Components can be filtered to only include, e.g., components with code available or with a corresponding [tutorial](#tutorials).
+To focus your search on a specific goal, e.g., precision-oriented components, select a research focus from the dropdown list.
 
-> TODO
+### `ir_datasets` browser
+
+The `ir_datasets` browser can be used to explore existing datasets: <https://tira-io.github.io/ir-dataset-browser>
+
+![`ir_datasets` browser web app](docs/screenshot-ir-datasets-browser.png)
+
+Here are some examples that can be found using the browser:
+
+- [Topic with high nDCG@10 variange](https://tira-io.github.io/ir-dataset-browser/topics?topic=962179&dataset=msmarco-passage/trec-dl-2019/judged)
+- [Topic with low nDCG@10 variance](https://tira-io.github.io/ir-dataset-browser/topics?topic=131843&dataset=msmarco-passage/trec-dl-2019/judged)
+- [Browsing a document](https://tira-io.github.io/ir-dataset-browser/docs?dataset=msmarco-passage/trec-dl-2019/judged&doc_ids=7501563)
+
+A total of 13 datasets are already available to be explored online. (Some others could not be included due to their licenses.)
 
 ### Tutorials
 
-> [tutorials](tutorials)
+Our hands-on tutorials lower the barrier of entry to implementing IR models and experiments for IR students. You can easily run the tutorials online:
 
-### Dataset browser
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
 
-> [https://tira-io.github.io/ir-dataset-browser](https://tira-io.github.io/ir-dataset-browser)
+A full list of all covered tutorials and further information on how to run the tutorials on your local machine can be found in the [tutorial readme](tutorials/README.md).
 
-The following datasets are already archived and ready to be explored:
+## Archived courses
 
-| Dataset | Browser | Source |
-|:--|:-:|:--|
-| IR lab winter semester 2023/2024 at Leipzig/Jena | [🔗](https://tira-io.github.io/ir-lab-ws-23/) | [🔗](https://github.com/tira-io/ir-lab-ws-23) |
-| IR lab summer semester 2023 at Leipzig/Jena | [🔗](https://tira-io.github.io/ir-lab-sose-23/) | [🔗](https://github.com/tira-io/ir-lab-sose-23) |
+The below list includes finished (✅), ongoing (⏳) and future (🔜) IR courses that already benefit from our teaching resources.
+The finished courses have been archived on Zenodo and are accessible via GitHub Pages. To explore their topics and relevance judgments, click on the "browser" links.
+[Get in touch](#contact) to integrate your course too!
 
+| 📅 | Semester | Course | University | Browser | Source |
+|:-:|:--|:--|:--|:-:|:-:|
+| ✅ | Summer semester 2023 | [Information Retrieval](https://temir.org/teaching/information-retrieval-ss23/information-retrieval-ss23.html) | [Leipzig University](https://leipzig.webis.de) | [🔗](https://tira-io.github.io/ir-lab-sose-23/) | [🔗](https://github.com/tira-io/ir-lab-sose-23) |
+| ✅ | Summer semester 2023 | Advanced Information Retrieval |  [Friedrich-Schiller-Universität Jena](https://jena.webis.de) | [🔗](https://tira-io.github.io/ir-lab-sose-23/) | [🔗](https://github.com/tira-io/ir-lab-sose-23) |
+| ✅ | Winter semester 2023/2024 | [Advanced Information Retrieval](https://temir.org/teaching/information-retrieval-ws23/information-retrieval-ws23.html) | [Leipzig University](https://leipzig.webis.de) | [🔗](https://tira-io.github.io/ir-lab-ws-23/) | [🔗](https://github.com/tira-io/ir-lab-ws-23) |
+| ✅ | Winter semester 2023/2024 | Information Retrieval | [Friedrich-Schiller-Universität Jena](https://jena.webis.de) | [🔗](https://tira-io.github.io/ir-lab-ws-23/) | [🔗](https://github.com/tira-io/ir-lab-ws-23) |
+| ⏳ | Summer semester 2024 | Advanced Information Retrieval |[Friedrich-Schiller-Universität Jena](https://jena.webis.de) | ⏳ | ⏳ |
+| 🔜 | _soon_ | _**your** IR course_ | _[get in touch 💬](#contact)_ | 🔜 | 🔜 |
 
-## Testimonials
-
-The below list includes the universities and IR courses that already benefit from the ir-lab resources. [Get in touch](#contact) to integrate your course too!
-
-| 📅 | Semester | Course | University |
-|:-:|:--|:--|:--|
-| 🔜 | Summer semester 2024 | Advanced Information Retrieval | [Friedrich-Schiller-Universität Jena](https://jena.webis.de) |
-| ✅ | Winter semester 2023/2024 | [Advanced Information Retrieval](https://temir.org/teaching/information-retrieval-ws23/information-retrieval-ws23.html) | [Leipzig University](https://leipzig.webis.de) |
-| ✅ | Winter semester 2023/2024 | Information Retrieval | [Friedrich-Schiller-Universität Jena](https://jena.webis.de) |
-| ✅ | Summer semester 2023 | [Information Retrieval](https://temir.org/teaching/information-retrieval-ss23/information-retrieval-ss23.html) | [Leipzig University](https://leipzig.webis.de) |
-| ✅ | Summer semester 2023 | Advanced Information Retrieval | [Friedrich-Schiller-Universität Jena](https://jena.webis.de) |
-| 🔜 | _soon_ | _**your** IR course_ | _[get in touch 💬](#contact)_ |
-
-Our accompanying [research paper](#citation) includes a case study and describes our experiences of using our resources in the IR courses of two universities over two semesters.
+<!-- Our accompanying [research paper](#citation) includes a case study and describes our experiences of using our resources in the IR courses of two universities over two semesters. -->
 
 ## Similar resources
 
@@ -108,9 +118,9 @@ We took inspiration from some great tutorials and resources out there. Of course
 
 ## Contributing
 
-With the plethora of new retrieval approaches emerging every year, it is hard for us alone to keep the ir-lab up-to-date and to add new tutorials. We would be extremely happy, if you (as an IR teacher) could take some time to improve an existing notebook or to propose a new one!
+With the plethora of new retrieval approaches emerging every year, it is hard for us alone to keep all resources up-to-date and to add new tutorials. We would be extremely happy if you (as an IR teacher) could take some time to improve an existing notebook or propose a new one!
 
-Contributing to the resources is as easy as using it: Just [open this repository in GitHub Codespaces](https://codespaces.new/tira-io/teaching-ir-with-shared-tasks?quickstart=1) (or alternatively, clone it and open the repo in a [Dev container](https://containers.dev/) with your [favorite IDE](https://containers.dev/supporting)).
+Contributing to the resources is as easy as using it: Just [open this repository in GitHub Codespaces](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1) (or clone it and open the repo in a [Dev container](https://containers.dev/) with your [favorite IDE](https://containers.dev/supporting)).
 
 ## Contact
 
@@ -139,6 +149,7 @@ If you use our resources or its tutorials in your research, please cite the foll
 You can use the following BibTeX entry for citation:
 
 ```bibtex
+% TODO
 ```-->
 
 ## License
@@ -146,6 +157,6 @@ You can use the following BibTeX entry for citation:
 This repository and its tutorials are released under the [MIT license](LICENSE).
 <!-- If you use the resources in your research, we'd be glad if you'd [cite us](#citation). -->
 
-## Abstract
+<!-- ## Abstract
 
-> TODO
+> TODO -->
