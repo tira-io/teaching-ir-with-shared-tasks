@@ -51,7 +51,7 @@ export default defineConfig({
     outDir: '/dist',
   },
   experimental: {
-    renderBuiltUrl(filename: string, { hostType }: { hostType: 'js' | 'css' | 'html' }) {
+    renderBuiltUrl(filename: string) {
       // Github pages places the resourecs/assets at this location
       return '/teaching-ir-with-shared-tasks/dist/' + filename
     }

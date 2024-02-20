@@ -6,8 +6,8 @@ export function compareArrays (a : string[] | null, b : string[] | null) : boole
 }
 
 export function extractComponentTypesFromCurrentUrl() {
-    let url = ref(window.location).value.href
-    let to_split = 'components/'
+    const url = ref(window.location).value.href
+    const to_split = 'components/'
     let component_types = null
     let component_types_array : string[] | [] = []
 
@@ -30,8 +30,8 @@ export function extractComponentTypesFromCurrentUrl() {
 }
 
 export function extractFocusTypesFromCurrentUrl() {
-    let url = ref(window.location).value.href
-    let to_split : string = 'components/' + extractComponentTypesFromCurrentUrl().join() + '/'
+    const url = ref(window.location).value.href
+    const to_split : string = 'components/' + extractComponentTypesFromCurrentUrl().join() + '/'
     let focus_type = null
     let focus_types_array : string[] | [] = []
 
@@ -51,8 +51,8 @@ export function extractFocusTypesFromCurrentUrl() {
 }
 
 export function extractSearchQueryFromCurrentUrl() {
-    let url = ref(window.location).value.href
-    let to_split = 'components/' + extractComponentTypesFromCurrentUrl().join() + '/' + extractFocusTypesFromCurrentUrl().join() + '/'
+    const url = ref(window.location).value.href
+    const to_split = 'components/' + extractComponentTypesFromCurrentUrl().join() + '/' + extractFocusTypesFromCurrentUrl().join() + '/'
     let search_query = ''
     if(url.includes(to_split)) {
        search_query = url.split(to_split)[1].split('/')[0]

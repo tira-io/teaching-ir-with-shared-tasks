@@ -2,7 +2,7 @@
   <v-container class="text-center">
     <section>
       <h1 class="text-h3 text-sm-h3 py-4">Dashboard</h1>
-      
+
       <p>Throughout the lab, you will gain hands-on experience with modern technology, from research-oriented retrieval components (overviewed in the Dashboard) to Docker and Dev Containers, which are frequently used in the industry.</p>
     </section>
   </v-container>
@@ -17,15 +17,15 @@
         </v-col>
         <v-col :cols="is_mobile() ? '12' : '4'">
           <v-responsive min-width="220px" id="task-search">
-             <v-text-field class="px-4" clearable label="Type here to filter &hellip;" prepend-inner-icon="mdi-magnify" variant="underlined" v-model="component_filter"  @input="(i:any) => filter_f(i)"/>
+             <v-text-field class="px-4" clearable label="Type here to filter &hellip;" prepend-inner-icon="mdi-magnify" variant="underlined" v-model="component_filter"  @input="() => filter_f()"/>
           </v-responsive>
         </v-col>
       </v-row>
     </v-form>
     <div>
       <v-row class="justify-center mx-2 mb-5">
-        <v-col v-for="i in 6" :cols="is_mobile() ? '12' : '2'">
-          <v-row v-for="(row, index) in vectorizedComponents">
+        <v-col v-for="i in 6" :cols="is_mobile() ? '12' : '2'" :key="i">
+          <v-row v-for="(row, index) in vectorizedComponents" :key="index">
             <v-menu>
             <template v-slot:activator="{ props }">
               <v-card v-bind="props" v-if="vectorizedComponents[index][i-1] && vectorizedComponents[index][i-1]?.display_name && !vectorizedComponents[index][i-1].hide" class="ma-1 w-100 text-start" :max-width="max_width" :color="vectorizedComponents[index][i-1]?.color" variant="tonal" style="cursor: pointer;">
@@ -34,7 +34,7 @@
             </template>
 
             <v-list>
-              <v-list-item v-for="link in vectorizedComponents[index][i-1].links">
+              <v-list-item v-for="link in vectorizedComponents[index][i-1].links" :key="link.href">
                 <v-list-item-title><a :href="link.href" :target="link.target">{{ link.display_name }}</a></v-list-item-title>
               </v-list-item>
               <v-list-item v-if="vectorizedComponents[index][i-1].tirex_submission_id">
@@ -159,7 +159,7 @@ export default {
     countSubItems(component:any) {
       let ret = 0
 
-      if (component.hasOwnProperty('components') && component['components'].length > 0) {
+      if ('components' in component && component['components'].length > 0) {
         for (let c of component['components']) {
               ret += 1 + this.countSubItems(c)
         }
@@ -183,9 +183,9 @@ export default {
             'display_name': c.display_name,
             'subItems': this.countSubItems(c),
             'pos': ret.length + 1,
-            'links': c.hasOwnProperty('links') ? c['links'] : null,
-            'focus_type': c.hasOwnProperty('focus_type') ? c['focus_type'] : null,
-            'component_type': c.hasOwnProperty('component_type') ? c['component_type'] : null,
+            'links': 'links' in c ? c['links'] : null,
+            'focus_type': 'focus_type' in c ? c['focus_type'] : null,
+            'component_type': 'component_type' in c ? c['component_type'] : null,
             'tirex_submission_id': c['tirex_submission_id'],
             'snippet': c['snippet'] || null,
           })
@@ -196,8 +196,8 @@ export default {
               'subItems': this.countSubItems(sub_c),
               'pos': ret.length + 1,
               'links': sub_c['links'],
-              'focus_type': sub_c.hasOwnProperty('focus_type') ? sub_c['focus_type'] : null,
-              'component_type': sub_c.hasOwnProperty('component_type') ? sub_c['component_type'] : null,
+              'focus_type': 'focus_type' in sub_c ? sub_c['focus_type'] : null,
+              'component_type': 'component_type' in sub_c ? sub_c['component_type'] : null,
               'tirex_submission_id': sub_c['tirex_submission_id'],
               'snippet': sub_c['snippet'] || null,
             })
@@ -220,7 +220,7 @@ export default {
 
       return false
     },
-    filter_f(f: any) {
+    filter_f() {
       this.refresh++
     },
     // this function is used in the hide_component to evaluate whether a component matches a search query
@@ -325,13 +325,13 @@ export default {
     },
   },
   watch: {
-    component_types(old_value, new_value) {
+    component_types() {
       this.updateUrlToCurrentSearchCriteria()
     },
-    focus_types(old_value, new_value) {
+    focus_types() {
       this.updateUrlToCurrentSearchCriteria()
     },
-    component_filter(old_value, new_value) {
+    component_filter() {
       this.updateUrlToCurrentSearchCriteria()
     }
   }

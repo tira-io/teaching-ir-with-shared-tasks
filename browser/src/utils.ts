@@ -28,7 +28,7 @@ function inject_response(response: any, request: any, obj: any): void {
 }
 
 export async function get(request: any, obj: any): Promise<any> {
-	let range = request['start'] + '-' + request['end']
+	const range = request['start'] + '-' + request['end']
 
 	if (obj.$data['cache'][request['path']][range]) {
 		return obj.$data['cache'][request['path']][range]
@@ -41,8 +41,8 @@ export async function get(request: any, obj: any): Promise<any> {
 }
 
 export function updateUrl(topic: string|null = null, dataset: string|null = null, query: string|null = null, doc_ids: string|null = null) {
-    var loc = (ref(window.location).value.href + '?').split('?')[0]
-    var params = []
+    const loc = (ref(window.location).value.href + '?').split('?')[0]
+    const params = []
 
     if (topic != null && topic != '') {
         params.push('topic=' + topic)
@@ -60,14 +60,14 @@ export function updateUrl(topic: string|null = null, dataset: string|null = null
         params.push('doc_ids=' + doc_ids)
     }
 
-    let ret = params.length == 0 ? loc : loc + '?' + params.join('&')
+    const ret = params.length == 0 ? loc : loc + '?' + params.join('&')
     history.replaceState({'url': ret}, 'ir_datasets explorer', ret)
 
     return ret
 }
 
 export function extractFromUrl(param: string, default_value: string | null = null): string | null {
-    let href = (ref(window.location).value.href + '&')
+    const href = (ref(window.location).value.href + '&')
 
     if (href.indexOf(param + '=') === -1) {
         return default_value;
@@ -81,14 +81,14 @@ export function uniqueElements(elements: any[], key: string) {
 }
 
 export function filter_topics(topics: {query_id: string, dataset: string, default_text: string}[], topic_num_filters: string | null = null, dataset_filters: string | null = null, query_filter: string | null = null): {query_id: string, dataset: string, default_text: string}[] {
-	let ret: {query_id: string, dataset: string, default_text: string}[] = []
+	const ret: {query_id: string, dataset: string, default_text: string}[] = []
 
-	for (let topic of topics) {
-		let match_topic_num_filters = topic_num_filters == null || topic_num_filters == '' || ('' + topic_num_filters).split(',').some(i => i && i == topic.query_id)
+	for (const topic of topics) {
+		const match_topic_num_filters = topic_num_filters == null || topic_num_filters == '' || ('' + topic_num_filters).split(',').some(i => i && i == topic.query_id)
 
-		let match_dataset_filters = dataset_filters == null || dataset_filters == '' || ('' + dataset_filters).split(',').some(i => i && i == topic.dataset)
+		const match_dataset_filters = dataset_filters == null || dataset_filters == '' || ('' + dataset_filters).split(',').some(i => i && i == topic.dataset)
 
-		let match_query_filter = !query_filter || topic.default_text.toLowerCase().includes(query_filter.toLowerCase())
+		const match_query_filter = !query_filter || topic.default_text.toLowerCase().includes(query_filter.toLowerCase())
 
 		if (match_topic_num_filters && match_dataset_filters && match_query_filter) {
 			ret.push(topic)
