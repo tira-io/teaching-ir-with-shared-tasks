@@ -17,7 +17,7 @@
         </v-col>
         <v-col :cols="is_mobile() ? '12' : '4'">
           <v-responsive min-width="220px" id="task-search">
-             <v-text-field class="px-4" clearable label="Type here to filter &hellip;" prepend-inner-icon="mdi-magnify" variant="underlined" v-model="component_filter"  @input="() => filter_f()"/>
+            <v-text-field class="px-4" clearable label="Type here to filter &hellip;" prepend-inner-icon="mdi-magnify" variant="underlined" v-model="component_filter"  @input="(i:any) => filter_f(i)"/>
           </v-responsive>
         </v-col>
       </v-row>
@@ -223,7 +223,7 @@ export default {
 
       return false
     },
-    filter_f() {
+    filter_f(f: any) {
       this.refresh++
     },
     // this function is used in the hide_component to evaluate whether a component matches a search query
@@ -328,13 +328,13 @@ export default {
     },
   },
   watch: {
-    component_types() {
+    component_types(old_value, new_value) {
       this.updateUrlToCurrentSearchCriteria()
     },
-    focus_types() {
+    focus_types(old_value, new_value) {
       this.updateUrlToCurrentSearchCriteria()
     },
-    component_filter() {
+    component_filter(old_value, new_value) {
       this.updateUrlToCurrentSearchCriteria()
     }
   }
