@@ -1,4 +1,6 @@
 {
+  "type": "module",
+  "private": true,
   "license": "MIT",
   "scripts": {
     "dev": "vite",

@@ -48,7 +48,6 @@ export default defineConfig({
         entryFileNames: 'entries/[name].js',
       },
     },
-    outDir: '/dist',
   },
   experimental: {
     renderBuiltUrl(filename: string) {

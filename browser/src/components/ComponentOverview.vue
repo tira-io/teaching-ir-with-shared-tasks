@@ -101,9 +101,12 @@ export default {
       tirex_components: all_components.default,
       code: '',
       colors: {
-        'Dataset': 'green', 'Document Processing': 'yellow-lighten-1',
-        'Query Processing': 'yellow-darken-4', 'Retrieval': 'cyan-lighten-1',
-        'Re-Ranking': 'cyan-darken-3', 'Evaluation': 'blue-grey-lighten-1'
+        'Dataset': 'green',
+        'Document processing': 'yellow-lighten-1',
+        'Query processing': 'yellow-darken-4',
+        'Retrieval': 'cyan-lighten-1',
+        'Re-Ranking': 'cyan-darken-3',
+        'Evaluation': 'blue-grey-lighten-1'
       } as {
         [key: string]: string
       },
