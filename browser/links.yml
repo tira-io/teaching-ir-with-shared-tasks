@@ -1,18 +1,19 @@
 dataset:
   display_name: Dataset
+  component_type: [Tutorial]
   links:
-    - display_name: Tutorial Post-hoc Analysis of Test Collections with ir_datasets
+    - display_name: Tutorial on post-hoc analysis of test collections with ir_datasets
       href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-ir-datasets.ipynb
       target: _blank
   components:
     args_me:
-      display_name: Args.me
+      display_name: args.me
       component_type: [TIREx]
       links:
-        - display_name: ir_datasets Browser
+        - display_name: ir_datasets browser
           href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=argsme/2020-04-01/touche-2021-task-1,argsme/2020-04-01/touche-2020-task-1
           target: _blank
-        - display_name: Dataset Description
+        - display_name: Dataset description
           href: https://webis.de/data/args-me-corpus.html
           target: _blank
       components:
@@ -20,14 +21,14 @@ dataset:
           display_name: Touché 2020 Task 1
           component_type: [TIREx]
           links:
-            - display_name: ir_datasets Browser
+            - display_name: ir_datasets browser
               href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=argsme/2020-04-01/touche-2020-task-1
               target: _blank
         touche_task_2:
           display_name: Touché 2021 Task 1
           component_type: [TIREx]
           links:
-            - display_name: ir_datasets Browser
+            - display_name: ir_datasets browser
               href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=argsme/2020-04-01/touche-2020-task-1
               target: _blank
 
@@ -36,19 +37,19 @@ dataset:
       component_type: [TIREx]
       ir_datasets_id: antique
       links:
-        - display_name: ir_datasets Browser
+        - display_name: ir_datasets browser
           href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=antique/test
           target: _blank
 
     web_search:
-      display_name: Web Search
+      display_name: Web search
       component_type: [TIREx]
       components:
         clueweb09:
           display_name: ClueWeb09
           component_type: [TIREx]
           links:
-            - display_name: Dataset Description
+            - display_name: Dataset description
               href: https://lemurproject.org/clueweb09.php/
               target: _blank
           components:
@@ -72,7 +73,7 @@ dataset:
           display_name: ClueWeb12
           component_type: [TIREx]
           links:
-            - display_name: Dataset Description
+            - display_name: Dataset description
               href: https://lemurproject.org/clueweb12.php/
               target: _blank
           components:
@@ -85,33 +86,33 @@ dataset:
               component_type: [TIREx]
               ir_datasets_id: clueweb12/trec-web-2014
             touche_2020_2:
-              display_name: Touché 2020 (Task 2)
+              display_name: Touché 2020 Task 2
               component_type: [TIREx]
               ir_datasets_id: clueweb12/touche-2020-task-2
             touche_2021_2:
-              display_name: Touché 2021 (Task 2)
+              display_name: Touché 2021 Task 2
               component_type: [TIREx]
               ir_datasets_id: clueweb12/touche-2021-task-2
         clueweb22:
           display_name: ClueWeb22
           component_type: [TIREx]
           links:
-            - display_name: Dataset Description
+            - display_name: Dataset description
               href: https://lemurproject.org/clueweb22.php/
               target: _blank
           components:
             touche_2023_1:
-              display_name: Touché 2023 (Task 1)
+              display_name: Touché 2023 Task 1
               component_type: [TIREx]
               links:
-                - display_name: Task Page
+                - display_name: Task overview
                   href: https://touche.webis.de/clef23/touche23-web/argument-retrieval-for-controversial-questions.html
                   target: _blank
             touche_2023_2:
-              display_name: Touché 2023 (Task 2)
+              display_name: Touché 2023 Task 2
               component_type: [TIREx]
               links:
-                - display_name: Task Page
+                - display_name: Task overview
                   href: https://touche.webis.de/clef23/touche23-web/evidence-retrieval-for-causal-questions.html
                   target: _blank
 
@@ -125,30 +126,30 @@ dataset:
           display_name: LongEval
           component_type: [TIREx]
           links:
-            - display_name: Dataset Description
-              href: https://dl.acm.org/doi/abs/10.1145/3539618.3591921
+            - display_name: Dataset description
+              href: https://doi.org/10.1145/3539618.3591921
               target: _blank
           components:
             longeval_2023:
               display_name: LongEval 2023
               component_type: [TIREx]
               links:
-                - display_name: Task Page
+                - display_name: Task overview
                   href: https://clef-longeval-2023.github.io/
                   target: _blank
             longeval_2024:
               display_name: LongEval 2024
               component_type: [TIREx]
               links:
-                - display_name: Task Page
+                - display_name: Task overview
                   href: https://clef-longeval.github.io/
                   target: _blank
 
     medical_search:
-      display_name: Medical Search
+      display_name: Medical search
       component_type: [TIREx]
       links:
-        - display_name: ir_datasets Browser
+        - display_name: ir_datasets browser
           href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=medline/2004/trec-genomics-2004,medline/2004/trec-genomics-2005,medline/2017/trec-pm-2017,medline/2017/trec-pm-2018,cord19/fulltext/trec-covid,nfcorpus/test
           target: _blank
       components:
@@ -156,21 +157,21 @@ dataset:
           display_name: CORD-19
           component_type: [TIREx]
           links:
-            - display_name: ir_datasets Browser
+            - display_name: ir_datasets browser
               href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=cord19/fulltext/trec-covid
               target: _blank
         medline:
           display_name: MEDLINE
           component_type: [TIREx]
           links:
-            - display_name: ir_datasets Browser
+            - display_name: ir_datasets browser
               href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=medline/2004/trec-genomics-2004,medline/2004/trec-genomics-2005,medline/2017/trec-pm-2017,medline/2017/trec-pm-2018
               target: _blank
         nfcorpus:
           display_name: NFCorpus
           component_type: [TIREx]
           links:
-            - display_name: ir_datasets Browser
+            - display_name: ir_datasets browser
               href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=nfcorpus/test
               target: _blank
 
@@ -178,38 +179,38 @@ dataset:
       display_name: MS MARCO
       component_type: [TIREx]
       links:
-        - display_name: ir_datasets Browser
+        - display_name: ir_datasets browser
           href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=msmarco-passage/trec-dl-2020/judged,msmarco-passage/trec-dl-2019/judged
           target: _blank
       components:
         deep_learning_19:
-          display_name: Deep Learning 19
+          display_name: TREC Deep Learning 19
           component_type: [TIREx]
           links:
-            - display_name: ir_datasets Browser
+            - display_name: ir_datasets browser
               href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=msmarco-passage/trec-dl-2019/judged
               target: _blank
         deep_learning_20:
-          display_name: Deep Learning 20
+          display_name: TREC Deep Learning 20
           component_type: [TIREx]
           links:
-            - display_name: ir_datasets Browser
+            - display_name: ir_datasets browser
               href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=msmarco-passage/trec-dl-2020/judged
               target: _blank
 
     news_search:
-      display_name: News Search
+      display_name: News search
       component_type: [TIREx]
       components:
         wapo:
-          display_name: WaPo
+          display_name: Washington Post
           component_type: [TIREx]
         disks_4_5:
-          display_name: Disks4+5
+          display_name: TREC Disks 4 and 5
           component_type: [TIREx]
           components:
             robust04:
-              display_name: Robust04
+              display_name: TREC Robust 2004
               component_type: [TIREx]
             trec7:
               display_name: TREC 7
@@ -219,25 +220,25 @@ dataset:
               component_type: [TIREx]
 
     tip_of_the_tongue:
-      display_name: Tip-of-the-Tongue
+      display_name: TREC Tip-of-the-Tongue
       component_type: [TIREx]
       links:
-        - display_name: Task Overview
+        - display_name: Task overview
           href: https://trec-tot.github.io/
           target: _blank
     vaswani:
       display_name: Vaswani
       component_type: [TIREx]
       links:
-        - display_name: ir_datasets Browser
+        - display_name: ir_datasets browser
           href: https://tira-io.github.io/ir-dataset-browser/topics?dataset=vaswani
           target: _blank
 
 document_processing:
-  display_name: Document Processing
+  display_name: Document processing
   components:
     keyphrase_extraction:
-      display_name: Keyphrase Extraction
+      display_name: Keyphrase extraction
       component_type: [TIREx, Tutorial]
       focus_type: [Precision]
       links:
@@ -275,16 +276,19 @@ document_processing:
             href: https://github.com/OpenWebSearch/wows-code/blob/main/ecir24/post-hoc-notebooks/keyphrase-extraction.ipynb
             target: _blank
 
-    health_classification:
-      display_name: Health Classification
-      component_type: [TIREx, Tutorial]
-      links:
-        - display_name: Tutorial
-          href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-medical-classification.ipynb
-          target: _blank
-        - display_name: Paper
-          href: https://webis.de/publications.html?q=health#schlatt_2022a
-          target: _blank
+    doocument_classification:
+      display_name: Document classification
+      components:
+        health_classification:
+          display_name: Health Classification
+          component_type: [TIREx, Tutorial]
+          links:
+            - display_name: Tutorial
+              href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-medical-classification.ipynb
+              target: _blank
+            - display_name: Paper
+              href: https://webis.de/publications.html?q=health#schlatt_2022a
+              target: _blank
 
     stemming:
       display_name: Stemming
@@ -296,7 +300,7 @@ document_processing:
           target: _blank
       components:
         porter_stemmer:
-          display_name: PorterStemmer
+          display_name: Porter stemmer
           focus_type: [Recall]
           component_type: [Tutorial]
           links:
@@ -304,7 +308,7 @@ document_processing:
               href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-stemming.ipynb
               target: _blank
         krovetz_stemmer:
-          display_name: KrovetzStemmer
+          display_name: Krovetz stemmer
           focus_type: [Recall]
           component_type: [Tutorial]
           links:
@@ -321,7 +325,7 @@ document_processing:
               target: _blank
 
     stopword_removal:
-      display_name: Stopword Removal
+      display_name: Stopword removal
       focus_type: [Precision]
       component_type: [Tutorial]
       links:
@@ -330,24 +334,24 @@ document_processing:
           target: _blank
 
 query_processing:
-  display_name: Query Processing
+  display_name: Query processing
   components:
     query_expansion:
-      display_name: Query Expansion
+      display_name: Query expansion
       component_type: [Tutorial]
       focus_type: [Recall]
       links:
         - display_name: Tutorial
           href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-query-expansion.ipynb
           target: _blank
-        - display_name: PyTerrier Documentation
+        - display_name: PyTerrier documentation
           href: https://pyterrier.readthedocs.io/en/latest/rewrite.html
           target: _blank
 
     query_segmentation:
-      display_name: Query Segmentation
+      display_name: Query segmentation
       focus_type: [Precision]
-      component_type: [TIREx, Tutorial]
+      component_type: [TIREx, Tutorial, Code]
       links:
         - display_name: Tutorial
           href: https://github.com/OpenWebSearch/wows-code/blob/main/ecir24/post-hoc-notebooks/query-segmentation.ipynb
@@ -414,10 +418,10 @@ query_processing:
               target: _blank
 
     query_performance_prediction:
-      display_name: Query Performance Prediction (QPP)
-      component_type: [TIREx, Tutorial]
+      display_name: Query performance prediction (QPP)
+      component_type: [TIREx, Tutorial, Code]
       links:
-        - display_name: qpptk
+        - display_name: qpptk library
           href: https://github.com/Zendelo/QPP-EnhancedEval/tree/main/code/qpptk
           target: _blank
         - display_name: Tutorial
@@ -509,35 +513,105 @@ query_processing:
             href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-query-performance-prediction.ipynb
             target: _blank
 
-    health_classification:
-      display_name: Health Classification
-      component_type: [TIREx, Tutorial]
-      links:
-        - display_name: Tutorial
-          href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-medical-classification.ipynb
-          target: _blank
-        - display_name: Paper
-          href: https://webis.de/publications.html?q=health#schlatt_2022a
-          target: _blank
+    query_classification:
+      display_name: Query classification
+      components:
+        health_classification:
+          display_name: Health classification
+          component_type: [TIREx, Tutorial]
+          links:
+            - display_name: Tutorial
+              href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-medical-classification.ipynb
+              target: _blank
+            - display_name: Paper
+              href: https://webis.de/publications.html?q=health#schlatt_2022a
+              target: _blank
 
 retrieval:
   display_name: Retrieval
   components:
     bi_encoder:
-      display_name: Bi-Encoder
+      display_name: Bi-encoder
       component_type: [TIREx]
       components:
-        tbd_1:
-          display_name: TBD 1
+        ance:
+          display_name: ANCE
           component_type: [TIREx]
-        tbd_2:
-          display_name: TBD 2
+          components:
+            ance_roberta_base_cos:
+              display_name: ANCE RoBERTa-base (MS MARCO, cosine-similarity)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/ANCE Base Cosine (tira-ir-starter-beir)
+            ance_roberta_base_dot:
+              display_name: ANCE RoBERTa-base (MS MARCO, dot-product)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/ANCE Base Dot (tira-ir-starter-beir)
+        sbert:
+          display_name: Sentence-BERT (SBERT)
           component_type: [TIREx]
-        tbd_3:
-          display_name: TBD 3
+          components:
+            sbert_bert:
+              display_name: SBERT BERT-base (MS MARCO, dot-product, v5)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT msmarco-bert-base-dot-v5 (tira-ir-starter-beir)
+            sbert_distilbert_cos_v5:
+              display_name: SBERT DistilBERT-base (MS MARCO, cosine-similarity, v5)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT msmarco-distilbert-cos-v5 (tira-ir-starter-beir)
+            sbert_distilbert_dot_v5:
+              display_name: SBERT DistilBERT-base (MS MARCO, dot-product, v5)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT msmarco-distilbert-dot-v5 (tira-ir-starter-beir)
+            sbert_distilbert_cos_v3:
+              display_name: SBERT DistilBERT-base (MS MARCO, cosine-similarity, v3)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT msmarco-distilbert-base-v3-cos (tira-ir-starter-beir)
+            sbert_distilbert_dot_v3:
+              display_name: SBERT DistilBERT-base (MS MARCO, dot-product, v3)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT msmarco-distilbert-base-v3-dot (tira-ir-starter-beir)
+            sbert_minilm_l6:
+              display_name: SBERT MiniLM-L6 (MS MARCO, cosine-similarity, v5)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT msmarco-MiniLM-L6-cos-v5 (tira-ir-starter-beir)
+            sbert_minilm_l12:
+              display_name: SBERT MiniLM-L12 (MS MARCO, cosine-similarity, v5)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT msmarco-MiniLM-L12-cos-v5 (tira-ir-starter-beir)
+            sbert_distilbert_multiqa_cos:
+              display_name: SBERT DistilBERT (Multi-QA, cosine-similarity, v1)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT multi-qa-distilbert-cos-v1 (tira-ir-starter-beir)
+            sbert_distilbert_multiqa_dot:
+              display_name: SBERT DistilBERT (Multi-QA, dot-product, v1)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT multi-qa-distilbert-dot-v1 (tira-ir-starter-beir)
+            sbert_minilm_l6_multiqa_cos:
+              display_name: SBERT MiniLM-L6 (Multi-QA, cosine-similarity, v1)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT multi-qa-MiniLM-L6-cos-v1 (tira-ir-starter-beir)
+            sbert_minilm_l6_multiqa_dot:
+              display_name: SBERT MiniLM-L6 (Multi-QA, dot-product, v1)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT multi-qa-MiniLM-L6-dot-v1 (tira-ir-starter-beir)
+            sbert_mpnet:
+              display_name: SBERT MPNet-base (Multi-QA, cosine-similarity, v1)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/SBERT multi-qa-mpnet-base-cos-v1 (tira-ir-starter-beir)
+        tas_b:
+          display_name: TAS-B
           component_type: [TIREx]
+          components:
+            tas_b_distilbert_cos:
+              display_name: TAS-B DistilBERT-base (MS MARCO, cosine-similarity)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/TASB msmarco-distilbert-base-cos (tira-ir-starter-beir)
+            tas_b_distilbert_dot:
+              display_name: TAS-B DistilBERT-base (MS MARCO, dot-product)
+              component_type: [TIREx]
+              tirex_submission_id: ir-benchmarks/tira-ir-starter/TASB msmarco-distilbert-base-dot (tira-ir-starter-beir)
     late_interaction:
-      display_name: Late Interaction
+      display_name: Late interaction
       component_type: [TIREx]
       components:
         colbert:
@@ -552,16 +626,16 @@ retrieval:
               href: https://github.com/terrier-org/ecir2021tutorial/blob/main/notebooks/notebook4.3.ipynb
               target: _blank
     lexical_retrieval:
-      display_name: Lexical Retrieval
+      display_name: Lexical retrieval
       component_type: [TIREx]
       components:
         chatnoir:
-          display_name: ChatNoir
+          display_name: ChatNoir search engine
           component_type: [TIREx]
           tirex_submission_id: ir-benchmarks/tira-ir-starter/Chatnoir
           links:
             - display_name: Demo
-              href: https://www.chatnoir.eu/
+              href: https://chatnoir.eu/
               target: _blank
         bm25:
           display_name: BM25
@@ -645,10 +719,10 @@ retrieval:
           tirex_submission_id: ir-benchmarks/tira-ir-starter/XSqrA_M(tira-ir-starter-pyterrier)
 
 reranking:
-  display_name: Re-Ranking
+  display_name: Re-ranking
   components:
     cross_encoder:
-      display_name: Cross-Encoder
+      display_name: Cross-encoder
       component_type: [TIREx]
       components:
         monobert:
@@ -712,7 +786,7 @@ reranking:
               component_type: [TIREx]
               tirex_submission_id: ir-benchmarks/tira-ir-starter/DuoT5 base-10k-ms-marco Top-25 (tira-ir-starter-pyterrier)
     bi_encoder:
-      display_name: Bi-Encoder
+      display_name: Bi-encoder
       component_type: [TIREx]
       components:
         ance:
@@ -728,7 +802,7 @@ reranking:
               component_type: [TIREx]
               tirex_submission_id: ir-benchmarks/tira-ir-starter/ANCE Base Dot (tira-ir-starter-beir)
         sbert:
-          display_name: SBERT
+          display_name: Sentence-BERT (SBERT)
           component_type: [TIREx]
           components:
             sbert_bert:
@@ -792,8 +866,8 @@ reranking:
               component_type: [TIREx]
               tirex_submission_id: ir-benchmarks/tira-ir-starter/TASB msmarco-distilbert-base-dot (tira-ir-starter-beir)
     late_interaction:
-      display_name: Late Interaction
-      component_type: [TIREx]
+      display_name: Late interaction
+      component_type: [TIREx, Tutorial]
       components:
         colbert:
           display_name: ColBERT
@@ -808,7 +882,7 @@ reranking:
               target: _blank
 
     lexical_reranking:
-      display_name: Lexical Re-Ranking
+      display_name: Lexical re-ranking
       component_type: [TIREx]
       components:
         bm25:
@@ -892,65 +966,70 @@ reranking:
           component_type: [TIREx]
           tirex_submission_id: ir-benchmarks/tira-ir-starter/XSqrA_M Re-Rank (tira-ir-starter-pyterrier)
     rank_fusion:
-      display_name: Rank Fusion
+      display_name: Rank fusion
       component_type: [Code]
       links:
-        - display_name: Ranx
+        - display_name: ranx.fuse library
           href: https://github.com/AmenRa/ranx
           target: _blank
 
 evaluation:
   display_name: Evaluation
+  component_type: [Tutorial, Code]
   links:
-    - display_name: ir-measures Paper
+    - display_name: ir-measures paper
       href: https://link.springer.com/chapter/10.1007/978-3-030-99739-7_38
       target: _blank
-    - display_name: ir-measures Demo
+    - display_name: ir-measures demo
       href: https://demo.ir-measur.es/reverse
       target: _blank
-    - display_name: Tutorial on Post-hoc Analysis of Test Collections with ir_datasets
+    - display_name: ranx library
+      href: https://github.com/AmenRa/ranx
+      target: _blank
+    - display_name: Tutorial on post-hoc analysis of test collections with ir_datasets
       href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-ir-datasets.ipynb
       target: _blank
-    - display_name: Tutorial on Statistical Analysis
+    - display_name: Tutorial on statistical analysis
       href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-statistical-analysis.ipynb
       target: _blank
   components:
     bpref:
-      display_name: Bpref
+      display_name: bpref
       component_type: [TIREx]
       links:
-        - display_name: ir-measures Explorer
+        - display_name: ir-measures explorer
           href: https://demo.ir-measur.es/explore?measure=Bpref
           target: _blank
-        - display_name: Reverse ir-measures Demo
+        - display_name: Reverse ir-measures demo
           href: https://demo.ir-measur.es/reverse
           target: _blank
         - display_name: Paper
           href: https://ir.webis.de/anthology/2004.sigirconf_conference-2004.5/
           target: _blank
-        - display_name: Criticism of Bpref
+        - display_name: Criticism of bpref
           href: https://ir.webis.de/anthology/2007.sigirconf_conference-2007.12/
           target: _blank
     cwl:
       display_name: C/W/L
+      component_type: [Code]
       links:
         - display_name: Paper
           href: https://ir.webis.de/anthology/2018.sigirconf_conference-2018.63/
           target: _blank
-        - display_name: cwl_eval
+        - display_name: cwl_eval paper
           href: https://ir.webis.de/anthology/2019.sigirconf_conference-2019.204/
           target: _blank
-        - display_name: C/W/L Implementation
+        - display_name: C/W/L implementation
           href: https://github.com/ireval/cwl
           target: _blank
     map:
-      display_name: MAP
+      display_name: Mean Average Precision (MAP)
       component_type: [TIREx]
       links:
-        - display_name: ir-measures Explorer
+        - display_name: ir-measures explorer
           href: https://demo.ir-measur.es/explore?measure=MAP
           target: _blank
-        - display_name: Reverse ir-measures Demo
+        - display_name: Reverse ir-measures demo
           href: https://demo.ir-measur.es/reverse
           target: _blank
         - display_name: Criticism of MAP
@@ -960,13 +1039,13 @@ evaluation:
           href: https://ir.webis.de/anthology/2020.sigirjournals_journal-ir0anthology0volumeA54A1.11/
           target: _blank
     mrr:
-      display_name: MRR
+      display_name: Mean Reciprocal Rank (MRR)
       component_type: [TIREx]
       links:
-        - display_name: ir-measures Explorer
+        - display_name: ir-measures explorer
           href: https://demo.ir-measur.es/explore?measure=RR
           target: _blank
-        - display_name: Reverse ir-measures Demo
+        - display_name: Reverse ir-measures demo
           href: https://demo.ir-measur.es/reverse
           target: _blank
         - display_name: Criticism of MRR
@@ -975,17 +1054,17 @@ evaluation:
         - display_name: Defense of MRR
           href: https://ir.webis.de/anthology/2020.sigirjournals_journal-ir0anthology0volumeA54A1.11/
           target: _blank
-        - display_name: The Case for Reciprocal Rank
-          href: https://arxiv.org/pdf/2312.12672.pdf
+        - display_name: Defense of MRR
+          href: https://arxiv.org/abs/2312.12672
           target: _blank
     ndcg:
-      display_name: nDCG
+      display_name: Normalized Discounted Cumulative Gain (nDCG)
       component_type: [TIREx]
       links:
-        - display_name: ir-measures Explorer
+        - display_name: ir-measures explorer
           href: https://demo.ir-measur.es/explore?measure=nDCG@10
           target: _blank
-        - display_name: Reverse ir-measures Demo
+        - display_name: Reverse ir-measures demo
           href: https://demo.ir-measur.es/reverse
           target: _blank
         - display_name: Paper
@@ -995,38 +1074,48 @@ evaluation:
       display_name: Precision@k
       component_type: [TIREx]
       links:
-        - display_name: ir-measures Explorer
+        - display_name: ir-measures explorer
           href: https://demo.ir-measur.es/explore?measure=P@10
           target: _blank
-        - display_name: Reverse ir-measures Demo
+        - display_name: Reverse ir-measures demo
           href: https://demo.ir-measur.es/reverse
           target: _blank
     recall:
       display_name: Recall@k
       component_type: [TIREx]
       links:
-        - display_name: ir-measures Explorer
+        - display_name: ir-measures explorer
           href: https://demo.ir-measur.es/explore?measure=R@10
           target: _blank
-        - display_name: Reverse ir-measures Demo
+        - display_name: Reverse ir-measures demo
+          href: https://demo.ir-measur.es/reverse
+          target: _blank
+    compatibility:
+      display_name: Compatibility
+      component_type: [TIREx]
+      links:
+        - display_name: ir-measures explorer
+          href: https://demo.ir-measur.es/explore?measure=Compat
+          target: _blank
+        - display_name: Reverse ir-measures demo
           href: https://demo.ir-measur.es/reverse
           target: _blank
     reproducibility:
       display_name: Reproducibility
       component_type: [Code]
       links:
-        - display_name: repro_eval
+        - display_name: repro_eval library
           href: https://github.com/irgroup/repro_eval
           target: _blank
-        - display_name: Overview of Reproducibility Measures
+        - display_name: Overview of reproducibility measures
           href: https://ir.webis.de/anthology/2020.sigirconf_conference-2020.43/
           target: _blank
         - display_name: ir_metadata to improve reproducibility
           href: https://ir.webis.de/anthology/2022.sigirconf_conference-2022.362/
           target: _blank
     statistics:
-      display_name: Statistical Analysis
-      component_type: [Code]
+      display_name: Statistical analysis
+      component_type: [Code, Tutorial]
       links:
         - display_name: Tutorial
           href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-statistical-analysis.ipynb
