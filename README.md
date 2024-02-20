@@ -1,6 +1,6 @@
 <!-- [![Paper DOI](https://img.shields.io/badge/DOI-10.1145%2F3477495.3531743-blue?style=flat-square)](https://doi.org/10.1145/3477495.3531743) -->
 <!-- [![arXiv preprint](https://img.shields.io/badge/arXiv-2304.00413-blue?style=flat-square)](https://arxiv.org/abs/2304.00413) -->
-[![CI status](https://img.shields.io/github/actions/workflow/status/tira-io/teaching-ir-with-shared-tasks/static.yml?branch=main&style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/actions/workflows/static.yml)
+[![CI status](https://img.shields.io/github/actions/workflow/status/tira-io/teaching-ir-with-shared-tasks/ci.yml?branch=main&style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/actions/workflows/ci.yml)
 [![Issues](https://img.shields.io/github/issues/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues)
 [![Pull requests](https://img.shields.io/github/issues-pr/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/pulls)
 [![Commit activity](https://img.shields.io/github/commit-activity/m/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/commits)

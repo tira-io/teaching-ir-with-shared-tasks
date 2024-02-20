@@ -1,0 +1,45 @@
+name: CI
+on:
+  push:
+    branches:
+    - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued. But do not cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: GitHub Pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4     
+      - name: 🧰 Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: 🧰 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: 🧰 Setup GitHub Pages
+        uses: actions/configure-pages@v4
+      - name: 🏗️ Build dashboard web app
+        working-directory: dashboard
+        run: |
+          mkdir -p static/dist
+          make
+          mv static/dist/index.html static/index.html
+      - name: 📤 Upload web app artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dashboard/static
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
