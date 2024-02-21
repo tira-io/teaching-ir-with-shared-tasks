@@ -36,7 +36,13 @@ jobs:
       - name: 🏗️ Pre-process data
         working-directory: dashboard
         run: python3 process_data.py
-      - name: 🧰 Install YARN dependencies
+      - name: 🧰 Setup Node/Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+          cache-dependency-path: dashboard/yarn.lock
+      - name: 🧰 Install Yarn dependencies
         working-directory: dashboard
         run: yarn
       - name: 🧪 Lint dashboard web app
