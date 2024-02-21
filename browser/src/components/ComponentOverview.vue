@@ -16,7 +16,7 @@
         </v-col>
         <v-col :cols="mobile ? '12' : '4'">
           <v-responsive min-width="220px" id="task-search">
-            <v-text-field class="px-4" clearable label="Type here to filter &hellip;" prepend-inner-icon="mdi-magnify" variant="underlined" v-model="component_filter"  @input="(i:any) => filter_f(i)"/>
+            <v-text-field class="px-4" clearable label="Type here to filter &hellip;" prepend-inner-icon="mdi-magnify" variant="underlined" v-model="component_filter"  @input="() => filter_f()"/>
           </v-responsive>
         </v-col>
       </v-row>
@@ -96,7 +96,19 @@ type ComponentSet = Map<string, { ancestors: string[]; children: string[] }>;
 export default {
   name: "components",
   components: {CodeSnippet},
-  data() {
+  data(): {
+    max_width: number,
+    tirex_components: any[],
+    code: string,
+    colors: {[key: string]: string},
+    expanded_entries: string[],
+    component_filter: string,
+    component_types: string[],
+    available_component_types: string[],
+    focus_types: string[],
+    available_focus_types: string[],
+    refresh: number,
+  } {
     return {
       max_width: 1500,
       tirex_components: all_components,
@@ -108,10 +120,8 @@ export default {
         'Retrieval': 'cyan-lighten-1',
         'Re-ranking': 'cyan-darken-3',
         'Evaluation': 'blue-grey-lighten-1'
-      } as {
-        [key: string]: string
       },
-      expanded_entries: <string[]>[],
+      expanded_entries: [],
       component_filter: extractSearchQueryFromCurrentUrl(),
       component_types: compareArrays(extractComponentTypesFromCurrentUrl(), []) ? ['Code', 'TIREx', 'Tutorial'] : extractComponentTypesFromCurrentUrl(),
       available_component_types: ['Code', 'TIREx', 'Tutorial'],
@@ -158,7 +168,6 @@ export default {
     },
     expandItem(c:string) {
       this.expanded_entries.push(c)
-      console.log(this.expanded_entries)
     },
     countSubItems(component:any) {
       let ret = 0
@@ -227,7 +236,7 @@ export default {
 
       return false
     },
-    filter_f(f: any) {
+    filter_f() {
       this.refresh++
     },
     // this function is used in the hide_component to evaluate whether a component matches a search query
@@ -328,13 +337,13 @@ export default {
     },
   },
   watch: {
-    component_types(old_value, new_value) {
+    component_types() {
       this.updateUrlToCurrentSearchCriteria()
     },
-    focus_types(old_value, new_value) {
+    focus_types() {
       this.updateUrlToCurrentSearchCriteria()
     },
-    component_filter(old_value, new_value) {
+    component_filter() {
       this.updateUrlToCurrentSearchCriteria()
     }
   }
