@@ -36,6 +36,9 @@ jobs:
       - name: 🏗️ Pre-process data
         working-directory: dashboard
         run: python3 process_data.py
+      - name: 🧰 Install YARN dependencies
+        working-directory: dashboard
+        run: yarn
       - name: 🧪 Lint dashboard web app
         working-directory: dashboard
         run: yarn lint
