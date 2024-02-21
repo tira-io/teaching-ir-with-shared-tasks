@@ -2,20 +2,19 @@
   <v-container class="text-center">
     <section>
       <h1 class="text-h3 text-sm-h3 py-4">Dashboard</h1>
-
       <p>Throughout the lab, you will gain hands-on experience with modern technology, from research-oriented retrieval components (overviewed in the Dashboard) to Docker and Dev Containers, which are frequently used in the industry.</p>
     </section>
   </v-container>
   <div>
     <v-form>
       <v-row class="justify-center mx-2">
-        <v-col :cols="is_mobile() ? '12' : '4'">
+        <v-col :cols="mobile ? '12' : '4'">
           <v-select v-model="component_types" :items="available_component_types" label="Select Types" multiple hint="Which components do you want to see?"/>
         </v-col>
-        <v-col :cols="is_mobile() ? '12' : '4'">
+        <v-col :cols="mobile ? '12' : '4'">
           <v-select v-model="focus_types" :items="available_focus_types" label="Select Your Focus" multiple hint="Which aspect should be fulfilled by a component?"/>
         </v-col>
-        <v-col :cols="is_mobile() ? '12' : '4'">
+        <v-col :cols="mobile ? '12' : '4'">
           <v-responsive min-width="220px" id="task-search">
             <v-text-field class="px-4" clearable label="Type here to filter &hellip;" prepend-inner-icon="mdi-magnify" variant="underlined" v-model="component_filter"  @input="(i:any) => filter_f(i)"/>
           </v-responsive>
@@ -24,8 +23,8 @@
     </v-form>
     <div>
       <v-row class="justify-center mx-2 mb-5">
-        <v-col v-for="i in 6" :cols="is_mobile() ? '12' : '2'" :key="i">
-          <v-row v-for="(row, index) in vectorizedComponents" :key="index">
+        <v-col v-for="i in 6" :cols="mobile ? '12' : '2'" :key="'component-col-' + i">
+          <v-row v-for="(row, index) in vectorizedComponents" :key="'component-col-' + i + '-row-' + index">
             <v-menu>
             <template v-slot:activator="{ props }">
               <v-card v-bind="props" v-if="vectorizedComponents[index][i-1] && vectorizedComponents[index][i-1]?.display_name && !vectorizedComponents[index][i-1].hide" class="ma-1 w-100 text-start" :max-width="max_width" :color="vectorizedComponents[index][i-1]?.color" variant="tonal" style="cursor: pointer;">
@@ -34,7 +33,7 @@
             </template>
 
             <v-list>
-              <v-list-item v-for="link in vectorizedComponents[index][i-1].links" :key="link.href">
+              <v-list-item v-for="link in vectorizedComponents[index][i-1].links" :key="'component-col-' + i + '-row-' + index + '-link-' + link.href">
                 <v-list-item-title><a :href="link.href" :target="link.target">{{ link.display_name }}</a></v-list-item-title>
               </v-list-item>
               <v-list-item v-if="vectorizedComponents[index][i-1].tirex_submission_id">
@@ -75,12 +74,15 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { useDisplay } from 'vuetify'
+const { mobile } = useDisplay()
+</script>
 
 <script lang="ts">
-import {compareArrays, extractComponentTypesFromCurrentUrl, extractFocusTypesFromCurrentUrl, extractSearchQueryFromCurrentUrl} from './utils';
+import {compareArrays, extractComponentTypesFromCurrentUrl, extractFocusTypesFromCurrentUrl, extractSearchQueryFromCurrentUrl} from '@/components/utils';
 import CodeSnippet from "@/components/CodeSnippet.vue";
-import { is_mobile } from '@/main';
-import * as all_components from './links.json'
+import all_components from '@/components/links.json'
 
 interface Component {
   identifier: string;
@@ -91,26 +93,25 @@ interface Component {
 
 type ComponentSet = Map<string, { ancestors: string[]; children: string[] }>;
 
-
 export default {
   name: "components",
   components: {CodeSnippet},
   data() {
     return {
       max_width: 1500,
-      tirex_components: all_components.default,
+      tirex_components: all_components,
       code: '',
       colors: {
         'Dataset': 'green',
         'Document processing': 'yellow-lighten-1',
         'Query processing': 'yellow-darken-4',
         'Retrieval': 'cyan-lighten-1',
-        'Re-Ranking': 'cyan-darken-3',
+        'Re-ranking': 'cyan-darken-3',
         'Evaluation': 'blue-grey-lighten-1'
       } as {
         [key: string]: string
       },
-      expanded_entries: ['does-not-exist'],
+      expanded_entries: <string[]>[],
       component_filter: extractSearchQueryFromCurrentUrl(),
       component_types: compareArrays(extractComponentTypesFromCurrentUrl(), []) ? ['Code', 'TIREx', 'Tutorial'] : extractComponentTypesFromCurrentUrl(),
       available_component_types: ['Code', 'TIREx', 'Tutorial'],
@@ -152,12 +153,12 @@ export default {
     colorOfComponent(c:string) : string {
       return this.colors[c] ?? "grey"
     },
-    is_mobile() {return is_mobile()},
     collapseItem(c:string) {
       this.expanded_entries = this.expanded_entries.filter(e => e != c)
     },
     expandItem(c:string) {
       this.expanded_entries.push(c)
+      console.log(this.expanded_entries)
     },
     countSubItems(component:any) {
       let ret = 0
@@ -171,7 +172,10 @@ export default {
       return ret
     },
     is_collapsed(component:any) {
-      return !this.computed_expanded_entries.includes(component.display_name)
+      const isMainComponent = ['Dataset', 'Document processing', 'Query processing', 'Retrieval', 'Re-ranking', 'Evaluation'].includes(component.display_name)
+      const isDesktopAndMainComponent = isMainComponent
+      // const isDesktopAndMainComponent = !mobile.value && isMainComponent
+      return !this.computed_expanded_entries.includes(component.display_name) &&!isDesktopAndMainComponent
     },
     filtered_sub_components(component:any) : {display_name: string, subItems: number, pos: number, links: any[], focus_type: string|undefined|null, component_type: string|undefined|null, tirex_submission_id: string|undefined|null, snippet: string|undefined|null}[] {
       let ret: {display_name: string, subItems: number, pos: number, links: any[], focus_type: string|undefined|null, component_type: string|undefined|null, tirex_submission_id: string|undefined|null, snippet: string|undefined|null}[] = []
@@ -252,7 +256,7 @@ export default {
       return !component_match || !focus_match || !search_match
     },
     updateUrlToCurrentSearchCriteria() {
-      this.$router.replace({name: 'tirex', params: {component_types: this.component_types.join(), focus_types: this.focus_types.join(), search_query: this.component_filter}})
+      this.$router.replace({name: 'components', params: {component_types: this.component_types.join(), focus_types: this.focus_types.join(), search_query: this.component_filter}})
     },
     findMatchingParents(componentSet: ComponentSet, targetKey: string): string[] {
       const lowercaseTargetKey = targetKey.toLowerCase();
@@ -272,10 +276,6 @@ export default {
   computed: {
     computed_expanded_entries() : string[] {
       let ret = [...this.expanded_entries];
-      if(!is_mobile()) {
-        ret = ret.concat(['Dataset', 'Document Processing', 'Query Processing', 'Retrieval',
-        'Re-Ranking', 'Evaluation'])
-      }
       if(this.component_filter !== '') {
         let terms = this.findMatchingParents(this.tirex_component_relationship_set, this.component_filter)
         terms = [...new Set(terms)];
@@ -296,7 +296,7 @@ export default {
 
     //computes a modified view of the tirex components to display in a grid like manner.
     vectorizedComponents() {
-      //initialize array of rows for each category i.e. ['Dataset', 'Document Processing', 'Query Processing', 'Retrieval', 'Re-Ranking', 'Evaluation']
+      //initialize array of rows for each category i.e. ['Dataset', 'Document rocessing', 'Query processing', 'Retrieval', 'Re-ranking', 'Evaluation']
       let ret: [any[]] = [[{}, {}, {}, {}, {}, {}]]
 
       // for each category in tirex_components

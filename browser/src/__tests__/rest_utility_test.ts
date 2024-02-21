@@ -99,7 +99,7 @@ test('Error is thrown for wrong endpoints.', async () => {
 
     try {
         await get(request, obj)
-    } catch (e) { 
+    } catch (e) {
         return
     }
 

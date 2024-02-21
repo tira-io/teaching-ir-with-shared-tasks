@@ -33,7 +33,7 @@ export default function register_app() {
     console.log('Mount vue app to location: ' + window.location)
 
     const routes = [
-      {path: '/', component: LandingPage},
+      {name: 'components', path: '/', component: LandingPage},
 
       // Fallback: everything matches to home.
       {path: '/:pathMatch(.*)*', component: LandingPage},

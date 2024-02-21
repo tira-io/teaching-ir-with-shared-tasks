@@ -6,7 +6,7 @@
           Teaching IR with Shared Tasks
         </h1>
         <p class="mx-auto py-4 tira-explanation">
-        This page contains resources coupled to  <a href="https://arxiv.org/pdf/2103.02280.pdf" target="_blank">ir_datasets</a> and <a href="https://webis.de/publications.html?q=tira#froebe_2023e" target="_blank">TIREx</a> for IR courses that focus their hands-on labs on shared tasks (previously in  <a href="https://tira-io.github.io/ir-lab-sose-23/" target="_blank">summer 23</a> and <a href="https://tira-io.github.io/ir-lab-ws-23/" target="_blank">winter 23/24</a>).
+        This page contains resources coupled to  <a href="https://arxiv.org/pdf/2103.02280.pdf" target="_blank">ir_datasets</a> and <a href="https://webis.de/publications.html?q=tira#froebe_2023e" target="_blank">TIREx</a> for brainstorming in IR courses that focus their hands-on labs on shared tasks (previously in  <a href="https://tira-io.github.io/ir-lab-sose-23/" target="_blank">summer 23</a> and <a href="https://tira-io.github.io/ir-lab-ws-23/" target="_blank">winter 23/24</a>).
         </p>
         <v-row class="d-flex justify-center py-4">
           <v-col cols="auto">
@@ -16,9 +16,9 @@
             </v-btn>
           </v-col>
           <v-col cols="auto text-primary">
-            <v-btn href="https://www.tira.io/task-overview/ir-lab-jena-leipzig-wise-2023" target="_blank"  min-width="228"  rel="noopener noreferrer" size="x-large" variant="outlined">
+            <v-btn href="https://tira.io" target="_blank"  min-width="228"  rel="noopener noreferrer" size="x-large" variant="outlined">
               <v-icon size="large" start>
-                <v-img src="https://www.tira.io/public/tira/frontend-vuetify/assets-public/logo.svg" />
+                <v-img src="../logo.svg" />
               </v-icon>
               TIRA
             </v-btn>
@@ -34,7 +34,7 @@
     </v-container>
     <component-overview />
   </template>
-  
+
 <script lang="ts">
 import ComponentOverview from "@/components/ComponentOverview.vue";
 
