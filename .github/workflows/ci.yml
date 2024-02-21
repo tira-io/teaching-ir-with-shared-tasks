@@ -16,7 +16,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  deploy-sashboard:
+    name: "Deploy dashboard to GitHub Pages"
     environment:
       name: GitHub Pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -31,7 +32,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: 🧰 Install Python dependencies
-        run: pip install pyyaml~=5.4
+        run: python -m pip install pyyaml~=5.4
       - name: 🏗️ Pre-process data
         working-directory: dashboard
         run: python3 process_data.py
