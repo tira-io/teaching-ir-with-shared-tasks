@@ -237,6 +237,13 @@ dataset:
 document_processing:
   display_name: Document processing
   components:
+    indexing:
+      display_name: Indexing
+      component_type: [TIREx, Tutorial]
+      links:
+        - display_name: Tutorial on re-using Pre-build PyTerrier indices
+          href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-reuse-pyterrier-indices.ipynb
+          target: _blank
     keyphrase_extraction:
       display_name: Keyphrase extraction
       component_type: [TIREx, Tutorial]
