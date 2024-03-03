@@ -354,6 +354,53 @@ query_processing:
         - display_name: PyTerrier documentation
           href: https://pyterrier.readthedocs.io/en/latest/rewrite.html
           target: _blank
+      components:
+        splade:
+          display_name: Splade
+          component_type: [Tutorial]
+          focus_type: [Precision,Recall]
+          links:
+          - display_name: Tutorial
+            href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-splade-query-processing.ipynb
+            target: _blank
+        bo1:
+          display_name: BO1
+          component_type: [Tutorial]
+          focus_type: [Recall]
+          links:
+          - display_name: Documentation
+            href: https://pyterrier.readthedocs.io/en/latest/rewrite.html#bo1queryexpansion
+            target: _blank
+        kl:
+          display_name: Kullback Leibler
+          component_type: [Tutorial]
+          focus_type: [Recall]
+          links:
+          - display_name: Documentation
+            href: https://pyterrier.readthedocs.io/en/latest/rewrite.html#klqueryexpansion
+            target: _blank
+        rm3:
+          display_name: RM3
+          component_type: [Tutorial]
+          focus_type: [Recall]
+          links:
+          - display_name: Documentation
+            href: https://pyterrier.readthedocs.io/en/latest/rewrite.html#rm3
+            target: _blank
+    query_reduction:
+      display_name: Query Reduction
+      component_type: [TIREx, Tutorial]
+      focus_type: [Precision]
+
+      components:
+        splade:
+          display_name: Splade
+          component_type: [Tutorial]
+          focus_type: [Precision,Recall]
+          links:
+          - display_name: Tutorial
+            href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-splade-query-processing.ipynb
+            target: _blank
 
     query_segmentation:
       display_name: Query segmentation
