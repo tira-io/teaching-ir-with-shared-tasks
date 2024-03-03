@@ -372,6 +372,42 @@ document_processing:
 query_processing:
   display_name: Query processing
   components:
+    entity_linking:
+      display_name: Entity Linking
+      component_type: [TIREx, Tutorial]
+      focus_type: [Recall, Precision]
+      links:
+      - display_name: Tutorial
+        href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-entity-linking-in-progress.ipynb
+        target: _blank
+    intent_prediction:
+      display_name: Intent Prediction
+      component_type: [TIREx, Tutorial]
+      focus_type: [Recall, Precision]
+      links:
+      - display_name: Paper: A Taxonomy of Web Search
+        href: https://ir.webis.de/anthology/2002.sigirjournals_journal-ir0anthology0volumeA36A2.0/
+        target: _blank
+      - display_name: Paper: ORCAS-I: queries annotated with intent using weak supervision
+        href: https://dl.acm.org/doi/abs/10.1145/3477495.3531737
+        target: _blank
+      components:
+        pre_retrieval:
+          display_name: Pre-Retrieval Query Intent Prediction
+          component_type: [TIREx]
+          focus_type: [Precision,Recall]
+          links:
+          - display_name: Tutorial
+            href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-query-intent-prediction.ipynb
+            target: _blank
+        post_retrieval:
+          display_name: Post-Retrieval Query Intent Prediction
+          component_type: [TIREx]
+          focus_type: [Precision,Recall]
+          links:
+          - display_name: Tutorial
+            href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-query-intent-prediction.ipynb
+            target: _blank
     spelling_correction:
       display_name: Spelling Correction
       component_type: [TIREx, Tutorial]
