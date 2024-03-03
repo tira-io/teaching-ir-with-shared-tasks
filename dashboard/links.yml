@@ -282,6 +282,35 @@ document_processing:
           - display_name: Tutorial
             href: https://github.com/OpenWebSearch/wows-code/blob/main/ecir24/post-hoc-notebooks/keyphrase-extraction.ipynb
             target: _blank
+    document_expansion:
+      display_name: Document Expansion
+      component_type: [TIREx, Tutorial]
+      focus_type: [Recall]
+
+      components:
+        splade:
+          display_name: Splade
+          component_type: [Tutorial]
+          focus_type: [Precision,Recall]
+          links:
+          - display_name: Tutorial
+            href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-splade-ranking.ipynb
+            target: _blank
+
+    document_reduction:
+      display_name: Document Reduction
+      component_type: [TIREx, Tutorial]
+      focus_type: [Precision]
+
+      components:
+        splade:
+          display_name: Splade
+          component_type: [Tutorial]
+          focus_type: [Precision,Recall]
+          links:
+          - display_name: Tutorial
+            href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-splade-ranking.ipynb
+            target: _blank
 
     doocument_classification:
       display_name: Document classification
