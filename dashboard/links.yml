@@ -393,6 +393,7 @@ query_processing:
           display_name: Rushton
           component_type: [TIREx]
           focus_type: [Precision,Recall]
+          links:
           - display_name: Tutorial
             href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-spelling-correction.ipynb
             target: _blank
@@ -400,6 +401,7 @@ query_processing:
           display_name: PySpell
           component_type: [TIREx]
           focus_type: [Precision,Recall]
+          links:
           - display_name: Tutorial
             href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-spelling-correction.ipynb
             target: _blank
@@ -407,6 +409,7 @@ query_processing:
           display_name: Gpt3.5Spell
           component_type: [TIREx]
           focus_type: [Precision,Recall]
+          links:
           - display_name: Tutorial
             href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-spelling-correction.ipynb
             target: _blank
