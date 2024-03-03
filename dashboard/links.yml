@@ -385,10 +385,10 @@ query_processing:
       component_type: [TIREx, Tutorial]
       focus_type: [Recall, Precision]
       links:
-      - display_name: Paper: A Taxonomy of Web Search
+      - display_name: A Taxonomy of Web Search
         href: https://ir.webis.de/anthology/2002.sigirjournals_journal-ir0anthology0volumeA36A2.0/
         target: _blank
-      - display_name: Paper: ORCAS-I: queries annotated with intent using weak supervision
+      - display_name: "ORCAS-I: queries annotated with intent using weak supervision"
         href: https://dl.acm.org/doi/abs/10.1145/3477495.3531737
         target: _blank
       components:
