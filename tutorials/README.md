@@ -33,10 +33,10 @@ More complex topics that might not be suited to every IR course are still covere
 | Query performance prediction | [🔗](tutorial-query-performance-prediction.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-performance-prediction.ipynb?quickstart=1) |
 | Classification of medical/health queries and documents | [🔗](tutorial-medical-classification.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-medical-classification.ipynb?quickstart=1) |
 | Entity linking ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/4)) |  [🔗](tutorial-entity-linking-in-progress.ipynb) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/4) |
-| Query Intent Prediction |  [🔗](tutorial-query-intent-prediction.ipynb) | ⏳ |
-| Query Spelling Correction |  [🔗](tutorial-spelling-correction.ipynb) | ⏳ |
-| Splade for Query Processing |  [🔗](tutorial-splade-query-processing.ipynb) | ⏳ |
-| Splade for Document Processing |  [🔗](tutorial-splade-ranking.ipynb) | ⏳ |
+| Query Intent Prediction (work in progress)|  [🔗](tutorial-query-intent-prediction.ipynb) | ⏳ |
+| Query Spelling Correction (work in progress)|  [🔗](tutorial-spelling-correction.ipynb) | ⏳ |
+| Splade for Query Processing (work in progress)|  [🔗](tutorial-splade-query-processing.ipynb) | ⏳ |
+| Splade for Document Processing (work in progress)|  [🔗](tutorial-splade-ranking.ipynb) | ⏳ |
 | Re-ranking with cross-encoders or bi-encoders ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
