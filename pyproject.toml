@@ -6,7 +6,7 @@ dependencies = [
     "doccano-client==1.2.8",
     "ir_datasets",
     "tira",
-    "urllib3~=1.26",
+    "urllib3~=2.2",
 ]
 version = "0.1.0"
 
