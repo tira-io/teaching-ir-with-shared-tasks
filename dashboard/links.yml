@@ -297,6 +297,36 @@ document_processing:
             href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-splade-ranking.ipynb
             target: _blank
 
+        doct5query:
+          display_name: DocT5Query
+          component_type: [Tutorial]
+          focus_type: [Recall]
+          links:
+          - display_name: Tutorial
+            href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-doc-t5-query.ipynb
+            target: _blank
+          - display_name: Paper
+            href: https://cs.uwaterloo.ca/~jimmylin/publications/Nogueira_Lin_2019_docTTTTTquery-v2.pdf
+            target: _blank
+
+    graph_structure:
+      display_name: Graph Structure
+      component_type: [TIREx, Tutorial]
+      focus_type: [Recall]
+      components:
+        corpus_graph:
+          display_name: Corpus Graph
+          component_type: [Tutorial]
+          focus_type: [Recall]
+          links:
+          - display_name: Tutorial
+            href: https://github.com/tira-io/teaching-ir-with-shared-tasks/blob/main/tutorials/tutorial-corpus-graph.ipynb
+            target: _blank
+          - display_name: Paper
+            href: https://arxiv.org/pdf/2208.08942.pdf
+            target: _blank
+
+
     document_reduction:
       display_name: Document Reduction
       component_type: [TIREx, Tutorial]
