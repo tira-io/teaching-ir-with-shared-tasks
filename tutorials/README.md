@@ -38,6 +38,7 @@ More complex topics that might not be suited to every IR course are still covere
 | Splade for Query Processing (work in progress)|  [🔗](tutorial-splade-query-processing.ipynb) | ⏳ |
 | Splade for Document Processing (work in progress)|  [🔗](tutorial-splade-ranking.ipynb) | ⏳ |
 | DocT5Query (work in progress)|  [🔗](tutorial-doc-t5-query.ipynb) | ⏳ |
+| Genre Classification (work in progress)|  [🔗](tutorial-genre-classification.ipynb) | ⏳ |
 | Re-ranking with cross-encoders or bi-encoders ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
