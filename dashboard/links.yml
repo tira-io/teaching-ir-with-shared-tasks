@@ -325,7 +325,7 @@ document_processing:
           - display_name: Paper
             href: https://arxiv.org/pdf/2208.08942.pdf
             target: _blank
-        corpus_graph:
+        page_rank:
           display_name: Page Rank
           links:
           - display_name: Page Rank on the ClueWeb
