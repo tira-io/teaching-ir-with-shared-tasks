@@ -3,9 +3,10 @@ name = "teaching-ir-with-shared-tasks"
 requires-python = ">=3.11"
 dependencies = [
     "click~=8.1",
-    "doccano-client==1.2.8",
-    "ir_datasets",
-    "tira",
+    "doccano-client~=1.2.8",
+    "importlib-metadata~=7.0",
+    "ir_datasets~=0.5.6",
+    "tira~=0.0.125",
     "urllib3~=2.2",
 ]
 version = "0.1.0"
