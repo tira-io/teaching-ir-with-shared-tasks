@@ -103,6 +103,43 @@ Our hands-on tutorials lower the barrier of entry to implementing IR models and 
 
 A full [list of all covered tutorials](tutorials/README.md#contents) and further information on how to run the tutorials on your local machine can be found in the [tutorial readme](tutorials/README.md).
 
+### Tools for Relevance Judgments (work in progress)
+
+We also include tools that ease uploading pooled documents and downloading relevance judgments to/from the Doccano annotation platform. To use these tools, follow these steps:
+
+1. Install [Python 3.10](https://python.org/downloads/) or later.
+2. Create and activate a virtual environment:
+
+    ```shell
+    python3.10 -m venv venv/
+    source venv/bin/activate
+    ```
+
+3. Install dependencies:
+
+    ```shell
+    pip install -e .
+    ```
+
+4. Create top-k pools of documents retrieved by TIREx baseline: **TODO**
+
+    ```shell
+    teaching-ir pool-documents [TODO: TIRA parameters] /path/to/topics1.xml [/path/to/topics2.xml ...]
+    ```
+
+5. Prepare the relevance judgments in Doccano like so:
+
+    ```shell
+    teaching-ir prepare-relevance-judgments project-prefix /path/to/pool1.jsonl /path/to/pool2.jsonl ...
+    ```
+
+6. All teams can now work on their relevance judgments.
+5. Export the relevance judgments as [Qrels](https://trec.nist.gov/data/qrels_eng/) from Doccano like so:
+
+    ```shell
+    teaching-ir export-relevance-judgments project-prefix /path/to/pool1.jsonl /path/to/pool2.jsonl ...
+    ```
+
 ## Archived courses
 
 The below list includes finished (✅), ongoing (⏳) and future (🔜) IR courses that already benefit from our teaching resources.
