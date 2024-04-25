@@ -33,8 +33,7 @@ The resources are intended as a collection of supplementary materials for exerci
   - Course results are easily re-usable for research
 
 Read more about the resources in our accompanying research paper: \
-Resources for Combining Teaching and Research in Information Retrieval Coursework
-<!-- [Resources for Combining Teaching and Research in Information Retrieval Coursework](TODO) ([abstract](#abstract)) -->
+[Resources for Combining Teaching and Research in Information Retrieval Coursework](#citation) ([abstract](#abstract))
 
 ## Contents
 
@@ -119,7 +118,7 @@ The finished courses have been archived on Zenodo and are accessible via GitHub 
 | ⏳ | Summer semester 2024 | [Advanced Information Retrieval](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=224212&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung) |[Friedrich-Schiller-Universität Jena](https://jena.webis.de) | ⏳ | ⏳ |
 | 🔜 | _soon_ | _**your** IR course_ | _[get in touch 💬](#contact)_ | 🔜 | 🔜 |
 
-<!-- Our accompanying [research paper](#citation) includes a case study and describes our experiences of using our resources in the IR courses of two universities over two semesters. -->
+Our accompanying [research paper](#citation) includes a case study and describes our experiences of using our resources in the IR courses of two universities over two semesters.
 
 ## Similar resources
 
@@ -151,23 +150,48 @@ Do not hesitate to write us an email or file an [issue](https://github.com/tira-
 
 We're happy to help!
 
-<!--## Citation
+## Citation
 
 If you use our resources or its tutorials in your research, please cite the following paper:
 
-> TODO
+> Maik Fröbe, Harrisen Scells, Theresa Elstner, Christopher Akiki, Lukas Gienapp, Jan Heinrich Reimer, Sean MacAvaney, Benno Stein, Matthias Hagen, and Martin Potthast. [Resources for Combining Teaching and Research in Information Retrieval Courses](https://webis.de/publications.html#froebe_2024a). In 47th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR 2024), July 2024. ACM.
 
 You can use the following BibTeX entry for citation:
 
 ```bibtex
-% TODO
-```-->
+@InProceedings{froebe:2024a,
+  author =                   {Maik Fr{\"o}be and Harrisen Scells and Theresa Elstner and Christopher Akiki and Lukas Gienapp and Jan Heinrich Reimer and Sean MacAvaney and Benno Stein and Matthias Hagen and Martin Potthast},
+  booktitle =                {47th International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR 2024)},
+  month =                    jul,
+  numpages =                 11,
+  publisher =                {ACM},
+  title =                    {{Resources for Combining Teaching and Research in Information Retrieval Courses}},
+  year =                     2024
+}
+```
 
 ## License
 
-This repository and its tutorials are released under the [MIT license](LICENSE).
-<!-- If you use the resources in your research, we'd be glad if you'd [cite us](#citation). -->
+If you use the resources in your research, we'd be glad if you'd [cite us](#citation).
 
-<!-- ## Abstract
+## Abstract
 
-> TODO -->
+> A recent study has shown that students in IR courses are espe-
+cially motivated and learn more effectively when they participate
+in shared tasks as part of their coursework. We thus present a
+range of tools and resources that support teachers in integrating
+research in their IR courses. Based on TIREx and ir_datasets,
+our Web IDE-based applications and tutorials cover the process
+of a typical shared task in IR and allow students to gain hands-
+on experience with experimental IR research—from creating test
+collections over developing retrieval systems to making relevance
+judgments and finally statistically analyzing the results. Using our
+tools, IR research coursework can be conducted on existing or new
+collections but can also be coupled with an upcoming shared task
+to which students can optionally submit their final approaches. We
+do not only present our tools and resources, but also report on our
+experiences in implementing the corresponding teaching concept
+in four IR courses for students at two universities. Our results con-
+firm that students are very motivated to conduct research, and we
+also find that some of the resulting artifacts (e.g., students’ test
+collections and retrieval approaches) are of genuinely high quality.
