@@ -134,7 +134,7 @@ We also include tools that ease uploading pooled documents and downloading relev
     ```
 
 6. All teams can now work on their relevance judgments.
-5. Export the relevance judgments as [Qrels](https://trec.nist.gov/data/qrels_eng/) from Doccano like so:
+7. Export the relevance judgments as [Qrels](https://trec.nist.gov/data/qrels_eng/) from Doccano like so:
 
     ```shell
     teaching-ir export-relevance-judgments project-prefix /path/to/pool1.jsonl /path/to/pool2.jsonl ...
