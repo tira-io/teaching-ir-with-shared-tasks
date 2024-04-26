@@ -121,10 +121,10 @@ We also include tools that ease uploading pooled documents and downloading relev
     pip install -e .
     ```
 
-4. Create top-k pools of documents retrieved by TIREx baseline: **TODO**
+4. Create top-k pools of documents retrieved by TIREx baselines: **TODO**
 
     ```shell
-    teaching-ir pool-documents [TODO: TIRA parameters] /path/to/topics1.xml [/path/to/topics2.xml ...]
+    teaching-ir pool-documents -k 5 [TODO: TIRA parameters] /path/to/topics1.xml [/path/to/topics2.xml ...]
     ```
 
 5. Prepare the relevance judgments in Doccano like so:
@@ -134,10 +134,10 @@ We also include tools that ease uploading pooled documents and downloading relev
     ```
 
 6. All teams can now work on their relevance judgments.
-7. Export the relevance judgments as [Qrels](https://trec.nist.gov/data/qrels_eng/) from Doccano like so:
+7. Export the relevance judgments as [qrels](https://trec.nist.gov/data/qrels_eng/) from Doccano like so:
 
     ```shell
-    teaching-ir export-relevance-judgments project-prefix /path/to/pool1.jsonl /path/to/pool2.jsonl ...
+    teaching-ir export-relevance-judgments project-prefix /path/to/pool1.jsonl /path/to/pool2.jsonl ... /path/to/qrels.txt
     ```
 
 8. Once the semester is over and when you have exported all data, clean up the projects and users on Doccano like so:

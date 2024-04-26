@@ -2,21 +2,23 @@ from importlib.resources import files
 from pathlib import Path
 from secrets import choice
 from string import ascii_letters, digits
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 from typing import Annotated, Any, Mapping, Sequence, TypeAlias
 from urllib.parse import urljoin
 from warnings import warn
 from webbrowser import open as open_webbrowser
+from zipfile import ZipFile
 
 from annotated_types import Len
 from click import argument, confirm, group, Context, Parameter, echo, option, Path as PathType
 from doccano_client import DoccanoClient
+from doccano_client.exceptions import DoccanoAPIError
 from doccano_client.models.user import User
 from doccano_client.models.project import Project
 from doccano_client.models.label_type import LabelType
 from doccano_client.models.member import Member
 from doccano_client.models.data_upload import Task as DataUploadTask
-from pandas import concat, read_json
+from pandas import DataFrame, concat, read_json
 from slugify import slugify
 from tqdm import tqdm
 
@@ -503,10 +505,215 @@ def prepare_relevance_judgments(
                 f"Failed to upload documents to project '{project.name}': {error}")
         if result is not None and result != {} and result != []:
             echo(
-                f"Uploaded {len(group_pool)} documents for project '{project.name}': {status.result}")
+                f"Uploaded {len(group_pool)} documents to project '{project.name}': {status.result}")
         else:
             echo(
-                f"Uploaded {len(group_pool)} documents for project '{project.name}'.")
+                f"Uploaded {len(group_pool)} documents to project '{project.name}'.")
+
+
+@cli.command()
+@option(
+    "-d", "--doccano-url",
+    type=str,
+    required=True,
+    prompt="Doccano URL",
+    envvar="DOCCANO_URL",
+    help="Base URL of the Doccano instance to use.",
+    metavar="URL",
+)
+@option(
+    "-u", "--doccano-username",
+    type=str,
+    required=True,
+    prompt="Doccano username",
+    envvar="DOCCANO_USERNAME",
+    help="Username to authenticate with Doccano.",
+)
+@option(
+    "-u", "--doccano-password",
+    type=str,
+    required=True,
+    prompt="Doccano password",
+    hide_input=True,
+    envvar="DOCCANO_PASSWORD",
+    help="Password to authenticate with Doccano.",
+)
+@argument(
+    "prefix",
+    type=str,
+)
+@argument(
+    "pooled_documents_paths",
+    type=PathType(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        readable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+    nargs=-1,
+)
+@argument(
+    "qrels_path",
+    type=PathType(
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=False,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+def export_relevance_judgments(
+        doccano_url: str,
+        doccano_username: str,
+        doccano_password: str,
+        prefix: str,
+        pooled_documents_paths: Sequence[Path],
+        qrels_path: Path,
+) -> None:
+    """
+    Export the relevance judgments from Doccano for pooled documents from JSON Lines files specified in POOLED_DOCUMENTS_PATHS.
+    The relevance judgments will be saved in the TREC qrels format to QRELS_PATH.
+    PREFIX is the common prefix of the generated project and user names.
+    """
+
+    if len(prefix) == 0:
+        raise ValueError("Empty project prefix.")
+    project_prefix = slugify(prefix)
+
+    if len(pooled_documents_paths) == 0:
+        return
+
+    doccano = DoccanoClient(doccano_url)
+    doccano.login(
+        username=doccano_username,
+        password=doccano_password,
+    )
+    echo("Successfully authenticated with Doccano API.")
+
+    pool = concat(
+        read_json(
+            path,
+            lines=True,
+            dtype={
+                "group": str,
+                "query_id": str,
+                "query": str,
+                "description": str,
+                "narrative": str,
+                "doc_id": str,
+                "text": str,
+            }
+        )
+        for path in tqdm(
+            pooled_documents_paths,
+            desc="Read pooled documents",
+            unit="path",
+        )
+    )
+    echo(f"Found {len(pool)} pooled documents.")
+
+    groups: set[str] = set(pool["group"].drop_duplicates().to_list())
+    echo(f"Found {len(groups)} groups.")
+
+    # Create mapping of groups to project names.
+    group_project_names: Mapping[str, str] = {
+        group: _project_name(project_prefix, group)
+        for group in groups
+    }
+    projects: Mapping[str, Project] = {
+        project.name: project
+        for project in doccano.list_projects()
+    }
+    group_projects: Sequence[Project] = [
+        projects[project_name]
+        for group, project_name in group_project_names.items()
+        if project_name in projects.keys()
+    ]
+
+    echo(f"Exporting qrels from {len(group_projects)} projects...")
+    qrels_list: list[DataFrame] = []
+    for project in group_projects:
+        with TemporaryDirectory() as tmp_dir:
+            tmp_dir_path = Path(tmp_dir)
+
+            echo(f"Downloading documents from project '{project.name}'...")
+            tmp_path: Path
+            retries = 10
+            while True:
+                try:
+                    tmp_path = doccano.data_export.download(
+                        project_id=project.id,
+                        format="JSONL",
+                        dir_name=str(tmp_dir_path),
+                    )
+                except DoccanoAPIError as e:
+                    # Note: These errors are so common in Doccano, that a warning does not seem appropriate.
+                    if e.response.status_code != 500 or retries <= 0:
+                        raise e
+                    echo(
+                        f"Re-trying documents download from project '{project.name}'. {retries} retries left.")
+                    retries -= 1
+                    continue
+                break
+
+            echo(f"Downloaded documents from project '{project.name}'.")
+
+            with ZipFile(tmp_path) as tmp_zip_file:
+                for name in tmp_zip_file.namelist():
+                    with tmp_zip_file.open(name) as tmp_jsonl_file:
+                        qrels_list.append(
+                            read_json(
+                                tmp_jsonl_file,
+                                lines=True,
+                                dtype={
+                                    "query_id": str,
+                                    "doc_id": str,
+                                },
+                            )[["query_id", "doc_id", "label"]]
+                        )
+
+    echo("Read qrels from annotated documents.")
+    qrels = concat(qrels_list)
+    qrels["label"] = qrels["label"].map(
+        lambda x: x[0] if len(x) > 0 else None)
+    qrels = qrels[qrels["label"].notna()]
+    qrels["label"] = qrels["label"]\
+        .map({
+            _LABEL_RELEVANT: 1,
+            _LABEL_NOT_RELEVANT: 0,
+        })
+    qrels = qrels[qrels["label"].notna()]
+
+    pool = pool.merge(
+        qrels,
+        how="left",
+        on=["query_id", "doc_id"],
+        suffixes=["_pool", None],
+    )
+    unjudged_pool = pool[pool["label"].isna()]
+    if len(unjudged_pool) > 0:
+        echo(f"Found {len(unjudged_pool)} unjudged documents from pool.")
+        if confirm("Report unjudged documents", default=True):
+            for group, group_unjudged_pool in unjudged_pool.groupby("group"):
+                echo(
+                    f"\tGroup '{group}': {len(group_unjudged_pool)} unjudged documents.")
+
+    echo(f"Export qrels file to {qrels_path}.")
+    qrels["Q0"] = 0
+    qrels = qrels[["query_id", "Q0", "doc_id", "label"]]
+    qrels.to_csv(
+        qrels_path,
+        sep=" ",
+        index=False,
+        header=False,
+    )
 
 
 @cli.command()
@@ -588,7 +795,7 @@ def clean_up(
         for user in users:
             delete_user_url = urljoin(
                 doccano_url, f"/admin/auth/user/{user.id}/delete/")
-            
+
             if auto_open_delete_urls:
                 open_webbrowser(delete_user_url)
             else:
