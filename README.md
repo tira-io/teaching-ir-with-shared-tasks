@@ -140,6 +140,14 @@ We also include tools that ease uploading pooled documents and downloading relev
     teaching-ir export-relevance-judgments project-prefix /path/to/pool1.jsonl /path/to/pool2.jsonl ...
     ```
 
+8. Once the semester is over and when you have exported all data, clean up the projects and users on Doccano like so:
+
+    ```shell
+    teaching-ir clean-up project-prefix
+    ```
+
+Please refer to the `teaching-ir` command's help (i.e., run `teaching-ir --help`) for more detailed options.
+
 ## Archived courses
 
 The below list includes finished (✅), ongoing (⏳) and future (🔜) IR courses that already benefit from our teaching resources.

@@ -6,6 +6,7 @@ from tempfile import NamedTemporaryFile
 from typing import Annotated, Any, Mapping, Sequence, TypeAlias
 from urllib.parse import urljoin
 from warnings import warn
+from webbrowser import open as open_webbrowser
 
 from annotated_types import Len
 from click import argument, confirm, group, Context, Parameter, echo, option, Path as PathType
@@ -480,6 +481,7 @@ def prepare_relevance_judgments(
                 lines=True,
                 mode="w",
             )
+            tmp_file.flush()
             status = doccano.data_import.upload(
                 project_id=project.id,
                 file_paths=[str(tmp_path)],
@@ -505,6 +507,93 @@ def prepare_relevance_judgments(
         else:
             echo(
                 f"Uploaded {len(group_pool)} documents for project '{project.name}'.")
+
+
+@cli.command()
+@option(
+    "-d", "--doccano-url",
+    type=str,
+    required=True,
+    prompt="Doccano URL",
+    envvar="DOCCANO_URL",
+    help="Base URL of the Doccano instance to use.",
+    metavar="URL",
+)
+@option(
+    "-u", "--doccano-username",
+    type=str,
+    required=True,
+    prompt="Doccano username",
+    envvar="DOCCANO_USERNAME",
+    help="Username to authenticate with Doccano.",
+)
+@option(
+    "-u", "--doccano-password",
+    type=str,
+    required=True,
+    prompt="Doccano password",
+    hide_input=True,
+    envvar="DOCCANO_PASSWORD",
+    help="Password to authenticate with Doccano.",
+)
+@argument(
+    "prefix",
+    type=str,
+)
+def clean_up(
+        doccano_url: str,
+        doccano_username: str,
+        doccano_password: str,
+        prefix: str,
+) -> None:
+    """
+    Clean up automatically created projects and users.
+    PREFIX is the common prefix of the generated project and user names.
+    """
+
+    if len(prefix) == 0:
+        raise ValueError("Empty project prefix.")
+
+    doccano = DoccanoClient(doccano_url)
+    doccano.login(
+        username=doccano_username,
+        password=doccano_password,
+    )
+    echo("Successfully authenticated with Doccano API.")
+
+    # Clean up projects.
+    projects: Sequence[Project] = [
+        project
+        for project in doccano.list_projects()
+        if project.name.startswith(prefix) and _TAG in project.tags
+    ]
+    if len(projects) > 0:
+        bulk_delete_projects = confirm(
+            f"Found {len(projects)} projects. Bulk delete")
+        for project in projects:
+            if not bulk_delete_projects:
+                confirm(f"Delete project '{project.name}'", abort=True)
+            doccano.project.delete(project_id=project.id)
+            echo(message=f"Deleted project '{project.name}'.")
+
+    # Clean up users (semi-automatically).
+    users: Sequence[User] = [
+        user
+        for user in doccano.search_users()
+        if user.username.startswith(prefix)
+    ]
+    if len(users) > 0:
+        auto_open_delete_urls = confirm(
+            f"Found {len(projects)} users. Users can only be deleted semi-automatically. Open browser tabs to confirm user deletions")
+        for user in users:
+            delete_user_url = urljoin(
+                doccano_url, f"/admin/auth/user/{user.id}/delete/")
+            
+            if auto_open_delete_urls:
+                open_webbrowser(delete_user_url)
+            else:
+                confirm(
+                    f"Delete user '{user.username}' at {delete_user_url}", default=True, show_default=False, prompt_suffix=". Press enter to continue.")
 
 
 if __name__ == "__main__":
