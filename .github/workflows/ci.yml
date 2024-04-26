@@ -53,7 +53,9 @@ jobs:
       #   run: yarn test
       - name: 🏗️ Build dashboard web app
         working-directory: dashboard
-        run: yarn build
+        run: |
+          yarn build
+          cp src/resources/ir-lab-guidelines-sose-2024.pdf dist/
       - name: 📤 Upload web app artifact
         uses: actions/upload-pages-artifact@v3
         with:
