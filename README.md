@@ -148,9 +148,9 @@ We also include tools that ease uploading pooled documents and downloading relev
 
 Please refer to the `teaching-ir` command's help (i.e., run `teaching-ir --help`) for more detailed options.
 
-## Archived courses
+## Courses
 
-The below list includes finished (✅), ongoing (⏳) and future (🔜) IR courses that already benefit from our teaching resources.
+The below list includes finished (✅), ongoing (⏳) and future (🔜) IR courses that use shared task-oriented teaching.
 The finished courses have been archived on Zenodo and are accessible via GitHub Pages. To explore their topics and relevance judgments, click on the "browser" links.
 [Get in touch](#contact) to integrate your course too!
 
