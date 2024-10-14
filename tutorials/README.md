@@ -87,7 +87,7 @@ Do not hesitate to write us an email or file an [issue](https://github.com/tira-
 - Theresa Elstner
 - Christopher Akiki
 - Lukas Gienapp
-- Jan Heinrich Reimer [heinrich.reimer@uni-jena.de](mailto:heinrich.reimer@uni-jena.de)
+- Jan Heinrich Merker [heinrich.merker@uni-jena.de](mailto:heinrich.merker@uni-jena.de)
 - Sean MacAvaney
 - Benno Stein
 - Matthias Hagen
