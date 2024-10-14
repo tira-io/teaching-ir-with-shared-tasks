@@ -148,9 +148,9 @@ We also include tools that ease uploading pooled documents and downloading relev
 
 Please refer to the `teaching-ir` command's help (i.e., run `teaching-ir --help`) for more detailed options.
 
-## Archived courses
+## Courses
 
-The below list includes finished (✅), ongoing (⏳) and future (🔜) IR courses that already benefit from our teaching resources.
+The below list includes finished (✅), ongoing (⏳) and future (🔜) IR courses that use shared task-oriented teaching.
 The finished courses have been archived on Zenodo and are accessible via GitHub Pages. To explore their topics and relevance judgments, click on the "browser" links.
 [Get in touch](#contact) to integrate your course too!
 
@@ -160,7 +160,10 @@ The finished courses have been archived on Zenodo and are accessible via GitHub 
 | ✅ | Summer semester 2023 | [Advanced Information Retrieval](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung&veranstaltung.veranstid=213651&menuid=&topitem=functions&subitem=editlecture&language=en) |  [Friedrich-Schiller-Universität Jena](https://jena.webis.de) | [🔗](https://tira-io.github.io/ir-lab-sose-23/) | [🔗](https://github.com/tira-io/ir-lab-sose-23) |
 | ✅ | Winter semester 2023/2024 | [Advanced Information Retrieval](https://temir.org/teaching/information-retrieval-ws23/information-retrieval-ws23.html) | [Leipzig University](https://leipzig.webis.de) | [🔗](https://tira-io.github.io/ir-lab-ws-23/) | [🔗](https://github.com/tira-io/ir-lab-ws-23) |
 | ✅ | Winter semester 2023/2024 | [Information Retrieval](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung&veranstaltung.veranstid=216141&noDBAction=y&init=y) | [Friedrich-Schiller-Universität Jena](https://jena.webis.de) | [🔗](https://tira-io.github.io/ir-lab-ws-23/) | [🔗](https://github.com/tira-io/ir-lab-ws-23) |
-| ⏳ | Summer semester 2024 | [Advanced Information Retrieval](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=224212&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung) |[Friedrich-Schiller-Universität Jena](https://jena.webis.de) | ⏳ | ⏳ |
+| ⏳ | Summer semester 2024 | [Search Engines and Neural Information Retrieval](https://digicampus.uni-augsburg.de/dispatch.php/course/details/?sem_id=303dadfd5b91e90a321e1f992fa45bed) |[Augsburg University](https://annefried.github.io/)| [🔗](https://tira-io.github.io/ir-lab-sose-24/) | [🔗](https://github.com/tira-io/ir-lab-sose-24) |
+| ⏳ | Summer semester 2024 | [Advanced Information Retrieval](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=224212&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung) |[Friedrich-Schiller-Universität Jena](https://jena.webis.de) | [🔗](https://tira-io.github.io/ir-lab-sose-24/) | [🔗](https://github.com/tira-io/ir-lab-sose-24) |
+| ⏳ | Summer semester 2024 | [Information Retrieval](https://ir.web.th-koeln.de/teaching) |[TH Köln](https://ir.web.th-koeln.de/people/philipp-schaer/) | [🔗](https://tira-io.github.io/ir-lab-sose-24/) | [🔗](https://github.com/tira-io/ir-lab-sose-24) |
+| ⏳ | Summer semester 2024 | [Information Retrieval](https://temir.org/teaching/information-retrieval-ss24/information-retrieval-ss24.html) |[Leipzig University](https://temir.org/teaching/information-retrieval-ss24/information-retrieval-ss24.html) | [🔗](https://tira-io.github.io/ir-lab-sose-24/) | [🔗](https://github.com/tira-io/ir-lab-sose-24) |
 | 🔜 | _soon_ | _**your** IR course_ | _[get in touch 💬](#contact)_ | 🔜 | 🔜 |
 
 Our accompanying [research paper](#citation) includes a case study and describes our experiences of using our resources in the IR courses of two universities over two semesters.
@@ -221,22 +224,4 @@ If you use the resources in your research, we'd be glad if you'd [cite us](#cita
 
 ## Abstract
 
-> A recent study has shown that students in IR courses are espe-
-cially motivated and learn more effectively when they participate
-in shared tasks as part of their coursework. We thus present a
-range of tools and resources that support teachers in integrating
-research in their IR courses. Based on TIREx and ir_datasets,
-our Web IDE-based applications and tutorials cover the process
-of a typical shared task in IR and allow students to gain hands-
-on experience with experimental IR research—from creating test
-collections over developing retrieval systems to making relevance
-judgments and finally statistically analyzing the results. Using our
-tools, IR research coursework can be conducted on existing or new
-collections but can also be coupled with an upcoming shared task
-to which students can optionally submit their final approaches. We
-do not only present our tools and resources, but also report on our
-experiences in implementing the corresponding teaching concept
-in four IR courses for students at two universities. Our results con-
-firm that students are very motivated to conduct research, and we
-also find that some of the resulting artifacts (e.g., students’ test
-collections and retrieval approaches) are of genuinely high quality.
+> A recent study has shown that students in IR courses are especially motivated and learn more effectively when they participate in shared tasks as part of their coursework. We thus present a range of tools and resources that support teachers in integrating research in their IR courses. Based on TIREx and ir_datasets, our Web IDE-based applications and tutorials cover the process of a typical shared task in IR and allow students to gain hands-on experience with experimental IR research—from creating test collections over developing retrieval systems to making relevance judgments and finally statistically analyzing the results. Using our tools, IR research coursework can be conducted on existing or new collections but can also be coupled with an upcoming shared task to which students can optionally submit their final approaches. We do not only present our tools and resources, but also report on our experiences in implementing the corresponding teaching concept in four IR courses for students at two universities. Our results confirm that students are very motivated to conduct research, and we also find that some of the resulting artifacts (e.g., students’ test collections and retrieval approaches) are of genuinely high quality.
