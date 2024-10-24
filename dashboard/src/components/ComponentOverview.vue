@@ -1,7 +1,7 @@
 <template>
   <v-container class="text-center">
     <section>
-      <h1 class="text-h3 text-sm-h3 py-4">Dashboard</h1>
+      <h1 class="text-h3 text-sm-h3 py-4">IR Components</h1>
       <p>Throughout the lab, you will gain hands-on experience with modern technology, from research-oriented retrieval components (overviewed in the Dashboard) to Docker and Dev Containers, which are frequently used in the industry.</p>
     </section>
   </v-container>
@@ -82,6 +82,7 @@ const { mobile } = useDisplay()
 <script lang="ts">
 import {compareArrays, extractComponentTypesFromCurrentUrl, extractFocusTypesFromCurrentUrl, extractSearchQueryFromCurrentUrl} from '@/components/utils';
 import CodeSnippet from "@/components/CodeSnippet.vue";
+import { data_access } from "@/ir_datasets"
 import all_components from '@/components/links.json'
 
 interface Component {
@@ -108,6 +109,7 @@ export default {
     focus_types: string[],
     available_focus_types: string[],
     refresh: number,
+    datasets: Object.keys(data_access),
   } {
     return {
       max_width: 1500,
