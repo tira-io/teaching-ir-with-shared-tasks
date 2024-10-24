@@ -8,6 +8,17 @@ The fastest and easiest way to run our tutorials is to use Github Codespaces. Ju
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
 
+## Recommendet Order of Tutorials:
+
+The tutorials cover diverse contents, we recommend that you start with basic tutorials:
+
+1. The [https://github.com/terrier-org/ecir2021tutorial?tab=readme-ov-file#contents](PyTerrier Tutorial), in particular [Part 1](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part1.pdf) and [Part 2](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part2.pdf).
+2. The [tutorial-ir-datasets.ipynb](tutorial-ir-datasets.ipynb)
+
+After this, you can go towards the more advanced tutorials: [tutorial-stopword-lists.ipynb](tutorial-stopword-lists.ipynb), [tutorial-stemming.ipynb](tutorial-stemming.ipynb), [tutorial-lemmatization.ipynb](tutorial-lemmatization.ipynb), [tutorial-query-expansion.ipynb](tutorial-query-expansion.ipynb), and the [tutorial-statistical-analysis.ipynb](tutorial-statistical-analysis.ipynb).
+
+After you completed them, you can also visit the more research oriented tutorials in this directory or in the PyTerrier Tutorial (e.g., Part 3 and 4).
+
 ## Contents
 
 Our basic tutorials cover the most important concepts of information retrieval and are broken down based on very simple, easy-to-understand examples. The entry-level tutorials are targeted to Bachelor's (or early Master's) students:
