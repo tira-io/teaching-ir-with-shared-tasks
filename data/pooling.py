@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import click
 from chatnoir_pyterrier import ChatNoirRetrieve
-from chatnoir_api.cache import term_vectors
+#from chatnoir_api.cache import term_vectors
 import pyterrier as pt
 import os
 import json
 from tqdm import tqdm
 import ir_datasets
+import gzip
 
 if not pt.started():
     pt.init()
@@ -22,10 +23,10 @@ def main(directory, retrieval_index, feedback_index, corpus_offset):
         topics = pt.io.read_topics(f'{directory}/topics.xml', 'trecxml', tags=[query_type], tokenise=False)
 
         for retrieval_model in ['default', 'bm25']:
-            chatnoir = ChatNoirRetrieve(index=retrieval_index, retrieval_system=retrieval_model, num_results=1500, verbose=True)
             output_file = f'{directory}/corpus-chatnoir-{retrieval_model}-on-{query_type}-run.gz'
             if os.path.exists(output_file):
                 continue
+            chatnoir = ChatNoirRetrieve(index=retrieval_index, retrieval_system=retrieval_model, num_results=1500, verbose=True)
             results = chatnoir(topics)
             pt.io.write_results(results, output_file)
 
@@ -57,14 +58,16 @@ def main(directory, retrieval_index, feedback_index, corpus_offset):
             for doc in results['docno']:
                 all_docs.add(doc)
     print('Corpus-size', len(all_docs))
-    docs_store = ir_datasets.load(retrieval_index).docs_store()
+    docs_store = ir_datasets.load('msmarco-segment-v2.1').docs_store()
     
     if not os.path.exists(f'{directory}/pyterrier-index'):
         documents = []
-
-        for doc in tqdm(all_docs, 'Load Docs'):
-            doc = docs_store.get(doc)
-            documents += [{'docno': doc.doc_id, 'text': doc.default_text()}]
+        if not os.path.exists(f'{directory}/documents.jsonl.gz'):
+            with gzip.open(f'{directory}/documents.jsonl.gz', 'wt') as f:
+                for doc in tqdm(all_docs, 'Load Docs'):
+                    doc = docs_store.get(doc)
+                    f.write(json.dumps({'docno': doc.doc_id, 'text': doc.default_text()}) + '\n')
+                    f.flush()
 
         indexer = pt.IterDictIndexer(os.abspath(f'{directory}/pyterrier-index'), meta={'docno': 100, 'text': 20480})
         index_ref = indexer.index(documents)
