@@ -479,7 +479,9 @@ def prepare_relevance_judgments(
             )
             # TODO: Instead update existing data and migrate annotations?
 
-        group_pool = pool[pool["group"] == group]
+        group_pool = pool[pool["group"] == group].copy()
+        if 'label' not in group_pool.columns:
+            group_pool['label'] = group_pool['query'].map(lambda i: [])
         echo(
             f"Uploading {len(group_pool)} documents to project '{project.name}'...")
         with NamedTemporaryFile() as tmp_file:
