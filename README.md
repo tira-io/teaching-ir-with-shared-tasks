@@ -130,7 +130,7 @@ We also include tools that ease uploading pooled documents and downloading relev
 5. Prepare the relevance judgments in Doccano like so:
 
     ```shell
-    teaching-ir prepare-relevance-judgments project-prefix /path/to/pool1.jsonl /path/to/pool2.jsonl ...
+    teaching-ir prepare-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username admin --doccano-password <PASSWORD> project-prefix data/<YOUR-COURSE>/
     ```
 
 6. All teams can now work on their relevance judgments.

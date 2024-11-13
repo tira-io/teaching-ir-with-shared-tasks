@@ -157,18 +157,17 @@ _ANNOTATOR_ROLE = "annotator"
     type=str,
 )
 @argument(
-    "pooled_documents_paths",
+    "project_directory",
     type=PathType(
         exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=False,
+        file_okay=False,
+        dir_okay=True,
         readable=True,
         resolve_path=True,
         allow_dash=False,
         path_type=Path,
     ),
-    nargs=-1,
+    nargs=1,
 )
 def prepare_relevance_judgments(
         doccano_url: str,
@@ -177,10 +176,10 @@ def prepare_relevance_judgments(
         guidelines_path: Path | None,
         extra_supervisors: Sequence[str],
         prefix: str,
-        pooled_documents_paths: Sequence[Path],
+        project_directory: Path,
 ) -> None:
     """
-    Prepare the relevance judgments on Doccano for pooled documents from JSON Lines files specified in POOLED_DOCUMENTS_PATHS.
+    Prepare the relevance judgments on Doccano for pooled documents from JSON Lines files specified in PROJECT_DIRECTORY/doccano-judgment-pool.jsonl.
     This script will automatically create users and projects, and upload the pooled documents for each group.
     PREFIX is the common prefix of the generated project and user names.
     """
@@ -197,9 +196,8 @@ def prepare_relevance_judgments(
         guidelines = files("cli").joinpath(
             "guidelines.md").read_text()
 
-    if len(pooled_documents_paths) == 0:
-        return
-
+    pooled_documents_paths = [project_directory / 'doccano-judgment-pool.jsonl']
+    print(pooled_documents_paths)
     doccano = DoccanoClient(doccano_url)
     doccano.login(
         username=doccano_username,
@@ -209,7 +207,7 @@ def prepare_relevance_judgments(
 
     pool = concat(
         read_json(
-            path,
+            open(path, 'r'),
             lines=True,
             dtype={
                 "group": str,
