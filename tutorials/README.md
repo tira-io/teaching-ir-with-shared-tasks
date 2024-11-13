@@ -8,16 +8,15 @@ The fastest and easiest way to run our tutorials is to use Github Codespaces. Ju
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
 
-## Recommendet Order of Tutorials:
+## Recommended order of the tutorials
 
-The tutorials cover diverse contents, we recommend that you start with basic tutorials:
+As the tutorials cover contents of different difficulties, we recommend that you start with these basic tutorials:
 
-1. The [https://github.com/terrier-org/ecir2021tutorial?tab=readme-ov-file#contents](PyTerrier Tutorial), in particular [Part 1](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part1.pdf) and [Part 2](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part2.pdf).
-2. The [tutorial-ir-datasets.ipynb](tutorial-ir-datasets.ipynb)
-
-After this, you can go towards the more advanced tutorials: [tutorial-stopword-lists.ipynb](tutorial-stopword-lists.ipynb), [tutorial-stemming.ipynb](tutorial-stemming.ipynb), [tutorial-lemmatization.ipynb](tutorial-lemmatization.ipynb), [tutorial-query-expansion.ipynb](tutorial-query-expansion.ipynb), and the [tutorial-statistical-analysis.ipynb](tutorial-statistical-analysis.ipynb).
-
-After you completed them, you can also visit the more research oriented tutorials in this directory or in the PyTerrier Tutorial (e.g., Part 3 and 4).
+1. The [https://github.com/terrier-org/ecir2021tutorial#contents](PyTerrier tutorial), in particular [Part 1](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part1.pdf) and [Part 2](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part2.pdf).
+2. Our ["Topics, documents, and relevance judgments"](tutorial-ir-datasets.ipynb). This tutorial will help you with Stages 1 and 2 of our course.
+3. After getting a basic understanding, you can try out the basic system-focused tutorials on [stopword lists](tutorial-stopword-lists.ipynb), [stemming](tutorial-stemming.ipynb), [lemmatization](tutorial-lemmatization.ipynb), and [query expansion](tutorial-query-expansion.ipynb), corresponding to Stage 3.
+4. Then, exercise [statistical analysis](tutorial-statistical-analysis.ipynb) (Stage 4).
+5. Finally, you can then also visit the more research-oriented tutorials (see below) or continue with the PyTerrier Tutorial (e.g., Parts 3 and 4).
 
 ## Contents
 
