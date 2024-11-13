@@ -82,8 +82,8 @@ const { mobile } = useDisplay()
 <script lang="ts">
 import {compareArrays, extractComponentTypesFromCurrentUrl, extractFocusTypesFromCurrentUrl, extractSearchQueryFromCurrentUrl} from '@/components/utils';
 import CodeSnippet from "@/components/CodeSnippet.vue";
-import { data_access } from "@/ir_datasets"
-import all_components from '@/components/links.json'
+// import { data_access } from "@/ir_datasets";
+import all_components from '@/components/links.json';
 
 interface Component {
   identifier: string;
@@ -109,7 +109,7 @@ export default {
     focus_types: string[],
     available_focus_types: string[],
     refresh: number,
-    datasets: Object.keys(data_access),
+    // datasets: Object.keys(data_access),
   } {
     return {
       max_width: 1500,
