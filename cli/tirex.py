@@ -83,29 +83,43 @@ def get_judgment_pool(directory, pooling_depth, all_docs):
     return ret
 
 
+def get_documents(directory):
+    if not os.path.exists(f'{directory}/documents.jsonl.gz'):
+        docs_store = ir_datasets.load('msmarco-segment-v2.1').docs_store()
+        with gzip.open(f'{directory}/documents.jsonl.gz', 'wt') as f:
+            for doc in tqdm(all_docs, 'Load Docs'):
+                doc = docs_store.get(doc)
+                f.write(json.dumps({'docno': doc.doc_id, 'text': doc.default_text()}) + '\n')
+                f.flush()
+
+    ret = []
+
+    with gzip.open(f'{directory}/documents.jsonl.gz', 'rt') as f:
+        for l in f:
+            ret += [json.loads(l)]
+    return ret
+
 def get_index(directory):
     if not os.path.exists(f'{directory}/pyterrier-index'):
-        if not os.path.exists(f'{directory}/documents.jsonl.gz'):
-            docs_store = ir_datasets.load('msmarco-segment-v2.1').docs_store()
-            with gzip.open(f'{directory}/documents.jsonl.gz', 'wt') as f:
-                for doc in tqdm(all_docs, 'Load Docs'):
-                    doc = docs_store.get(doc)
-                    f.write(json.dumps({'docno': doc.doc_id, 'text': doc.default_text()}) + '\n')
-                    f.flush()
-        
-        documents = []
-        with gzip.open(f'{directory}/documents.jsonl.gz', 'rt') as f:
-            for l in f:
-                documents += [json.loads(l)]
+        documents = get_documents(directory)
 
         indexer = pt.IterDictIndexer(os.path.abspath(f'{directory}/pyterrier-index'), meta={'docno': 100, 'text': 20480})
         index_ref = indexer.index(tqdm(documents, 'Index'))
 
     return pt.IndexFactory.of(os.path.abspath(f'{directory}/pyterrier-index'))
 
+def load_topics(directory, tag, tokenise, as_dataframe):
+    ret = pt.io.read_topics(f'{directory}/topics.xml', 'trecxml', tags=[tag], tokenise=tokenise)
+    
+    if as_dataframe:
+        return ret
+    else:
+        return {i['qid']: i['query'] for _, i in ret.iterrows()}
+        
+
 def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_depth):
     for query_type in ['title', 'description']:
-        topics = pt.io.read_topics(f'{directory}/topics.xml', 'trecxml', tags=[query_type], tokenise=False)
+        topics = load_topics(directory, query_type, tokenise=False, as_dataframe=True)
 
         for retrieval_model in ['default', 'bm25']:
             output_file = f'{directory}/corpus-chatnoir-{retrieval_model}-on-{query_type}-run.gz'
@@ -148,7 +162,7 @@ def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_dept
             continue
         index = get_index(directory)
         retriever = pt.BatchRetrieve(index, wmodel=retrieval_model)
-        topics = pt.io.read_topics(f'{directory}/topics.xml', 'trecxml', tags=['title'], tokenise=True)
+        topics = load_topics(directory, 'title', tokenise=True, as_dataframe=True)
         results = retriever(topics)
         pt.io.write_results(results, output_file)
 
@@ -158,18 +172,13 @@ def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_dept
             if os.path.exists(output_file):
                 continue
 
-            documents = {}
-            with gzip.open(f'{directory}/documents.jsonl.gz', 'rt') as f:
-                for l in f:
-                    l = json.loads(l)
-                    documents[l['docno']] = l['text']
-
+            documents = {i['docno']: i['text'] for i in get_documents(directory)}
 
             def add_text(df):
                 df['text'] = df['docno'].apply(lambda i: documents[i])
                 return df
 
-            topics = pt.io.read_topics(f'{directory}/topics.xml', 'trecxml', tags=[query_type], tokenise=False)
+            topics = load_topics(directory, query_type, tokenise=False, as_dataframe=True)
             first_stage = pt.io.read_results(f'{directory}/pyterrier-BM25-run.gz')
             first_stage = pt.transformer.get_transformer(first_stage)
             first_stage = first_stage >> pt.apply.generic(add_text) >> reranker()
@@ -179,4 +188,22 @@ def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_dept
 
     judgment_pool = get_judgment_pool(directory, pooling_depth, all_docs)
 
+    topic_to_title = load_topics(directory, 'title', tokenise=False, as_dataframe=False)
+    topic_to_description = load_topics(directory, 'description', tokenise=False, as_dataframe=False)
+    topic_to_narrative = load_topics(directory, 'narrative', tokenise=False, as_dataframe=False)
+
+    with open(f'{directory}/doccano-judgment-pool.jsonl', 'w') as f:
+        docs_store = ir_datasets.load('msmarco-segment-v2.1').docs_store()
+
+        for topic in tqdm(judgment_pool, 'Doccano Pool'):
+            for document in judgment_pool[topic]:
+                f.write(json.dumps({
+                    "group": f'ir-wise-24-{topic}',
+                    "query_id": topic,
+                    "query": topic_to_title[topic],
+                    "description": topic_to_description[topic],
+                    "narrative": topic_to_narrative[topic],
+                    "doc_id": document,
+                    "text": docs_store.get(document).default_text(),
+                }) + '\n')
 
