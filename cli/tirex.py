@@ -198,7 +198,7 @@ def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_dept
         for topic in tqdm(judgment_pool, 'Doccano Pool'):
             for document in judgment_pool[topic]:
                 f.write(json.dumps({
-                    "group": f'ir-wise-24-{topic}',
+                    "group": f'{topic}',
                     "query_id": topic,
                     "query": topic_to_title[topic],
                     "description": topic_to_description[topic],
