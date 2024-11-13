@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy-sashboard:
+  deploy-dashboard:
     name: "Deploy dashboard to GitHub Pages"
     environment:
       name: GitHub Pages
