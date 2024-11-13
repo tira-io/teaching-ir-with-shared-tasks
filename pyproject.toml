@@ -8,13 +8,15 @@ dependencies = [
     # Temporary fix of https://github.com/doccano/doccano-client/issues/158
     "doccano-client @ git+https://github.com/janheinrichmerker/doccano-client.git@c36a6284e941f774ed1eafb198933d51fb05caec",
     # "doccano-client~=1.2.8",
+    "elasticsearch-dsl~=8.16",
     "ir_datasets~=0.5.6",
     "pandas~=2.2",
     "python-slugify~=8.0",
+    "python-terrier~=0.11.0",
     "requests~=2.32",
     "tira~=0.0.125",
     "urllib3~=2.2",
-    "trectools",
+    "trectools~=0.0.50",
 ]
 version = "0.1.0"
 
