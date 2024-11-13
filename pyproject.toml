@@ -4,6 +4,7 @@ requires-python = ">=3.10"
 dependencies = [
     "annotated-types~=0.7.0",
     "cachecontrol[filecache]~=0.14.1",
+    "chatnoir-pyterrier~=3.0.4",
     "click~=8.1",
     # Temporary fix of https://github.com/doccano/doccano-client/issues/158
     "doccano-client @ git+https://github.com/janheinrichmerker/doccano-client.git@c36a6284e941f774ed1eafb198933d51fb05caec",
