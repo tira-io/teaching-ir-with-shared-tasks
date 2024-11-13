@@ -12,6 +12,20 @@ import gzip
 if not pt.started():
     pt.init()
 
+def passage_ids(doc_id):
+    from elasticsearch_dsl import connections, Search
+    try:
+        connections.get_connection()
+    except:
+        connections.configure(default={'hosts': ['https://elasticsearch.srv.webis.de:9200'], 'retry_on_timeout': True, 'http_auth': (os.environ['ES_USER'], os.environ['ES_PASSWORD']), 'timeout': 30})
+    
+    ret = set()
+    results = Search().index('chatnoir_meta_complete_msmarco_document_v2.1_segmented').query("prefix", warc_trec_id=doc_id + '#')
+    for i in results:
+        ret.add(i.warc_trec_id)
+    
+    return sorted(list(ret))
+
 
 @click.command('pooling')
 @click.option('--retrieval-index', default='msmarco-passage-v2.1', help='The chatnoir index for pooling.')
@@ -89,13 +103,22 @@ def main(directory, retrieval_index, feedback_index, corpus_offset):
 
     for _, t in tqdm(list(relevant_documents_per_topic.iterrows()), 'Expansion Docs'):
         docs_for_query = set()
-        relevant_docnos = t['query'].split(',')
+
+        relevant_docnos = set([i.strip() for i in t['query'].split(',')])
+        relevant_docnos = sorted([i for i in relevant_docnos if len(i) > 3])
+
         for relevant_doc in relevant_docnos:
+            found = False
             for doc in all_docs:
                 if doc.startswith(relevant_doc + '#'):
                     docs_for_query.add(doc)
+                    found = True
+            if not found:
+                for doc in passage_ids(relevant_doc):
+        if len(docs_for_query) == 0 and len(relevant_doc) != 0:
+            print('Missing relevant docs for topic', relevant_docnos)
         print(len(docs_for_query))
-    
+
 if __name__ == '__main__':
     main()
 
