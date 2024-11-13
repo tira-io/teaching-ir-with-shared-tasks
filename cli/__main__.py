@@ -44,8 +44,17 @@ def cli() -> None:
 
 
 @cli.command()
-def pool_documents() -> None:
-    raise NotImplementedError()
+@option('--retrieval-index', default='msmarco-passage-v2.1', help='The chatnoir index for pooling.')
+@option('--corpus-offset', default=1500, help='The offset for the corpus.')
+@option('--feedback-index', default='msmarco-document-v2.1', help='The chatnoir index on which feedback-documents are labeled.')
+@option('--pooling-depth', default=10, help='Pooling depth.')
+@argument('directory')
+def pool_documents(directory, retrieval_index, feedback_index, corpus_offset, pooling_depth) -> None:
+    """
+    Create top-k pools of documents retrieved by TIREx baselines using ChatNoir.
+    """
+    from .tirex import main
+    main(directory, retrieval_index, feedback_index, corpus_offset, pooling_depth)
 
 
 def _user_name(project_prefix: str, group: str) -> str:

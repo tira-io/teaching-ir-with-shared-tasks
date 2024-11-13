@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-import click
-from chatnoir_pyterrier import ChatNoirRetrieve
 #from chatnoir_api.cache import term_vectors
 import pyterrier as pt
 import os
@@ -106,12 +103,6 @@ def get_index(directory):
 
     return pt.IndexFactory.of(os.path.abspath(f'{directory}/pyterrier-index'))
 
-@click.command('pooling')
-@click.option('--retrieval-index', default='msmarco-passage-v2.1', help='The chatnoir index for pooling.')
-@click.option('--corpus-offset', default=1500, help='The offset for the corpus.')
-@click.option('--feedback-index', default='msmarco-document-v2.1', help='The chatnoir index on which feedback-documents are labeled.')
-@click.option('--pooling-depth', default=10, help='Pooling depth.')
-@click.argument('directory')
 def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_depth):
     for query_type in ['title', 'description']:
         topics = pt.io.read_topics(f'{directory}/topics.xml', 'trecxml', tags=[query_type], tokenise=False)
@@ -120,6 +111,7 @@ def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_dept
             output_file = f'{directory}/corpus-chatnoir-{retrieval_model}-on-{query_type}-run.gz'
             if os.path.exists(output_file):
                 continue
+            from chatnoir_pyterrier import ChatNoirRetrieve
             chatnoir = ChatNoirRetrieve(index=retrieval_index, retrieval_system=retrieval_model, num_results=1500, verbose=True)
             results = chatnoir(topics)
             pt.io.write_results(results, output_file)
@@ -187,7 +179,4 @@ def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_dept
 
     judgment_pool = get_judgment_pool(directory, pooling_depth, all_docs)
 
-
-if __name__ == '__main__':
-    main()
 

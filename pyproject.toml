@@ -11,6 +11,7 @@ dependencies = [
     "python-slugify~=8.0",
     "tira~=0.0.125",
     "urllib3~=2.2",
+    "trectools",
 ]
 version = "0.1.0"
 

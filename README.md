@@ -121,10 +121,10 @@ We also include tools that ease uploading pooled documents and downloading relev
     pip install -e .
     ```
 
-4. Create top-k pools of documents retrieved by TIREx baselines: **TODO**
+4. Create top-k pools of documents retrieved by TIREx baselines (assuming a file data/<YOUR-COURSE>/topics.xml exists): 
 
     ```shell
-    teaching-ir pool-documents -k 5 [TODO: TIRA parameters] /path/to/topics1.xml [/path/to/topics2.xml ...]
+    teaching-ir pool-documents --pooling-depth 10 data/<YOUR-COURSE>/
     ```
 
 5. Prepare the relevance judgments in Doccano like so:
