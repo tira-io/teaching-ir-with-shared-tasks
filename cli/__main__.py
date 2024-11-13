@@ -1,4 +1,5 @@
 from importlib.resources import files
+from json import JSONDecodeError
 from pathlib import Path
 from secrets import choice
 from string import ascii_letters, digits
@@ -10,6 +11,8 @@ from webbrowser import open as open_webbrowser
 from zipfile import ZipFile
 
 from annotated_types import Len
+from cachecontrol import CacheControl
+from cachecontrol.caches.file_cache import FileCache
 from click import argument, confirm, group, Context, Parameter, echo, option, Path as PathType
 from doccano_client import DoccanoClient
 from doccano_client.exceptions import DoccanoAPIError
@@ -18,7 +21,8 @@ from doccano_client.models.project import Project
 from doccano_client.models.label_type import LabelType
 from doccano_client.models.member import Member
 from doccano_client.models.data_upload import Task as DataUploadTask
-from pandas import DataFrame, concat, read_json
+from pandas import DataFrame, concat, read_json, read_csv, isna
+from requests import RequestException, session
 from slugify import slugify
 from tqdm import tqdm
 
@@ -41,6 +45,180 @@ def print_version(
         expose_value=False, is_eager=True)
 def cli() -> None:
     pass
+
+
+
+_session = session()
+_cache = FileCache('.web_cache', forever=True)
+_session = CacheControl(_session, _cache)
+
+
+def _chatnoir_cache_url_to_docno(url: str) -> str | None:
+    try:
+        response = _session.get(f"{url}&raw", timeout=60)
+        response.raise_for_status()
+    except RequestException:
+        return None
+    try:
+        json = response.json()
+    except JSONDecodeError:
+        return None
+    for key in ("doc_id", "docid", "docno"):
+        if key in json:
+            return json[key]
+    return None
+
+def _chatnoir_cache_urls_to_docnos(*url: str) -> str:
+    res = (
+        _chatnoir_cache_url_to_docno(x)
+        for x in url
+        if not isna(x)
+    )
+    return ",".join(
+        x
+        for x in res
+        if x is not None
+    )
+
+def _get_topic_number(title: str)
+
+@cli.command()
+@argument(
+    "input_path",
+    type=PathType(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        readable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@argument(
+    "output_path",
+    type=PathType(
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=False,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@option(
+    "--release/--no-release",
+    type=bool,
+    default=False,
+)
+@option(
+    "--coauthors-path",
+    type=PathType(
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=False,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+def convert_topics_csv_to_xml(
+    input_path: Path,
+    output_path: Path,
+    release: bool,
+    coauthors_path: Path | None,
+) -> None:
+    """
+    Convert a topics spread sheet exported from Google Forms as CSV to a topics XML file.
+    """
+    df = read_csv(input_path)
+    df.rename(columns={
+        "Zeitstempel": "timestamp",
+        "Title": "title",
+        "Description": "description",
+        "Narrative": "narrative",
+        "Relevant document #1": "relevant_chatnoir_url_1",
+        "Relevant document #2": "relevant_chatnoir_url_2",
+        "Relevant document #3": "relevant_chatnoir_url_3",
+        "Irrelevant document #1": "irrelevant_chatnoir_url_1",
+        "Irrelevant document #2": "irrelevant_chatnoir_url_2",
+        "Irrelevant document #3": "irrelevant_chatnoir_url_3",
+        "Full name": "author",
+        "Group name": "group",
+        "University": "university",
+        "Do you consent to release your anonymized topic?": "consent_release",
+        "Do you want to be listed as co-author of the bundled dataset?": "consent_coauthor",
+    }, inplace=True)
+
+    # Consent to release data:
+    df["consent_release"] = df["consent_release"].replace({
+        "Yes": True,
+        "No": False,
+    }).fillna(False)
+    if release:
+        df = df[df["consent_release"]]
+    df.drop(columns=["consent_release"], inplace=True)
+
+    # Consent to appear as co-author of dataset:
+    df["consent_coauthor"] = df["consent_coauthor"].replace({
+        "Yes": True,
+        "No": False,
+    }).fillna(False)
+    df.loc[~df["consent_coauthor"], "author"] = None
+    df.loc[~df["consent_coauthor"], "group"] = None
+    df.loc[~df["consent_coauthor"], "university"] = None
+    if coauthors_path is not None:
+        if release:
+            coauthors = df.loc[df["consent_coauthor"], "author"].sort_values().unique()
+            with coauthors_path.open("wt") as file:
+                file.writelines(
+                    f"{author}\n"
+                    for author in coauthors
+                )
+        else:
+            warn("Not exporting coauthors as release is disabled.")
+    df.drop(columns=["consent_coauthor"], inplace=True)
+
+    # Drop submission timestamps.
+    df.drop(columns=["timestamp"], inplace=True)
+
+    df["relevant_docnos"] = [
+        _chatnoir_cache_urls_to_docnos(*urls.values)
+        for _, urls in tqdm(df[[
+            f"relevant_chatnoir_url_{i}"
+            for i in (1, 2, 3)
+        ]].iterrows(), total=len(df))
+    ]
+    df.drop(columns=[
+        f"relevant_chatnoir_url_{i}"
+        for i in (1, 2, 3)
+    ], inplace=True)
+    df["irrelevant_docnos"] = [
+        _chatnoir_cache_urls_to_docnos(*urls.values)
+        for _, urls in tqdm(df[[
+            f"irrelevant_chatnoir_url_{i}"
+            for i in (1, 2, 3)
+        ]].iterrows(), total=len(df))
+    ]
+    df.drop(columns=[
+        f"irrelevant_chatnoir_url_{i}"
+        for i in (1, 2, 3)
+    ], inplace=True)
+
+    df["title"] = df["title"].str.strip()
+    df["description"] = df["description"].str.strip()
+    df["narrative"] = df["narrative"].str.strip()
+    df["description"] = df["description"].str.strip()
+    df["narrative"] = df["narrative"].str.strip()
+    
+    # Shuffle topics to obfuscate submission order.
+    df = df.sample(frac=1, random_state=0)
+    df.to_xml(output_path, root_name="topics", row_name="topic", index=False)
 
 
 @cli.command()
