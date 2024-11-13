@@ -13,7 +13,17 @@ from zipfile import ZipFile
 from annotated_types import Len
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
-from click import argument, confirm, group, Context, Parameter, echo, option, Path as PathType
+from chatnoir_api.model import Index
+from click import (
+    argument,
+    confirm,
+    group,
+    Context,
+    Parameter,
+    echo,
+    option,
+    Path as PathType,
+)
 from doccano_client import DoccanoClient
 from doccano_client.exceptions import DoccanoAPIError
 from doccano_client.models.user import User
@@ -30,9 +40,9 @@ from cli import __version__ as app_version
 
 
 def print_version(
-        context: Context,
-        _parameter: Parameter,
-        value: Any,
+    context: Context,
+    _parameter: Parameter,
+    value: Any,
 ) -> None:
     if not value or context.resilient_parsing:
         return
@@ -41,15 +51,20 @@ def print_version(
 
 
 @group()
-@option("-V", "--version", is_flag=True, callback=print_version,
-        expose_value=False, is_eager=True)
+@option(
+    "-V",
+    "--version",
+    is_flag=True,
+    callback=print_version,
+    expose_value=False,
+    is_eager=True,
+)
 def cli() -> None:
     pass
 
 
-
 _session = session()
-_cache = FileCache('.web_cache', forever=True)
+_cache = FileCache(".web_cache", forever=True)
 _session = CacheControl(_session, _cache)
 
 
@@ -68,19 +83,11 @@ def _chatnoir_cache_url_to_docno(url: str) -> str | None:
             return json[key]
     return None
 
-def _chatnoir_cache_urls_to_docnos(*url: str) -> str:
-    res = (
-        _chatnoir_cache_url_to_docno(x)
-        for x in url
-        if not isna(x)
-    )
-    return ",".join(
-        x
-        for x in res
-        if x is not None
-    )
 
-def _get_topic_number(title: str)
+def _chatnoir_cache_urls_to_docnos(*url: str) -> str:
+    res = (_chatnoir_cache_url_to_docno(x) for x in url if not isna(x))
+    return ",".join(x for x in res if x is not None)
+
 
 @cli.command()
 @argument(
@@ -137,38 +144,53 @@ def convert_topics_csv_to_xml(
     Convert a topics spread sheet exported from Google Forms as CSV to a topics XML file.
     """
     df = read_csv(input_path)
-    df.rename(columns={
-        "Zeitstempel": "timestamp",
-        "Title": "title",
-        "Description": "description",
-        "Narrative": "narrative",
-        "Relevant document #1": "relevant_chatnoir_url_1",
-        "Relevant document #2": "relevant_chatnoir_url_2",
-        "Relevant document #3": "relevant_chatnoir_url_3",
-        "Irrelevant document #1": "irrelevant_chatnoir_url_1",
-        "Irrelevant document #2": "irrelevant_chatnoir_url_2",
-        "Irrelevant document #3": "irrelevant_chatnoir_url_3",
-        "Full name": "author",
-        "Group name": "group",
-        "University": "university",
-        "Do you consent to release your anonymized topic?": "consent_release",
-        "Do you want to be listed as co-author of the bundled dataset?": "consent_coauthor",
-    }, inplace=True)
+    df.rename(
+        columns={
+            "Zeitstempel": "timestamp",
+            "Title": "title",
+            "Description": "description",
+            "Narrative": "narrative",
+            "Relevant document #1": "relevant_chatnoir_url_1",
+            "Relevant document #2": "relevant_chatnoir_url_2",
+            "Relevant document #3": "relevant_chatnoir_url_3",
+            "Irrelevant document #1": "irrelevant_chatnoir_url_1",
+            "Irrelevant document #2": "irrelevant_chatnoir_url_2",
+            "Irrelevant document #3": "irrelevant_chatnoir_url_3",
+            "Full name": "author",
+            "Group name": "group",
+            "University": "university",
+            "Do you consent to release your anonymized topic?": "consent_release",
+            "Do you want to be listed as co-author of the bundled dataset?": "consent_coauthor",
+        },
+        inplace=True,
+    )
 
     # Consent to release data:
-    df["consent_release"] = df["consent_release"].replace({
-        "Yes": True,
-        "No": False,
-    }).fillna(False)
+    df["consent_release"] = (
+        df["consent_release"]
+        .replace(
+            {
+                "Yes": True,
+                "No": False,
+            }
+        )
+        .fillna(False)
+    )
     if release:
         df = df[df["consent_release"]]
     df.drop(columns=["consent_release"], inplace=True)
 
     # Consent to appear as co-author of dataset:
-    df["consent_coauthor"] = df["consent_coauthor"].replace({
-        "Yes": True,
-        "No": False,
-    }).fillna(False)
+    df["consent_coauthor"] = (
+        df["consent_coauthor"]
+        .replace(
+            {
+                "Yes": True,
+                "No": False,
+            }
+        )
+        .fillna(False)
+    )
     df.loc[~df["consent_coauthor"], "author"] = None
     df.loc[~df["consent_coauthor"], "group"] = None
     df.loc[~df["consent_coauthor"], "university"] = None
@@ -176,10 +198,7 @@ def convert_topics_csv_to_xml(
         if release:
             coauthors = df.loc[df["consent_coauthor"], "author"].sort_values().unique()
             with coauthors_path.open("wt") as file:
-                file.writelines(
-                    f"{author}\n"
-                    for author in coauthors
-                )
+                file.writelines(f"{author}\n" for author in coauthors)
         else:
             warn("Not exporting coauthors as release is disabled.")
     df.drop(columns=["consent_coauthor"], inplace=True)
@@ -189,50 +208,88 @@ def convert_topics_csv_to_xml(
 
     df["relevant_docnos"] = [
         _chatnoir_cache_urls_to_docnos(*urls.values)
-        for _, urls in tqdm(df[[
-            f"relevant_chatnoir_url_{i}"
-            for i in (1, 2, 3)
-        ]].iterrows(), total=len(df))
+        for _, urls in tqdm(
+            df[[f"relevant_chatnoir_url_{i}" for i in (1, 2, 3)]].iterrows(),
+            total=len(df),
+        )
     ]
-    df.drop(columns=[
-        f"relevant_chatnoir_url_{i}"
-        for i in (1, 2, 3)
-    ], inplace=True)
+    df.drop(columns=[f"relevant_chatnoir_url_{i}" for i in (1, 2, 3)], inplace=True)
     df["irrelevant_docnos"] = [
         _chatnoir_cache_urls_to_docnos(*urls.values)
-        for _, urls in tqdm(df[[
-            f"irrelevant_chatnoir_url_{i}"
-            for i in (1, 2, 3)
-        ]].iterrows(), total=len(df))
+        for _, urls in tqdm(
+            df[[f"irrelevant_chatnoir_url_{i}" for i in (1, 2, 3)]].iterrows(),
+            total=len(df),
+        )
     ]
-    df.drop(columns=[
-        f"irrelevant_chatnoir_url_{i}"
-        for i in (1, 2, 3)
-    ], inplace=True)
+    df.drop(columns=[f"irrelevant_chatnoir_url_{i}" for i in (1, 2, 3)], inplace=True)
 
     df["title"] = df["title"].str.strip()
     df["description"] = df["description"].str.strip()
     df["narrative"] = df["narrative"].str.strip()
     df["description"] = df["description"].str.strip()
     df["narrative"] = df["narrative"].str.strip()
-    
+
     # Shuffle topics to obfuscate submission order.
     df = df.sample(frac=1, random_state=0)
     df.to_xml(output_path, root_name="topics", row_name="topic", index=False)
 
 
 @cli.command()
-@option('--retrieval-index', default='msmarco-passage-v2.1', help='The chatnoir index for pooling.')
-@option('--corpus-offset', default=1500, help='The offset for the corpus.')
-@option('--feedback-index', default='msmarco-document-v2.1', help='The chatnoir index on which feedback-documents are labeled.')
-@option('--pooling-depth', default=10, help='Pooling depth.')
-@argument('directory')
-def pool_documents(directory, retrieval_index, feedback_index, corpus_offset, pooling_depth) -> None:
+@argument(
+    "directory",
+    type=PathType(
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        writable=True,
+        readable=False,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@option(
+    "--retrieval-index",
+    type=Index,
+    default="msmarco-passage-v2.1",
+    help="The ChatNoir index to retrieve from.",
+)
+@option(
+    "--feedback-index",
+    default="msmarco-document-v2.1",
+    help="The ChatNoir index from which feedback-documents are labeled.",
+)
+@option(
+    "--corpus-offset",
+    type=int,
+    default=1500,
+    help="The offset for the corpus.",
+)
+@option(
+    "--pooling-depth",
+    type=int,
+    default=10,
+    help="Pooling depth.",
+)
+def pool_documents(
+    path: Path,
+    retrieval_index: Index,
+    feedback_index: Index,
+    corpus_offset: int,
+    pooling_depth: int,
+) -> None:
     """
     Create top-k pools of documents retrieved by TIREx baselines using ChatNoir.
     """
-    from .tirex import main
-    main(directory, retrieval_index, feedback_index, corpus_offset, pooling_depth)
+    from cli.tirex import pool_documents
+
+    pool_documents(
+        directory=path,
+        retrieval_index=retrieval_index,
+        feedback_index=feedback_index,
+        corpus_offset=corpus_offset,
+        pooling_depth=pooling_depth,
+    )
 
 
 def _user_name(project_prefix: str, group: str) -> str:
@@ -248,8 +305,11 @@ def _project_name(project_prefix: str, query_id: str) -> _ProjectName:
     if len(query_id) == 0:
         raise ValueError("Empty query ID.")
     if len(name) > 100:
-        warn(UserWarning(
-            f"Project name '{name}' is too long. Shortening to '{name[:100]}'."))
+        warn(
+            UserWarning(
+                f"Project name '{name}' is too long. Shortening to '{name[:100]}'."
+            )
+        )
     return name[:100]
 
 
@@ -259,7 +319,7 @@ _alphabet = ascii_letters + digits
 def _generate_password(length: int = 10) -> str:
     password = ""
     for _ in range(length):
-        password += ''.join(choice(_alphabet))
+        password += "".join(choice(_alphabet))
     return password
 
 
@@ -285,7 +345,8 @@ _ANNOTATOR_ROLE = "annotator"
 
 @cli.command()
 @option(
-    "-d", "--doccano-url",
+    "-d",
+    "--doccano-url",
     type=str,
     required=True,
     prompt="Doccano URL",
@@ -294,7 +355,8 @@ _ANNOTATOR_ROLE = "annotator"
     metavar="URL",
 )
 @option(
-    "-u", "--doccano-username",
+    "-u",
+    "--doccano-username",
     type=str,
     required=True,
     prompt="Doccano username",
@@ -302,7 +364,8 @@ _ANNOTATOR_ROLE = "annotator"
     help="Username to authenticate with Doccano.",
 )
 @option(
-    "-u", "--doccano-password",
+    "-u",
+    "--doccano-password",
     type=str,
     required=True,
     prompt="Doccano password",
@@ -311,7 +374,8 @@ _ANNOTATOR_ROLE = "annotator"
     help="Password to authenticate with Doccano.",
 )
 @option(
-    "-g", "--guidelines-path",
+    "-g",
+    "--guidelines-path",
     type=PathType(
         exists=True,
         file_okay=True,
@@ -325,7 +389,9 @@ _ANNOTATOR_ROLE = "annotator"
     help="Path to a markdown (.md) file containing annotation guidelines.",
 )
 @option(
-    "-m", "--supervisor-member", "extra_supervisors",
+    "-m",
+    "--supervisor-member",
+    "extra_supervisors",
     type=str,
     multiple=True,
     help="Doccano usernames of additional supervisors to add to each project (besides the authenticated user).",
@@ -348,13 +414,13 @@ _ANNOTATOR_ROLE = "annotator"
     nargs=1,
 )
 def prepare_relevance_judgments(
-        doccano_url: str,
-        doccano_username: str,
-        doccano_password: str,
-        guidelines_path: Path | None,
-        extra_supervisors: Sequence[str],
-        prefix: str,
-        project_directory: Path,
+    doccano_url: str,
+    doccano_username: str,
+    doccano_password: str,
+    guidelines_path: Path | None,
+    extra_supervisors: Sequence[str],
+    prefix: str,
+    project_directory: Path,
 ) -> None:
     """
     Prepare the relevance judgments on Doccano for pooled documents from JSON Lines files specified in PROJECT_DIRECTORY/doccano-judgment-pool.jsonl.
@@ -371,10 +437,9 @@ def prepare_relevance_judgments(
         with guidelines_path.open("rt") as file:
             guidelines = file.read()
     else:
-        guidelines = files("cli").joinpath(
-            "guidelines.md").read_text()
+        guidelines = files("cli").joinpath("guidelines.md").read_text()
 
-    pooled_documents_paths = [project_directory / 'doccano-judgment-pool.jsonl']
+    pooled_documents_paths = [project_directory / "doccano-judgment-pool.jsonl"]
     print(pooled_documents_paths)
     doccano = DoccanoClient(doccano_url)
     doccano.login(
@@ -385,7 +450,7 @@ def prepare_relevance_judgments(
 
     pool = concat(
         read_json(
-            open(path, 'r'),
+            open(path, "r"),
             lines=True,
             dtype={
                 "group": str,
@@ -395,7 +460,7 @@ def prepare_relevance_judgments(
                 "narrative": str,
                 "doc_id": str,
                 "text": str,
-            }
+            },
         )
         for path in tqdm(
             pooled_documents_paths,
@@ -410,19 +475,14 @@ def prepare_relevance_judgments(
 
     # Create mapping of groups to usernames and project names.
     group_user_names: Mapping[str, str] = {
-        group: _user_name(project_prefix, group)
-        for group in groups
+        group: _user_name(project_prefix, group) for group in groups
     }
     group_project_names: Mapping[str, str] = {
-        group: _project_name(project_prefix, group)
-        for group in groups
+        group: _project_name(project_prefix, group) for group in groups
     }
 
     # Create missing users.
-    users: Mapping[str, User] = {
-        user.username: user
-        for user in doccano.search_users()
-    }
+    users: Mapping[str, User] = {user.username: user for user in doccano.search_users()}
     group_users: dict[str, User] = {
         group: users[user_name]
         for group, user_name in group_user_names.items()
@@ -447,8 +507,7 @@ def prepare_relevance_judgments(
 
     # Create missing projects.
     projects: Mapping[str, Project] = {
-        project.name: project
-        for project in doccano.list_projects()
+        project.name: project for project in doccano.list_projects()
     }
     group_projects: dict[str, Project] = {
         group: projects[project_name]
@@ -463,12 +522,14 @@ def prepare_relevance_judgments(
     }
     if len(unmanaged_group_projects) > 0:
         echo(
-            f"Checking {len(unmanaged_group_projects)} previously unmanaged projects...")
+            f"Checking {len(unmanaged_group_projects)} previously unmanaged projects..."
+        )
         for project in unmanaged_group_projects.values():
-            project_url = urljoin(
-                doccano_url, f"/projects/{project.id}")
+            project_url = urljoin(doccano_url, f"/projects/{project.id}")
             confirm(
-                f"The Doccano project '{project.name}' ({project_url}) does not appear to be generated by this tool. Overwrite the project", abort=True)
+                f"The Doccano project '{project.name}' ({project_url}) does not appear to be generated by this tool. Overwrite the project",
+                abort=True,
+            )
     if len(group_projects) > 0:
         echo(f"Updating {len(group_projects)} existing projects...")
         for group, project in group_projects.items():
@@ -491,8 +552,7 @@ def prepare_relevance_judgments(
         if project_name not in projects.keys()
     }
     if len(non_existing_group_project_names) > 0:
-        echo(
-            f"Creating {len(non_existing_group_project_names)} missing projects...")
+        echo(f"Creating {len(non_existing_group_project_names)} missing projects...")
         for group, project_name in non_existing_group_project_names.items():
             new_project = doccano.project.create(
                 name=project_name,
@@ -516,10 +576,9 @@ def prepare_relevance_judgments(
             type="category",
         )
         compatible_label_ids: list[int] = []
-        label_relevant: LabelType | None = next((
-            label for label in existing_labels
-            if label.text == _LABEL_RELEVANT
-        ), None)
+        label_relevant: LabelType | None = next(
+            (label for label in existing_labels if label.text == _LABEL_RELEVANT), None
+        )
         if label_relevant is not None:
             doccano.update_label_type(
                 project_id=project.id,
@@ -540,10 +599,10 @@ def prepare_relevance_judgments(
                 suffix_key=_LABEL_KEY_RELEVANT,
                 color=_LABEL_COLOR_RELEVANT,
             )
-        label_not_relevant: LabelType | None = next((
-            label for label in existing_labels
-            if label.text == _LABEL_NOT_RELEVANT
-        ), None)
+        label_not_relevant: LabelType | None = next(
+            (label for label in existing_labels if label.text == _LABEL_NOT_RELEVANT),
+            None,
+        )
         if label_not_relevant is not None:
             doccano.update_label_type(
                 project_id=project.id,
@@ -565,13 +624,16 @@ def prepare_relevance_judgments(
                 color=_LABEL_COLOR_NOT_RELEVANT,
             )
         incompatible_label_ids: Sequence[int] = [
-            label.id for label in existing_labels
+            label.id
+            for label in existing_labels
             if label.id not in compatible_label_ids
         ]
         if len(incompatible_label_ids) > 0:
             confirm(
                 f"Found {len(incompatible_label_ids)} incompatible labels "
-                f"for project '{project}'. Delete labels", abort=True)
+                f"for project '{project}'. Delete labels",
+                abort=True,
+            )
             doccano.bulk_delete_label_types(
                 project_id=project_id,
                 label_type_ids=incompatible_label_ids,
@@ -579,8 +641,7 @@ def prepare_relevance_judgments(
             )
 
         echo(f"Preparing annotators for project '{project.name}'.")
-        existing_members: Sequence[Member] = doccano.list_members(
-            project_id=project.id)
+        existing_members: Sequence[Member] = doccano.list_members(project_id=project.id)
         compatible_member_ids: list[int] = []
         member_user_names_roles = {
             group_user_names[group]: _ANNOTATOR_ROLE,
@@ -590,10 +651,10 @@ def prepare_relevance_judgments(
             },
         }
         for user_name, role in member_user_names_roles.items():
-            member: Member | None = next((
-                member for member in existing_members
-                if member.username == user_name
-            ), None)
+            member: Member | None = next(
+                (member for member in existing_members if member.username == user_name),
+                None,
+            )
             if member is not None:
                 doccano.update_member(
                     project_id=project.id,
@@ -608,12 +669,12 @@ def prepare_relevance_judgments(
                     role_name=role,
                 )
         incompatible_members: Sequence[Member] = [
-            member for member in existing_members
+            member
+            for member in existing_members
             if member.id not in compatible_member_ids
         ]
         if len(incompatible_members) > 0:
-            echo(
-                f"Found {len(incompatible_members)} additional project members.")
+            echo(f"Found {len(incompatible_members)} additional project members.")
             for member in incompatible_members:
                 if confirm(f"Delete member '{member.username}'"):
                     doccano.delete_member(
@@ -622,18 +683,14 @@ def prepare_relevance_judgments(
                     )
 
         echo(f"Preparing data for project '{project.name}'.")
-        existing_documents_count = doccano.count_examples(
-            project_id=project.id)
+        existing_documents_count = doccano.count_examples(project_id=project.id)
         if existing_documents_count > 0:
             label_distributions = doccano.get_label_distribution(
                 project_id=project.id,
                 type="category",
             )
             user_label_counts = {
-                distribution.username: sum(
-                    count.count
-                    for count in distribution.counts
-                )
+                distribution.username: sum(count.count for count in distribution.counts)
                 for distribution in label_distributions
             }
             user_label_counts = {
@@ -647,10 +704,15 @@ def prepare_relevance_judgments(
                     for user_name, count in user_label_counts.items()
                 )
                 confirm(
-                    f"Found {existing_documents_count} previous documents with {sum(user_label_counts.values())} annotations from {len(user_label_counts.keys())} users ({user_label_counts_string}). Delete documents and annotations", abort=True)
+                    f"Found {existing_documents_count} previous documents with {sum(user_label_counts.values())} annotations from {len(user_label_counts.keys())} users ({user_label_counts_string}). Delete documents and annotations",
+                    abort=True,
+                )
             else:
                 confirm(
-                    f"Found {existing_documents_count} previous documents without annotations. Delete documents", abort=True, default=True)
+                    f"Found {existing_documents_count} previous documents without annotations. Delete documents",
+                    abort=True,
+                    default=True,
+                )
             doccano.bulk_delete_examples(
                 project_id=project.id,
                 example_ids=[],  # Delete all.
@@ -658,10 +720,9 @@ def prepare_relevance_judgments(
             # TODO: Instead update existing data and migrate annotations?
 
         group_pool = pool[pool["group"] == group].copy()
-        if 'label' not in group_pool.columns:
-            group_pool['label'] = group_pool['query'].map(lambda i: [])
-        echo(
-            f"Uploading {len(group_pool)} documents to project '{project.name}'...")
+        if "label" not in group_pool.columns:
+            group_pool["label"] = group_pool["query"].map(lambda i: [])
+        echo(f"Uploading {len(group_pool)} documents to project '{project.name}'...")
         with NamedTemporaryFile() as tmp_file:
             tmp_path = Path(tmp_file.name)
             group_pool.to_json(
@@ -681,26 +742,28 @@ def prepare_relevance_judgments(
             )
         if not status.ready:
             raise RuntimeError(
-                f"Failed to upload documents to project '{project.name}'.")
+                f"Failed to upload documents to project '{project.name}'."
+            )
         error = status.error
         result = status.result
-        if error is None and result is not None and \
-                "error" in result:
+        if error is None and result is not None and "error" in result:
             error = result.pop("error")
         if error is not None and error != []:
             raise RuntimeError(
-                f"Failed to upload documents to project '{project.name}': {error}")
+                f"Failed to upload documents to project '{project.name}': {error}"
+            )
         if result is not None and result != {} and result != []:
             echo(
-                f"Uploaded {len(group_pool)} documents to project '{project.name}': {status.result}")
+                f"Uploaded {len(group_pool)} documents to project '{project.name}': {status.result}"
+            )
         else:
-            echo(
-                f"Uploaded {len(group_pool)} documents to project '{project.name}'.")
+            echo(f"Uploaded {len(group_pool)} documents to project '{project.name}'.")
 
 
 @cli.command()
 @option(
-    "-d", "--doccano-url",
+    "-d",
+    "--doccano-url",
     type=str,
     required=True,
     prompt="Doccano URL",
@@ -709,7 +772,8 @@ def prepare_relevance_judgments(
     metavar="URL",
 )
 @option(
-    "-u", "--doccano-username",
+    "-u",
+    "--doccano-username",
     type=str,
     required=True,
     prompt="Doccano username",
@@ -717,7 +781,8 @@ def prepare_relevance_judgments(
     help="Username to authenticate with Doccano.",
 )
 @option(
-    "-u", "--doccano-password",
+    "-u",
+    "--doccano-password",
     type=str,
     required=True,
     prompt="Doccano password",
@@ -757,12 +822,12 @@ def prepare_relevance_judgments(
     ),
 )
 def export_relevance_judgments(
-        doccano_url: str,
-        doccano_username: str,
-        doccano_password: str,
-        prefix: str,
-        pooled_documents_paths: Sequence[Path],
-        qrels_path: Path,
+    doccano_url: str,
+    doccano_username: str,
+    doccano_password: str,
+    prefix: str,
+    pooled_documents_paths: Sequence[Path],
+    qrels_path: Path,
 ) -> None:
     """
     Export the relevance judgments from Doccano for pooled documents from JSON Lines files specified in POOLED_DOCUMENTS_PATHS.
@@ -796,7 +861,7 @@ def export_relevance_judgments(
                 "narrative": str,
                 "doc_id": str,
                 "text": str,
-            }
+            },
         )
         for path in tqdm(
             pooled_documents_paths,
@@ -811,12 +876,10 @@ def export_relevance_judgments(
 
     # Create mapping of groups to project names.
     group_project_names: Mapping[str, str] = {
-        group: _project_name(project_prefix, group)
-        for group in groups
+        group: _project_name(project_prefix, group) for group in groups
     }
     projects: Mapping[str, Project] = {
-        project.name: project
-        for project in doccano.list_projects()
+        project.name: project for project in doccano.list_projects()
     }
     group_projects: Sequence[Project] = [
         projects[project_name]
@@ -845,7 +908,8 @@ def export_relevance_judgments(
                     if e.response.status_code != 500 or retries <= 0:
                         raise e
                     echo(
-                        f"Re-trying documents download from project '{project.name}'. {retries} retries left.")
+                        f"Re-trying documents download from project '{project.name}'. {retries} retries left."
+                    )
                     retries -= 1
                     continue
                 break
@@ -868,14 +932,14 @@ def export_relevance_judgments(
 
     echo("Read qrels from annotated documents.")
     qrels = concat(qrels_list)
-    qrels["label"] = qrels["label"].map(
-        lambda x: x[0] if len(x) > 0 else None)
+    qrels["label"] = qrels["label"].map(lambda x: x[0] if len(x) > 0 else None)
     qrels = qrels[qrels["label"].notna()]
-    qrels["label"] = qrels["label"]\
-        .map({
+    qrels["label"] = qrels["label"].map(
+        {
             _LABEL_RELEVANT: 1,
             _LABEL_NOT_RELEVANT: 0,
-        })
+        }
+    )
     qrels = qrels[qrels["label"].notna()]
 
     pool = pool.merge(
@@ -890,7 +954,8 @@ def export_relevance_judgments(
         if confirm("Report unjudged documents", default=True):
             for group, group_unjudged_pool in unjudged_pool.groupby("group"):
                 echo(
-                    f"\tGroup '{group}': {len(group_unjudged_pool)} unjudged documents.")
+                    f"\tGroup '{group}': {len(group_unjudged_pool)} unjudged documents."
+                )
 
     echo(f"Export qrels file to {qrels_path}.")
     qrels["Q0"] = 0
@@ -905,7 +970,8 @@ def export_relevance_judgments(
 
 @cli.command()
 @option(
-    "-d", "--doccano-url",
+    "-d",
+    "--doccano-url",
     type=str,
     required=True,
     prompt="Doccano URL",
@@ -914,7 +980,8 @@ def export_relevance_judgments(
     metavar="URL",
 )
 @option(
-    "-u", "--doccano-username",
+    "-u",
+    "--doccano-username",
     type=str,
     required=True,
     prompt="Doccano username",
@@ -922,7 +989,8 @@ def export_relevance_judgments(
     help="Username to authenticate with Doccano.",
 )
 @option(
-    "-u", "--doccano-password",
+    "-u",
+    "--doccano-password",
     type=str,
     required=True,
     prompt="Doccano password",
@@ -935,10 +1003,10 @@ def export_relevance_judgments(
     type=str,
 )
 def clean_up(
-        doccano_url: str,
-        doccano_username: str,
-        doccano_password: str,
-        prefix: str,
+    doccano_url: str,
+    doccano_username: str,
+    doccano_password: str,
+    prefix: str,
 ) -> None:
     """
     Clean up automatically created projects and users.
@@ -962,8 +1030,7 @@ def clean_up(
         if project.name.startswith(prefix) and _TAG in project.tags
     ]
     if len(projects) > 0:
-        bulk_delete_projects = confirm(
-            f"Found {len(projects)} projects. Bulk delete")
+        bulk_delete_projects = confirm(f"Found {len(projects)} projects. Bulk delete")
         for project in projects:
             if not bulk_delete_projects:
                 confirm(f"Delete project '{project.name}'", abort=True)
@@ -972,22 +1039,26 @@ def clean_up(
 
     # Clean up users (semi-automatically).
     users: Sequence[User] = [
-        user
-        for user in doccano.search_users()
-        if user.username.startswith(prefix)
+        user for user in doccano.search_users() if user.username.startswith(prefix)
     ]
     if len(users) > 0:
         auto_open_delete_urls = confirm(
-            f"Found {len(projects)} users. Users can only be deleted semi-automatically. Open browser tabs to confirm user deletions")
+            f"Found {len(projects)} users. Users can only be deleted semi-automatically. Open browser tabs to confirm user deletions"
+        )
         for user in users:
             delete_user_url = urljoin(
-                doccano_url, f"/admin/auth/user/{user.id}/delete/")
+                doccano_url, f"/admin/auth/user/{user.id}/delete/"
+            )
 
             if auto_open_delete_urls:
                 open_webbrowser(delete_user_url)
             else:
                 confirm(
-                    f"Delete user '{user.username}' at {delete_user_url}", default=True, show_default=False, prompt_suffix=". Press enter to continue.")
+                    f"Delete user '{user.username}' at {delete_user_url}",
+                    default=True,
+                    show_default=False,
+                    prompt_suffix=". Press enter to continue.",
+                )
 
 
 if __name__ == "__main__":
