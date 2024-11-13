@@ -188,6 +188,10 @@ def main(directory, retrieval_index, feedback_index, corpus_offset, pooling_dept
 
     judgment_pool = get_judgment_pool(directory, pooling_depth, all_docs)
 
+    if os.path.exists(f'{directory}/doccano-judgment-pool.jsonl'):
+        print(f'Exists "{directory}/doccano-judgment-pool.jsonl". I do not override')
+        return
+
     topic_to_title = load_topics(directory, 'title', tokenise=False, as_dataframe=False)
     topic_to_description = load_topics(directory, 'description', tokenise=False, as_dataframe=False)
     topic_to_narrative = load_topics(directory, 'narrative', tokenise=False, as_dataframe=False)
