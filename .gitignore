@@ -163,3 +163,5 @@ cython_debug/
 
 topics*.xml
 coauthors.txt
+pool.jsonl
+**/*run.gz
