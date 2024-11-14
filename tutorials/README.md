@@ -12,7 +12,7 @@ The fastest and easiest way to run our tutorials is to use Github Codespaces. Ju
 
 As the tutorials cover contents of different difficulties, we recommend that you start with these basic tutorials:
 
-1. The [https://github.com/terrier-org/ecir2021tutorial#contents](PyTerrier tutorial), in particular [Part 1](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part1.pdf) and [Part 2](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part2.pdf).
+1. The [PyTerrier tutorial](https://github.com/terrier-org/ecir2021tutorial#contents), in particular [Part 1](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part1.pdf) and [Part 2](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part2.pdf).
 2. Our ["Topics, documents, and relevance judgments"](tutorial-ir-datasets.ipynb). This tutorial will help you with Stages 1 and 2 of our course.
 3. After getting a basic understanding, you can try out the basic system-focused tutorials on [stopword lists](tutorial-stopword-lists.ipynb), [stemming](tutorial-stemming.ipynb), [lemmatization](tutorial-lemmatization.ipynb), and [query expansion](tutorial-query-expansion.ipynb), corresponding to Stage 3.
 4. Then, exercise [statistical analysis](tutorial-statistical-analysis.ipynb) (Stage 4).
