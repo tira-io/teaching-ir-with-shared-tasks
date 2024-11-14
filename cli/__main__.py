@@ -31,7 +31,7 @@ from doccano_client.models.project import Project
 from doccano_client.models.label_type import LabelType
 from doccano_client.models.member import Member
 from doccano_client.models.data_upload import Task as DataUploadTask
-from pandas import DataFrame, concat, read_json, read_csv, isna
+from pandas import DataFrame, concat, read_json, read_csv, isna, read_xml, to_datetime
 from requests import RequestException, session
 from slugify import slugify
 from tqdm import tqdm
@@ -91,7 +91,7 @@ def _chatnoir_cache_urls_to_docnos(*url: str) -> str:
 
 @cli.command()
 @argument(
-    "input_path",
+    "csv_path",
     type=PathType(
         exists=True,
         file_okay=True,
@@ -104,7 +104,7 @@ def _chatnoir_cache_urls_to_docnos(*url: str) -> str:
     ),
 )
 @argument(
-    "output_path",
+    "topics_path",
     type=PathType(
         exists=False,
         file_okay=True,
@@ -135,15 +135,15 @@ def _chatnoir_cache_urls_to_docnos(*url: str) -> str:
     ),
 )
 def convert_topics_csv_to_xml(
-    input_path: Path,
-    output_path: Path,
+    csv_path: Path,
+    topics_path: Path,
     release: bool,
     coauthors_path: Path | None,
 ) -> None:
     """
     Convert a topics spread sheet exported from Google Forms as CSV to a topics XML file.
     """
-    df = read_csv(input_path)
+    df = read_csv(csv_path)
     df.rename(
         columns={
             "Zeitstempel": "timestamp",
@@ -164,15 +164,16 @@ def convert_topics_csv_to_xml(
         },
         inplace=True,
     )
+    df["timestamp"] = to_datetime(df["timestamp"])
 
     # Consent to release data:
     df["consent_release"] = (
         df["consent_release"]
-        .replace(
+        .map(
             {
                 "Yes": True,
                 "No": False,
-            }
+            },
         )
         .fillna(False)
     )
@@ -183,7 +184,7 @@ def convert_topics_csv_to_xml(
     # Consent to appear as co-author of dataset:
     df["consent_coauthor"] = (
         df["consent_coauthor"]
-        .replace(
+        .map(
             {
                 "Yes": True,
                 "No": False,
@@ -191,17 +192,22 @@ def convert_topics_csv_to_xml(
         )
         .fillna(False)
     )
-    df.loc[~df["consent_coauthor"], "author"] = None
-    df.loc[~df["consent_coauthor"], "group"] = None
-    df.loc[~df["consent_coauthor"], "university"] = None
-    if coauthors_path is not None:
-        if release:
+    if release:
+        df.loc[~df["consent_coauthor"], "author"] = None
+        df.loc[~df["consent_coauthor"], "group"] = None
+        df.loc[~df["consent_coauthor"], "university"] = None
+        if coauthors_path is not None:
             coauthors = df.loc[df["consent_coauthor"], "author"].sort_values().unique()
             with coauthors_path.open("wt") as file:
                 file.writelines(f"{author}\n" for author in coauthors)
-        else:
-            warn("Not exporting coauthors as release is disabled.")
+    elif coauthors_path is not None:
+        warn("Not exporting coauthors as release is disabled.")
     df.drop(columns=["consent_coauthor"], inplace=True)
+
+    # Sort by submission timestamp.
+    df.sort_values("timestamp", inplace=True)
+    # And number the topics.
+    df["number"] = range(1, len(df) + 1)
 
     # Drop submission timestamps.
     df.drop(columns=["timestamp"], inplace=True)
@@ -228,21 +234,42 @@ def convert_topics_csv_to_xml(
     df["narrative"] = df["narrative"].str.strip()
     df["description"] = df["description"].str.strip()
     df["narrative"] = df["narrative"].str.strip()
+    df["author"] = df["author"].str.strip()
+    df["group"] = df["group"].str.strip()
+    df["university"] = df["university"].str.strip()
 
-    # Shuffle topics to obfuscate submission order.
-    df = df.sample(frac=1, random_state=0)
-    df.to_xml(output_path, root_name="topics", row_name="topic", index=False)
+    df.to_xml(
+        topics_path,
+        root_name="topics",
+        row_name="topic",
+        index=False,
+        attr_cols=["number"],
+        elem_cols=set(df.columns) - {"number"},
+    )
 
 
 @cli.command()
 @argument(
-    "directory",
+    "topics_path",
+    type=PathType(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        readable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@argument(
+    "pooling_path",
     type=PathType(
         exists=True,
         file_okay=False,
         dir_okay=True,
         writable=True,
-        readable=False,
+        readable=True,
         resolve_path=True,
         allow_dash=False,
         path_type=Path,
@@ -272,7 +299,8 @@ def convert_topics_csv_to_xml(
     help="Pooling depth.",
 )
 def pool_documents(
-    path: Path,
+    topics_path: Path,
+    pooling_path: Path,
     retrieval_index: Index,
     feedback_index: Index,
     corpus_offset: int,
@@ -284,7 +312,8 @@ def pool_documents(
     from cli.tirex import pool_documents
 
     pool_documents(
-        directory=path,
+        topics_path=topics_path,
+        pooling_path=pooling_path,
         retrieval_index=retrieval_index,
         feedback_index=feedback_index,
         corpus_offset=corpus_offset,
@@ -401,17 +430,30 @@ _ANNOTATOR_ROLE = "annotator"
     type=str,
 )
 @argument(
-    "project_directory",
+    "topics_path",
     type=PathType(
         exists=True,
-        file_okay=False,
-        dir_okay=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
         readable=True,
         resolve_path=True,
         allow_dash=False,
         path_type=Path,
     ),
-    nargs=1,
+)
+@argument(
+    "pool_path",
+    type=PathType(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+    nargs=-1,
 )
 def prepare_relevance_judgments(
     doccano_url: str,
@@ -420,10 +462,11 @@ def prepare_relevance_judgments(
     guidelines_path: Path | None,
     extra_supervisors: Sequence[str],
     prefix: str,
-    project_directory: Path,
+    topics_path: Path,
+    pool_path: Sequence[Path],
 ) -> None:
     """
-    Prepare the relevance judgments on Doccano for pooled documents from JSON Lines files specified in PROJECT_DIRECTORY/doccano-judgment-pool.jsonl.
+    Prepare the relevance judgments on Doccano for pooled documents stored in JSON Lines files.
     This script will automatically create users and projects, and upload the pooled documents for each group.
     PREFIX is the common prefix of the generated project and user names.
     """
@@ -439,8 +482,6 @@ def prepare_relevance_judgments(
     else:
         guidelines = files("cli").joinpath("guidelines.md").read_text()
 
-    pooled_documents_paths = [project_directory / "doccano-judgment-pool.jsonl"]
-    print(pooled_documents_paths)
     doccano = DoccanoClient(doccano_url)
     doccano.login(
         username=doccano_username,
@@ -463,12 +504,24 @@ def prepare_relevance_judgments(
             },
         )
         for path in tqdm(
-            pooled_documents_paths,
+            pool_path,
             desc="Read pooled documents",
             unit="path",
         )
     )
     echo(f"Found {len(pool)} pooled documents.")
+
+    # Read the topics.
+    topics = read_xml(topics_path, dtype=str)
+    echo(f"Found {len(topics)} topics.")
+
+    # Merge in groups from the topics
+    pool = pool.merge(
+        topics[["number", "group"]],
+        how="left",
+        left_on="query_id",
+        right_on="number",
+    )
 
     groups: set[str] = set(pool["group"].drop_duplicates().to_list())
     echo(f"Found {len(groups)} groups.")
