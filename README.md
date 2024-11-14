@@ -97,7 +97,7 @@ A total of 13 datasets are already available to be explored online. (Some others
 
 ### Tutorials
 
-Our hands-on tutorials lower the barrier of entry to implementing IR models and experiments for IR students. You can easily run the tutorials online:
+Our [hands-on tutorials](tutorials) lower the barrier of entry to implementing IR models and experiments for IR students. You can easily run the tutorials online:
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
 
