@@ -177,9 +177,6 @@ def convert_topics_csv_to_xml(
         )
         .fillna(False)
     )
-    if release:
-        df = df[df["consent_release"]]
-    df.drop(columns=["consent_release"], inplace=True)
 
     # Consent to appear as co-author of dataset:
     df["consent_coauthor"] = (
@@ -192,22 +189,34 @@ def convert_topics_csv_to_xml(
         )
         .fillna(False)
     )
-    if release:
-        df.loc[~df["consent_coauthor"], "author"] = None
-        df.loc[~df["consent_coauthor"], "group"] = None
-        df.loc[~df["consent_coauthor"], "university"] = None
-        if coauthors_path is not None:
-            coauthors = df.loc[df["consent_coauthor"], "author"].sort_values().unique()
-            with coauthors_path.open("wt") as file:
-                file.writelines(f"{author}\n" for author in coauthors)
-    elif coauthors_path is not None:
-        warn("Not exporting coauthors as release is disabled.")
-    df.drop(columns=["consent_coauthor"], inplace=True)
+
+    # Normalize strings.
+    df["title"] = df["title"].str.strip()
+    df["description"] = df["description"].str.strip()
+    df["narrative"] = df["narrative"].str.strip()
+    df["author"] = df["author"].str.strip()
+    df["group"] = df["group"].str.strip()
+    df["university"] = df["university"].str.strip()
 
     # Sort by submission timestamp.
     df.sort_values("timestamp", inplace=True)
     # And number the topics.
     df["number"] = range(1, len(df) + 1)
+
+    # Anonymize for release.
+    if release:
+        df = df[df["consent_release"]]
+        if coauthors_path is not None:
+            coauthors = df.loc[df["consent_coauthor"], "author"].sort_values().unique()
+            with coauthors_path.open("wt") as file:
+                file.writelines(f"{author}\n" for author in coauthors)
+        df.drop(columns=["author", "group", "university"], inplace=True)
+    elif coauthors_path is not None:
+        warn("Not exporting coauthors as release is disabled.")
+
+    # Drop consent columns.
+    df.drop(columns=["consent_release"], inplace=True)
+    df.drop(columns=["consent_coauthor"], inplace=True)
 
     # Drop submission timestamps.
     df.drop(columns=["timestamp"], inplace=True)
@@ -228,15 +237,6 @@ def convert_topics_csv_to_xml(
         )
     ]
     df.drop(columns=[f"irrelevant_chatnoir_url_{i}" for i in (1, 2, 3)], inplace=True)
-
-    df["title"] = df["title"].str.strip()
-    df["description"] = df["description"].str.strip()
-    df["narrative"] = df["narrative"].str.strip()
-    df["description"] = df["description"].str.strip()
-    df["narrative"] = df["narrative"].str.strip()
-    df["author"] = df["author"].str.strip()
-    df["group"] = df["group"].str.strip()
-    df["university"] = df["university"].str.strip()
 
     df.to_xml(
         topics_path,

@@ -103,51 +103,6 @@ Our [hands-on tutorials](tutorials) lower the barrier of entry to implementing I
 
 A full [list of all covered tutorials](tutorials/README.md#contents) and further information on how to run the tutorials on your local machine can be found in the [tutorial readme](tutorials/README.md).
 
-### Tools for Relevance Judgments (work in progress)
-
-We also include tools that ease uploading pooled documents and downloading relevance judgments to/from the Doccano annotation platform. To use these tools, follow these steps:
-
-1. Install [Python 3.10](https://python.org/downloads/) or later.
-2. Create and activate a virtual environment:
-
-    ```shell
-    python3.10 -m venv venv/
-    source venv/bin/activate
-    ```
-
-3. Install dependencies:
-
-    ```shell
-    pip install -e .
-    ```
-
-4. Create top-k pools of documents retrieved by TIREx baselines (assuming a file data/<YOUR-COURSE>/topics.xml exists): 
-
-    ```shell
-    teaching-ir pool-documents --pooling-depth 10 data/<YOUR-COURSE>/
-    ```
-
-5. Prepare the relevance judgments in Doccano like so:
-
-    ```shell
-    teaching-ir prepare-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username admin --doccano-password <PASSWORD> project-prefix data/<YOUR-COURSE>/
-    ```
-
-6. All teams can now work on their relevance judgments.
-7. Export the relevance judgments as [qrels](https://trec.nist.gov/data/qrels_eng/) from Doccano like so:
-
-    ```shell
-    teaching-ir export-relevance-judgments project-prefix /path/to/pool1.jsonl /path/to/pool2.jsonl ... /path/to/qrels.txt
-    ```
-
-8. Once the semester is over and when you have exported all data, clean up the projects and users on Doccano like so:
-
-    ```shell
-    teaching-ir clean-up project-prefix
-    ```
-
-Please refer to the `teaching-ir` command's help (i.e., run `teaching-ir --help`) for more detailed options.
-
 ## Courses
 
 The below list includes finished (✅), ongoing (⏳) and future (🔜) IR courses that use shared task-oriented teaching.
@@ -173,6 +128,11 @@ Our accompanying [research paper](#citation) includes a case study and describes
 We took inspiration from some great tutorials and resources out there. Of course, our resources should not replace but complement them:
 
 - [The PyTerrier Tutorial](https://github.com/terrier-org/ecir2021tutorial)
+
+## For teachers
+
+We maintain a set of CLI tools for teachers that automate most of the administrative steps of our course concept.
+Check out our [separate documentation](teaching.md) to learn more.
 
 ## Contributing
 
