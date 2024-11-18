@@ -13,7 +13,6 @@ from zipfile import ZipFile
 from annotated_types import Len
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
-from chatnoir_api.model import Index
 from click import (
     argument,
     confirm,
@@ -277,7 +276,7 @@ def convert_topics_csv_to_xml(
 )
 @option(
     "--retrieval-index",
-    type=Index,
+    type=str,
     default="msmarco-passage-v2.1",
     help="The ChatNoir index to retrieve from.",
 )
