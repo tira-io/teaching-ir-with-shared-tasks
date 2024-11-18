@@ -283,6 +283,7 @@ def convert_topics_csv_to_xml(
 @option(
     "--feedback-index",
     default="msmarco-document-v2.1",
+    type=str,
     help="The ChatNoir index from which feedback-documents are labeled.",
 )
 @option(
@@ -300,8 +301,8 @@ def convert_topics_csv_to_xml(
 def pool_documents(
     topics_path: Path,
     pooling_path: Path,
-    retrieval_index: Index,
-    feedback_index: Index,
+    retrieval_index: str,
+    feedback_index: str,
     corpus_offset: int,
     pooling_depth: int,
 ) -> None:
