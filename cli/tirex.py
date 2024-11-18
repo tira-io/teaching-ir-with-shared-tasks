@@ -48,9 +48,9 @@ def _iter_re_rankers() -> Iterator[tuple[str, Transformer]]:
     from pyterrier_t5 import MonoT5ReRanker
     from pyterrier_dr import TctColBert, Ance
 
-    yield "mono-t5", MonoT5ReRanker(verbose=True)
-    yield "colbert", TctColBert(verbose=True)
-    yield "ance", Ance(verbose=True)
+    yield "mono-t5", lambda: MonoT5ReRanker(verbose=True)
+    yield "colbert", lambda: TctColBert(verbose=True)
+    yield "ance", lambda: Ance(verbose=True)
 
 
 def get_judgment_pool(
@@ -260,7 +260,7 @@ def pool_documents(
     print("Corpus-size", len(all_doc_ids))
 
     for retrieval_model in ["BM25", "PL2", "DirichletLM", "TF_IDF", "Hiemstra_LM"]:
-        output_path = pooling_path / f"/pyterrier-{retrieval_model}-run.gz"
+        output_path = pooling_path / f"pyterrier-{retrieval_model}-run.gz"
         if output_path.exists():
             continue
         index = get_index(pooling_path)
@@ -299,7 +299,8 @@ def pool_documents(
             )
             first_stage = read_results(str(pooling_path / "pyterrier-BM25-run.gz"))
             first_stage = Transformer.from_df(first_stage)
-            first_stage = first_stage >> generic(add_text) >> reranker()
+            first_stage = first_stage >> generic(add_text)
+            first_stage = first_stage >> reranker()
 
             results = first_stage(topics)
             write_results(results, str(output_path))
