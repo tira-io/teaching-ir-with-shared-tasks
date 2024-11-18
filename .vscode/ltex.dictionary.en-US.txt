@@ -1,2 +1,0 @@
-TREC-compatible
-ChatNoir
