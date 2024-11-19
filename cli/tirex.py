@@ -45,12 +45,9 @@ def _fetch_passage_ids(doc_id: str) -> list[str]:
 
 
 def _iter_re_rankers() -> Iterator[tuple[str, Transformer]]:
-    from pyterrier_t5 import MonoT5ReRanker
-    from pyterrier_dr import TctColBert, Ance
-
-    yield "mono-t5", lambda: MonoT5ReRanker(verbose=True)
-    yield "colbert", lambda: TctColBert(verbose=True)
-    yield "ance", lambda: Ance(verbose=True)
+    yield "mono-t5", lambda: from pyterrier_t5 import MonoT5ReRanker; return MonoT5ReRanker(verbose=True)
+    yield "colbert", lambda: from pyterrier_dr import TctColBert; return TctColBert(verbose=True)
+    yield "ance", lambda: from pyterrier_dr import Ance; return Ance(verbose=True)
 
 
 def get_judgment_pool(
@@ -113,7 +110,7 @@ def get_judgment_pool(
                 print("Missing relevant docs for topic", relevant_docnos)
 
         with output_path.open("wb") as file:
-            dump({k: list(v) for k, v in pool.items()}, file)
+            file.write(dumps({k: list(v) for k, v in pool.items()}).encode('UTF-8'))
 
     with output_path.open("rb") as file:
         ret = load(file)
@@ -322,6 +319,11 @@ def pool_documents(
         tag="title",
         tokenise=False,
     )
+    topic_to_group = load_topics_dict(
+        topics_path=topics_path,
+        tag="group",
+        tokenise=False,
+    )
     topic_to_description = load_topics_dict(
         topics_path=topics_path,
         tag="description",
@@ -341,7 +343,7 @@ def pool_documents(
                 file.write(
                     dumps(
                         {
-                            "group": f"{topic}",
+                            "group": topic_to_group[topic],
                             "query_id": topic,
                             "query": topic_to_title[topic],
                             "description": topic_to_description[topic],
