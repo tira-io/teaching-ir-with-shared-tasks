@@ -500,7 +500,7 @@ def prepare_relevance_judgments(
     echo(f"Found {len(pool)} pooled documents.")
 
     groups: set[str] = set(pool["group"].drop_duplicates().to_list())
-    echo(f"Found {len(groups)} groups:", groups)
+    echo(f"Found {len(groups)} groups:" + str(groups))
 
     # Create mapping of groups to usernames and project names.
     group_user_names: Mapping[str, str] = {
