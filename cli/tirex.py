@@ -45,9 +45,14 @@ def _fetch_passage_ids(doc_id: str) -> list[str]:
 
 
 def _iter_re_rankers() -> Iterator[tuple[str, Transformer]]:
-    yield "mono-t5", lambda: from pyterrier_t5 import MonoT5ReRanker; return MonoT5ReRanker(verbose=True)
-    yield "colbert", lambda: from pyterrier_dr import TctColBert; return TctColBert(verbose=True)
-    yield "ance", lambda: from pyterrier_dr import Ance; return Ance(verbose=True)
+    try:
+        from pyterrier_t5 import MonoT5ReRanker
+        from pyterrier_dr import TctColBert, Ance
+    except:
+        pass
+    yield "mono-t5", lambda: MonoT5ReRanker(verbose=True)
+    yield "colbert", lambda: TctColBert(verbose=True)
+    yield "ance", lambda: Ance(verbose=True)
 
 
 def get_judgment_pool(
