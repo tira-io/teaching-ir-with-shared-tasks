@@ -430,6 +430,19 @@ _ANNOTATOR_ROLE = "annotator"
     type=str,
 )
 @argument(
+    "topics_path",
+    type=PathType(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        readable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@argument(
     "pool_path",
     type=PathType(
         exists=True,
@@ -449,6 +462,7 @@ def prepare_relevance_judgments(
     guidelines_path: Path | None,
     extra_supervisors: Sequence[str],
     prefix: str,
+    topics_path: Path,
     pool_path: Sequence[Path],
 ) -> None:
     """
@@ -460,9 +474,6 @@ def prepare_relevance_judgments(
     if len(prefix) == 0:
         raise ValueError("Empty project prefix.")
     project_prefix = slugify(prefix)
-
-    if len(pool_path) == 0:
-        raise ValueError("Empty pool_path.")
 
     guidelines: str
     if guidelines_path is not None:
@@ -477,6 +488,7 @@ def prepare_relevance_judgments(
         password=doccano_password,
     )
     echo("Successfully authenticated with Doccano API.")
+
     pool = concat(
         read_json(
             open(path, "r"),
@@ -498,6 +510,18 @@ def prepare_relevance_judgments(
         )
     )
     echo(f"Found {len(pool)} pooled documents.")
+
+    # Read the topics.
+    topics = read_xml(topics_path, dtype=str)
+    echo(f"Found {len(topics)} topics.")
+
+    # Merge in groups from the topics
+    pool = pool.merge(
+        topics[["number", "group"]],
+        how="left",
+        left_on="query_id",
+        right_on="number",
+    )
 
     groups: set[str] = set(pool["group"].drop_duplicates().to_list())
     echo(f"Found {len(groups)} groups:" + str(groups))
