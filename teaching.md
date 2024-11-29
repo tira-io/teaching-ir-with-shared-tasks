@@ -71,7 +71,7 @@ We also include tools that ease uploading pooled documents and downloading relev
 Simply prepare the relevance judgments in Doccano like so:
 
 ```shell
-teaching-ir prepare-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username admin --doccano-password <PASSWORD> <PREFIX> topics.xml pooling/doccano-judgment-pool.jsonl
+teaching-ir prepare-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username <USERNAME> --doccano-password <PASSWORD> --supervisor-member <SUPERVISORNAME> <PREFIX> topics.xml pooling/doccano-judgment-pool.jsonl
 ```
 
 This will use the pooled documents from the `pooling/` directory and the topics from `topics.xml` to create for each student team:
@@ -80,13 +80,14 @@ This will use the pooled documents from the `pooling/` directory and the topics 
 - a project with the team's batch of query-document pairs to judge
 
 The student teams can now work on their relevance judgments.
+(The `--supervisor-member` option is optional but can be useful to give the supervisors' Doccano users access to the students' annotations.)
 
 ## Export relevance judgments
 
 Export the relevance judgments as [qrels](https://trec.nist.gov/data/qrels_eng/) from Doccano like so:
 
 ```shell
-teaching-ir export-relevance-judgments <PREFIX> pooling/doccano-judgment-pool.jsonl qrels.txt
+teaching-ir export-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username <USERNAME> --doccano-password <PASSWORD> <PREFIX> topics.xml pooling/doccano-judgment-pool.jsonl qrels.txt
 ```
 
 ## Clean up
