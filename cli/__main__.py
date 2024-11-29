@@ -13,6 +13,7 @@ from zipfile import ZipFile
 from annotated_types import Len
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
+from chatnoir_api.model import Index
 from click import (
     argument,
     confirm,
@@ -243,7 +244,7 @@ def convert_topics_csv_to_xml(
         row_name="topic",
         index=False,
         attr_cols=["number"],
-        elem_cols=set(df.columns) - {"number"},
+        elem_cols=sorted(set(df.columns) - {"number"}),
     )
 
 
@@ -301,8 +302,8 @@ def convert_topics_csv_to_xml(
 def pool_documents(
     topics_path: Path,
     pooling_path: Path,
-    retrieval_index: str,
-    feedback_index: str,
+    retrieval_index: Index,
+    feedback_index: Index,
     corpus_offset: int,
     pooling_depth: int,
 ) -> None:
@@ -448,6 +449,7 @@ _ANNOTATOR_ROLE = "annotator"
         exists=True,
         file_okay=True,
         dir_okay=False,
+        writable=False,
         readable=True,
         resolve_path=True,
         allow_dash=False,
@@ -489,12 +491,25 @@ def prepare_relevance_judgments(
     )
     echo("Successfully authenticated with Doccano API.")
 
+    # Read the topics.
+    topics = read_xml(
+        topics_path,
+        dtype=str,
+    )[[
+        # Explicitly select only the columns we need.
+        "number",
+        "group",
+    ]].rename(
+        columns={"number": "query_id"}
+    )
+    echo(f"Found {len(topics)} topics.")
+
+    # Read the pooled documents.
     pool = concat(
         read_json(
-            open(path, "r"),
+            path,
             lines=True,
             dtype={
-                "group": str,
                 "query_id": str,
                 "query": str,
                 "description": str,
@@ -502,7 +517,10 @@ def prepare_relevance_judgments(
                 "doc_id": str,
                 "text": str,
             },
-        )
+        )[[
+            # Explicitly select only the columns we need.
+            ""
+        ]]
         for path in tqdm(
             pool_path,
             desc="Read pooled documents",
@@ -511,20 +529,15 @@ def prepare_relevance_judgments(
     )
     echo(f"Found {len(pool)} pooled documents.")
 
-    # Read the topics.
-    topics = read_xml(topics_path, dtype=str)
-    echo(f"Found {len(topics)} topics.")
-
-    # Merge in groups from the topics
+    # Merge in groups from the topics.
     pool = pool.merge(
-        topics[["number", "group"]],
+        topics,
         how="left",
-        left_on="query_id",
-        right_on="number",
+        on="query_id",
     )
 
-    groups: set[str] = set(pool["group"].drop_duplicates().to_list())
-    echo(f"Found {len(groups)} groups:" + str(groups))
+    groups: set[str] = set(pool["group"].to_list())
+    echo(f"Found {len(groups)} groups: {', '.join(sorted(groups))}")
 
     # Create mapping of groups to usernames and project names.
     group_user_names: Mapping[str, str] = {
@@ -848,7 +861,20 @@ def prepare_relevance_judgments(
     type=str,
 )
 @argument(
-    "pooled_documents_paths",
+    "topics_path",
+    type=PathType(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        readable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@argument(
+    "pool_path",
     type=PathType(
         exists=True,
         file_okay=True,
@@ -879,7 +905,8 @@ def export_relevance_judgments(
     doccano_username: str,
     doccano_password: str,
     prefix: str,
-    pooled_documents_paths: Sequence[Path],
+    topics_path: Path,
+    pool_path: Sequence[Path],
     qrels_path: Path,
 ) -> None:
     """
@@ -892,7 +919,7 @@ def export_relevance_judgments(
         raise ValueError("Empty project prefix.")
     project_prefix = slugify(prefix)
 
-    if len(pooled_documents_paths) == 0:
+    if len(pool_path) == 0:
         return
 
     doccano = DoccanoClient(doccano_url)
@@ -902,30 +929,48 @@ def export_relevance_judgments(
     )
     echo("Successfully authenticated with Doccano API.")
 
+    # Read the topics.
+    topics = read_xml(
+        topics_path,
+        dtype=str,
+    )[[
+        # Explicitly select only the columns we need.
+        "number",
+        "group",
+    ]].rename(
+        columns={"number": "query_id"}
+    )
+    echo(f"Found {len(topics)} topics.")
+
+    # Read the pooled documents.
     pool = concat(
         read_json(
             path,
             lines=True,
-            dtype={
-                "group": str,
-                "query_id": str,
-                "query": str,
-                "description": str,
-                "narrative": str,
-                "doc_id": str,
-                "text": str,
-            },
-        )
+            dtype=str,
+        )[[
+            # Explicitly select only the columns we need.
+            "query_id",
+            "doc_id",
+        ]]
         for path in tqdm(
-            pooled_documents_paths,
+            pool_path,
             desc="Read pooled documents",
             unit="path",
         )
     )
     echo(f"Found {len(pool)} pooled documents.")
 
-    groups: set[str] = set(pool["group"].drop_duplicates().to_list())
-    echo(f"Found {len(groups)} groups.")
+    # Merge in groups from the topics.
+    pool = pool.merge(
+        topics,
+        how="left",
+        on="query_id",
+    )
+
+    groups: set[str] = set(pool["group"].to_list())
+    echo(f"Found {len(groups)} groups: {', '.join(sorted(groups))}")
+
 
     # Create mapping of groups to project names.
     group_project_names: Mapping[str, str] = {
@@ -999,7 +1044,7 @@ def export_relevance_judgments(
         qrels,
         how="left",
         on=["query_id", "doc_id"],
-        suffixes=["_pool", None],
+        suffixes=("_pool", None),
     )
     unjudged_pool = pool[pool["label"].isna()]
     if len(unjudged_pool) > 0:
