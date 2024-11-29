@@ -20,11 +20,30 @@ dependencies = [
     "tira~=0.0.125",
     "urllib3~=2.2",
     "trectools~=0.0.50",
+    "tqdm~=4.66",
 ]
-version = "0.1.0"
+dynamic = ["version"]
+
+[project.optional-dependencies]
+tests = [
+    "bandit[toml]~=1.7",
+    "mypy~=1.5",
+    "pandas-stubs~=2.2",
+    "pytest~=8.0",
+    "pytest-cov~=5.0",
+    "ruff~=0.7.0",
+    "types-tqdm~=4.66",
+]
 
 [project.scripts]
 teaching-ir = "cli.__main__:cli"
+
+[build-system]
+requires = [
+    "setuptools~=75.4",
+    "setuptools-scm~=8.0",    
+]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 include-package-data = true
@@ -33,4 +52,34 @@ include-package-data = true
 namespaces = false
 
 [tool.setuptools.package-data]
-mypkg = ["*.txt", "*.md", "*.rst"]
+"*" = ["*.txt", "*.md", "*.rst"]
+
+[tool.setuptools_scm]
+
+[tool.ruff]
+exclude = [
+    "build",
+    "venv",
+    ".venv",
+]
+
+[tool.mypy]
+exclude = [
+    "build",
+    "venv",
+    ".venv",
+]
+ignore_missing_imports = true
+
+[tool.bandit]
+exclude_dirs = [
+    "build",
+    "venv",
+    ".venv",
+]
+
+[tool.bandit.assert_used]
+skips = ["**/test_*.py"]
+
+[tool.pytest.ini_options]
+log_cli = "True"
