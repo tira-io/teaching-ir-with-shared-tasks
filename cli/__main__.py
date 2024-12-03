@@ -4,6 +4,7 @@ from pathlib import Path
 from secrets import choice
 from string import ascii_letters, digits
 from tempfile import NamedTemporaryFile, TemporaryDirectory
+from time import sleep
 from typing import Annotated, Any, Mapping, Sequence, TypeAlias
 from urllib.parse import urljoin
 from warnings import warn
@@ -166,30 +167,6 @@ def convert_topics_csv_to_xml(
     )
     df["timestamp"] = to_datetime(df["timestamp"])
 
-    # Consent to release data:
-    df["consent_release"] = (
-        df["consent_release"]
-        .map(
-            {
-                "Yes": True,
-                "No": False,
-            },
-        )
-        .fillna(False)
-    )
-
-    # Consent to appear as co-author of dataset:
-    df["consent_coauthor"] = (
-        df["consent_coauthor"]
-        .map(
-            {
-                "Yes": True,
-                "No": False,
-            }
-        )
-        .fillna(False)
-    )
-
     # Normalize strings.
     df["title"] = df["title"].str.strip()
     df["description"] = df["description"].str.strip()
@@ -197,11 +174,32 @@ def convert_topics_csv_to_xml(
     df["author"] = df["author"].str.strip()
     df["group"] = df["group"].str.strip()
     df["university"] = df["university"].str.strip()
+    df["consent_release"] = df["consent_release"].str.strip()
+    df["consent_coauthor"] = df["consent_coauthor"].str.strip()
 
     # Sort by submission timestamp.
     df.sort_values("timestamp", inplace=True)
     # And number the topics.
     df["number"] = range(1, len(df) + 1)
+
+    # Consent to release data:
+    df["consent_release"] = (
+        df["consent_release"]
+        .map(lambda x: True if x == "Yes" else False)
+    )
+
+    # Consent to appear as co-author of dataset:
+    df["consent_coauthor"] = (
+        df["consent_coauthor"]
+        .map(lambda x: True if x == "Yes" else False)
+    )
+
+    print(df)
+
+    # Remove empty topics.
+    df = df[(df["title"] != "") & df["title"].notna()]
+    df = df[(df["description"] != "") & df["description"].notna()]
+    df = df[(df["narrative"] != "") & df["narrative"].notna()]
 
     # Anonymize for release.
     if release:
@@ -509,17 +507,15 @@ def prepare_relevance_judgments(
         read_json(
             path,
             lines=True,
-            dtype={
-                "query_id": str,
-                "query": str,
-                "description": str,
-                "narrative": str,
-                "doc_id": str,
-                "text": str,
-            },
+            dtype=str,
         )[[
             # Explicitly select only the columns we need.
-            ""
+            "query_id",
+            "query",
+            "description",
+            "narrative",
+            "doc_id",
+            "text",
         ]]
         for path in tqdm(
             pool_path,
@@ -532,7 +528,7 @@ def prepare_relevance_judgments(
     # Merge in groups from the topics.
     pool = pool.merge(
         topics,
-        how="left",
+        how="inner",
         on="query_id",
     )
 
@@ -749,7 +745,10 @@ def prepare_relevance_judgments(
                     )
 
         echo(f"Preparing data for project '{project.name}'.")
+        group_pool = pool[pool["group"] == group].copy()
+
         existing_documents_count = doccano.count_examples(project_id=project.id)
+        existing_annotations: DataFrame
         if existing_documents_count > 0:
             label_distributions = doccano.get_label_distribution(
                 project_id=project.id,
@@ -770,22 +769,82 @@ def prepare_relevance_judgments(
                     for user_name, count in user_label_counts.items()
                 )
                 confirm(
-                    f"Found {existing_documents_count} previous documents with {sum(user_label_counts.values())} annotations from {len(user_label_counts.keys())} users ({user_label_counts_string}). Delete documents and annotations",
+                    f"Found {existing_documents_count} previous documents with {sum(user_label_counts.values())} annotations from {len(user_label_counts.keys())} users ({user_label_counts_string}). Overwrite documents and annotations",
                     abort=True,
                 )
             else:
                 confirm(
-                    f"Found {existing_documents_count} previous documents without annotations. Delete documents",
+                    f"Found {existing_documents_count} previous documents without annotations. Overwrite documents",
                     abort=True,
                     default=True,
                 )
-            doccano.bulk_delete_examples(
-                project_id=project.id,
-                example_ids=[],  # Delete all.
-            )
+
+
+            if len(user_label_counts) > 0:
+
+                with TemporaryDirectory() as tmp_dir:
+                    tmp_dir_path = Path(tmp_dir)
+
+                    echo(f"Downloading existing documents from project '{project.name}'...")
+                    tmp_path: Path
+                    retries = 10
+                    while True:
+                        try:
+                            tmp_path = doccano.data_export.download(
+                                project_id=project.id,
+                                format="JSONL",
+                                dir_name=str(tmp_dir_path),
+                            )
+                        except DoccanoAPIError as e:
+                            # Note: These errors are so common in Doccano, that a warning does not seem appropriate.
+                            if e.response.status_code != 500 or retries <= 0:
+                                raise e
+                            echo(
+                                f"Re-trying documents download from project '{project.name}'. {retries} retries left."
+                            )
+                            sleep(1)
+                            retries -= 1
+                            continue
+                        break
+
+                    echo(f"Downloaded documents from project '{project.name}'.")
+
+                    existing_annotations_list = []
+                    with ZipFile(tmp_path) as tmp_zip_file:
+                        for name in tmp_zip_file.namelist():
+                            with tmp_zip_file.open(name) as tmp_jsonl_file:
+                                existing_annotations_list.append(
+                                    read_json(
+                                        tmp_jsonl_file,
+                                        lines=True,
+                                        dtype={
+                                            "query_id": str,
+                                            "doc_id": str,
+                                        },
+                                    )[["query_id", "doc_id", "label"]]
+                                )
+                    existing_annotations = concat(existing_annotations_list)
+
+            else:
+                existing_annotations = DataFrame(columns=["query_id", "doc_id", "label"])
+        else:
+            existing_annotations = DataFrame(columns=["query_id", "doc_id", "label"])
+
+        group_pools.append = group_pool.merge(
+            existing_labels,
+            on=["query_id", "doc_id"]
+        )
+
+
+
+
+
+            # doccano.bulk_delete_examples(
+            #     project_id=project.id,
+            #     example_ids=[],  # Delete all.
+            # )
             # TODO: Instead update existing data and migrate annotations?
 
-        group_pool = pool[pool["group"] == group].copy()
         if "label" not in group_pool.columns:
             group_pool["label"] = group_pool["query"].map(lambda i: [])
         echo(f"Uploading {len(group_pool)} documents to project '{project.name}'...")
@@ -964,7 +1023,7 @@ def export_relevance_judgments(
     # Merge in groups from the topics.
     pool = pool.merge(
         topics,
-        how="left",
+        how="inner",
         on="query_id",
     )
 
@@ -1008,6 +1067,7 @@ def export_relevance_judgments(
                     echo(
                         f"Re-trying documents download from project '{project.name}'. {retries} retries left."
                     )
+                    sleep(1)
                     retries -= 1
                     continue
                 break
