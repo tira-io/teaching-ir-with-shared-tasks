@@ -15,24 +15,18 @@ from annotated_types import Len
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
 from chatnoir_api.model import Index
-from click import (
-    argument,
-    confirm,
-    group,
-    Context,
-    Parameter,
-    echo,
-    option,
-    Path as PathType,
-)
+from click import Context, Parameter
+from click import Path as PathType
+from click import argument, confirm, echo, group, option
 from doccano_client import DoccanoClient
 from doccano_client.exceptions import DoccanoAPIError
-from doccano_client.models.user import User
-from doccano_client.models.project import Project
+from doccano_client.models.data_upload import Task as DataUploadTask
 from doccano_client.models.label_type import LabelType
 from doccano_client.models.member import Member
-from doccano_client.models.data_upload import Task as DataUploadTask
-from pandas import DataFrame, concat, read_json, read_csv, isna, read_xml, to_datetime
+from doccano_client.models.project import Project
+from doccano_client.models.user import User
+from pandas import (DataFrame, concat, isna, read_csv, read_json, read_xml,
+                    to_datetime)
 from requests import RequestException, session
 from slugify import slugify
 from tqdm import tqdm
@@ -49,6 +43,42 @@ def print_version(
         return
     echo(app_version)
     context.exit()
+
+
+def read_pooled_for_topics(pool_path: Sequence[Path], topics: DataFrame):
+    ret = concat(
+        read_json(
+            path,
+            lines=True,
+            dtype=str,
+        )[
+            [
+                # Explicitly select only the columns we need.
+                "query_id",
+                "query",
+                "description",
+                "narrative",
+                "doc_id",
+                "text",
+            ]
+        ]
+        for path in tqdm(
+            pool_path,
+            desc="Read pooled documents",
+            unit="path",
+        )
+    )
+    echo(f"Found {len(ret)} pooled documents.")
+
+    return ret.merge(topics, how="inner", on="query_id")
+
+
+def group_names(pool: DataFrame, project_prefix: str) -> Mapping[str, str]:
+    groups: set[str] = set((i for i in pool["group"].to_list() if i))
+    echo(f"Found {len(groups)} groups: {', '.join(sorted(groups))}")
+
+    # Create mapping of groups to usernames and project names.
+    return {group: _user_name(project_prefix, group) for group in groups}
 
 
 @group()
@@ -183,15 +213,13 @@ def convert_topics_csv_to_xml(
     df["number"] = range(1, len(df) + 1)
 
     # Consent to release data:
-    df["consent_release"] = (
-        df["consent_release"]
-        .map(lambda x: True if x == "Yes" else False)
+    df["consent_release"] = df["consent_release"].map(
+        lambda x: True if x == "Yes" else False
     )
 
     # Consent to appear as co-author of dataset:
-    df["consent_coauthor"] = (
-        df["consent_coauthor"]
-        .map(lambda x: True if x == "Yes" else False)
+    df["consent_coauthor"] = df["consent_coauthor"].map(
+        lambda x: True if x == "Yes" else False
     )
 
     print(df)
@@ -371,6 +399,22 @@ _SUPERVISOR_ROLE = "project_admin"
 _ANNOTATOR_ROLE = "annotator"
 
 
+def read_topics(topics_path: Path):
+    ret = read_xml(
+        topics_path,
+        dtype=str,
+    )[
+        [
+            # Explicitly select only the columns we need.
+            "number",
+            "group",
+        ]
+    ].rename(columns={"number": "query_id"})
+
+    echo(f"Found {len(ret)} topics.")
+    return ret
+
+
 @cli.command()
 @option(
     "-d",
@@ -489,48 +533,10 @@ def prepare_relevance_judgments(
     )
     echo("Successfully authenticated with Doccano API.")
 
-    # Read the topics.
-    topics = read_xml(
-        topics_path,
-        dtype=str,
-    )[[
-        # Explicitly select only the columns we need.
-        "number",
-        "group",
-    ]].rename(
-        columns={"number": "query_id"}
-    )
-    echo(f"Found {len(topics)} topics.")
+    topics = read_topics(topics_path)
 
     # Read the pooled documents.
-    pool = concat(
-        read_json(
-            path,
-            lines=True,
-            dtype=str,
-        )[[
-            # Explicitly select only the columns we need.
-            "query_id",
-            "query",
-            "description",
-            "narrative",
-            "doc_id",
-            "text",
-        ]]
-        for path in tqdm(
-            pool_path,
-            desc="Read pooled documents",
-            unit="path",
-        )
-    )
-    echo(f"Found {len(pool)} pooled documents.")
-
-    # Merge in groups from the topics.
-    pool = pool.merge(
-        topics,
-        how="inner",
-        on="query_id",
-    )
+    pool = read_pooled_for_topics(pool_path, topics)
 
     groups: set[str] = set(pool["group"].to_list())
     echo(f"Found {len(groups)} groups: {', '.join(sorted(groups))}")
@@ -779,13 +785,14 @@ def prepare_relevance_judgments(
                     default=True,
                 )
 
-
             if len(user_label_counts) > 0:
 
                 with TemporaryDirectory() as tmp_dir:
                     tmp_dir_path = Path(tmp_dir)
 
-                    echo(f"Downloading existing documents from project '{project.name}'...")
+                    echo(
+                        f"Downloading existing documents from project '{project.name}'..."
+                    )
                     tmp_path: Path
                     retries = 10
                     while True:
@@ -826,24 +833,21 @@ def prepare_relevance_judgments(
                     existing_annotations = concat(existing_annotations_list)
 
             else:
-                existing_annotations = DataFrame(columns=["query_id", "doc_id", "label"])
+                existing_annotations = DataFrame(
+                    columns=["query_id", "doc_id", "label"]
+                )
         else:
             existing_annotations = DataFrame(columns=["query_id", "doc_id", "label"])
 
         group_pools.append = group_pool.merge(
-            existing_labels,
-            on=["query_id", "doc_id"]
+            existing_labels, on=["query_id", "doc_id"]
         )
 
-
-
-
-
-            # doccano.bulk_delete_examples(
-            #     project_id=project.id,
-            #     example_ids=[],  # Delete all.
-            # )
-            # TODO: Instead update existing data and migrate annotations?
+        # doccano.bulk_delete_examples(
+        #     project_id=project.id,
+        #     example_ids=[],  # Delete all.
+        # )
+        # TODO: Instead update existing data and migrate annotations?
 
         if "label" not in group_pool.columns:
             group_pool["label"] = group_pool["query"].map(lambda i: [])
@@ -988,48 +992,11 @@ def export_relevance_judgments(
     )
     echo("Successfully authenticated with Doccano API.")
 
-    # Read the topics.
-    topics = read_xml(
-        topics_path,
-        dtype=str,
-    )[[
-        # Explicitly select only the columns we need.
-        "number",
-        "group",
-    ]].rename(
-        columns={"number": "query_id"}
-    )
-    echo(f"Found {len(topics)} topics.")
-
-    # Read the pooled documents.
-    pool = concat(
-        read_json(
-            path,
-            lines=True,
-            dtype=str,
-        )[[
-            # Explicitly select only the columns we need.
-            "query_id",
-            "doc_id",
-        ]]
-        for path in tqdm(
-            pool_path,
-            desc="Read pooled documents",
-            unit="path",
-        )
-    )
-    echo(f"Found {len(pool)} pooled documents.")
-
-    # Merge in groups from the topics.
-    pool = pool.merge(
-        topics,
-        how="inner",
-        on="query_id",
-    )
+    topics = read_topics(topics_path)
+    pool = read_pooled_for_topics(pool_path, topics)
 
     groups: set[str] = set(pool["group"].to_list())
     echo(f"Found {len(groups)} groups: {', '.join(sorted(groups))}")
-
 
     # Create mapping of groups to project names.
     group_project_names: Mapping[str, str] = {
@@ -1217,6 +1184,66 @@ def clean_up(
                     show_default=False,
                     prompt_suffix=". Press enter to continue.",
                 )
+
+
+@cli.command()
+@argument(
+    "prefix",
+    type=str,
+)
+@argument(
+    "path",
+    type=PathType(
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        readable=True,
+        resolve_path=True,
+        path_type=Path,
+    ),
+)
+@argument(
+    "tira_task_id",
+    type=str,
+)
+def create_tira_groups(
+    prefix: str,
+    path: Path,
+    tira_task_id: str,
+) -> None:
+    """
+    Create the groups in tira.
+    """
+    from tira.rest_api_client import Client
+
+    from cli.tirex import create_group
+
+    topics = read_topics(path / "topics.xml")
+    pool = read_pooled_for_topics([path / "doccano-judgment-pool.jsonl"], topics)
+    groups = group_names(pool, prefix).values()
+    tira = Client()
+    metadata_for_task = tira.metadata_for_task(tira_task_id)["context"]["task"]
+    allowed_teams = [
+        i.strip() for i in metadata_for_task["allowed_task_teams"].split("\n")
+    ]
+    modify_task = False
+
+    for group in groups:
+        create_group(path / "tira-invites.json", tira, group)
+        if group not in allowed_teams:
+            allowed_teams += [group]
+            tira.register_group(group)
+            modify_task = True
+
+    if modify_task:
+        task_modification = {
+            "featured": True,
+            "require_registration": True,
+            "require_groups": True,
+            "restrict_groups": True,
+            "allowed_task_teams": "\n".join(allowed_teams),
+        }
+        tira.modify_task(tira_task_id, task_modification)
 
 
 if __name__ == "__main__":

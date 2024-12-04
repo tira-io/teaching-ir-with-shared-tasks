@@ -1,6 +1,8 @@
+import json
+from glob import glob
 from gzip import open as gzip_open
 from itertools import chain
-from json import dump, load, dumps, loads
+from json import dump, dumps, load, loads
 from os import environ
 from pathlib import Path
 from statistics import mean, median
@@ -9,16 +11,16 @@ from typing import Collection, Iterator
 from chatnoir_api.model import Index
 from ir_datasets import load as irds_load
 from pandas import DataFrame
-from pyterrier import Transformer, IterDictIndexer, IndexFactory, BatchRetrieve
-from pyterrier.io import read_topics, write_results, read_results
+from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, Transformer
 from pyterrier.apply import generic
+from pyterrier.io import read_results, read_topics, write_results
+from tira.tira_client import TiraClient
 from tqdm import tqdm
-from glob import glob
-from trectools import TrecRun, TrecPoolMaker
+from trectools import TrecPoolMaker, TrecRun
 
 
 def _fetch_passage_ids(doc_id: str) -> list[str]:
-    from elasticsearch_dsl import connections, Search
+    from elasticsearch_dsl import Search, connections
     from elasticsearch_dsl.query import Prefix
 
     try:
@@ -46,8 +48,8 @@ def _fetch_passage_ids(doc_id: str) -> list[str]:
 
 def _iter_re_rankers() -> Iterator[tuple[str, Transformer]]:
     try:
+        from pyterrier_dr import Ance, TctColBert
         from pyterrier_t5 import MonoT5ReRanker
-        from pyterrier_dr import TctColBert, Ance
     except:
         pass
     yield "mono-t5", lambda: MonoT5ReRanker(verbose=True)
@@ -115,7 +117,7 @@ def get_judgment_pool(
                 print("Missing relevant docs for topic", relevant_docnos)
 
         with output_path.open("wb") as file:
-            file.write(dumps({k: list(v) for k, v in pool.items()}).encode('UTF-8'))
+            file.write(dumps({k: list(v) for k, v in pool.items()}).encode("UTF-8"))
 
     with output_path.open("rb") as file:
         ret = load(file)
@@ -133,12 +135,11 @@ def get_documents(pooling_path: Path):
     if not documents_path.exists():
         docs_store = irds_load("msmarco-segment-v2.1").docs_store()
         all_docs = set()
-        for file_name in glob(f'{pooling_path}/corpus-chatnoir*run.gz'):
+        for file_name in glob(f"{pooling_path}/corpus-chatnoir*run.gz"):
             run = TrecRun(file_name).run_data
-            for doc in run['docid']:
+            for doc in run["docid"]:
                 all_docs.add(doc)
-        print('docs size', len(all_docs))
-
+        print("docs size", len(all_docs))
 
         with gzip_open(documents_path, "wt") as file:
             for doc in tqdm(all_docs, "Load Docs"):
@@ -359,3 +360,25 @@ def pool_documents(
                     )
                     + "\n"
                 )
+
+
+def read_tira_invites(invite_path: Path):
+    if not invite_path.exists():
+        with open(invite_path, "w") as f:
+            f.write("{}")
+
+    with open(invite_path, "r") as f:
+        return json.load(f)
+
+
+def create_group(invite_path: Path, tira_client: TiraClient, group_name: str):
+    all_invites = read_tira_invites(invite_path)
+
+    if group_name not in all_invites:
+        invite = tira.create_group(group_name)
+        all_invites[group_name] = invite
+        with open(invite_path, "w") as f:
+            f.write(json.dumps(all_invites))
+        all_invites = read_tira_invites(invite_path)
+
+    print(group_name + ": " + all_invites[group_name])
