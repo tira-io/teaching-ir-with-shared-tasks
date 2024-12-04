@@ -25,8 +25,7 @@ from doccano_client.models.label_type import LabelType
 from doccano_client.models.member import Member
 from doccano_client.models.project import Project
 from doccano_client.models.user import User
-from pandas import (DataFrame, concat, isna, read_csv, read_json, read_xml,
-                    to_datetime)
+from pandas import DataFrame, concat, isna, read_csv, read_json, read_xml, to_datetime
 from requests import RequestException, session
 from slugify import slugify
 from tqdm import tqdm
@@ -1206,44 +1205,39 @@ def clean_up(
     "tira_task_id",
     type=str,
 )
+@argument(
+    "affiliation_of_teams",
+    type=str,
+)
+@argument(
+    "country_of_teams",
+    type=str,
+)
 def create_tira_groups(
     prefix: str,
     path: Path,
     tira_task_id: str,
+    affiliation_of_teams: str,
+    country_of_teams: str,
 ) -> None:
     """
     Create the groups in tira.
     """
-    from tira.rest_api_client import Client
 
     from cli.tirex import create_group
 
     topics = read_topics(path / "topics.xml")
     pool = read_pooled_for_topics([path / "doccano-judgment-pool.jsonl"], topics)
     groups = group_names(pool, prefix).values()
-    tira = Client()
-    metadata_for_task = tira.metadata_for_task(tira_task_id)["context"]["task"]
-    allowed_teams = [
-        i.strip() for i in metadata_for_task["allowed_task_teams"].split("\n")
-    ]
-    modify_task = False
 
     for group in groups:
-        create_group(path / "tira-invites.json", tira, group)
-        if group not in allowed_teams:
-            allowed_teams += [group]
-            tira.register_group(group)
-            modify_task = True
-
-    if modify_task:
-        task_modification = {
-            "featured": True,
-            "require_registration": True,
-            "require_groups": True,
-            "restrict_groups": True,
-            "allowed_task_teams": "\n".join(allowed_teams),
-        }
-        tira.modify_task(tira_task_id, task_modification)
+        create_group(
+            path / "tira-invites.json",
+            tira_task_id,
+            group,
+            affiliation_of_teams,
+            country_of_teams,
+        )
 
 
 if __name__ == "__main__":

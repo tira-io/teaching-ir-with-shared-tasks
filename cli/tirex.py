@@ -1,4 +1,5 @@
 import json
+import time
 from glob import glob
 from gzip import open as gzip_open
 from itertools import chain
@@ -14,7 +15,7 @@ from pandas import DataFrame
 from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, Transformer
 from pyterrier.apply import generic
 from pyterrier.io import read_results, read_topics, write_results
-from tira.tira_client import TiraClient
+from tira.rest_api_client import Client
 from tqdm import tqdm
 from trectools import TrecPoolMaker, TrecRun
 
@@ -371,14 +372,48 @@ def read_tira_invites(invite_path: Path):
         return json.load(f)
 
 
-def create_group(invite_path: Path, tira_client: TiraClient, group_name: str):
+def create_group(
+    invite_path: Path,
+    tira_task_id: str,
+    group_name: str,
+    affiliation: str,
+    country: str,
+):
     all_invites = read_tira_invites(invite_path)
-
+    tira = Client()
     if group_name not in all_invites:
-        invite = tira.create_group(group_name)
+        metadata_for_task = tira.metadata_for_task(tira_task_id)
+        time.sleep(1)
+        metadata_for_task = metadata_for_task["context"]["task"]
+        allowed_teams = [
+            i.strip() for i in metadata_for_task["allowed_task_teams"].split("\n")
+        ] + [group_name]
+        task_modification = {
+            "featured": True,
+            "require_registration": True,
+            "require_groups": True,
+            "restrict_groups": True,
+            "task_teams": "\n".join(allowed_teams),
+        }
+        tira.modify_task(tira_task_id, task_modification)
+        time.sleep(1)
+        invite = tira.register_group(
+            group_name,
+            tira_task_id,
+            name="no-name",
+            email="no-mail",
+            affiliation=affiliation,
+            country=country,
+        )
         all_invites[group_name] = invite
+
         with open(invite_path, "w") as f:
             f.write(json.dumps(all_invites))
         all_invites = read_tira_invites(invite_path)
+        time.sleep(8)
 
-    print(group_name + ": " + all_invites[group_name])
+    print(
+        group_name
+        + ": "
+        + json.dumps(all_invites[group_name]["context"]["created_group"])
+    )
