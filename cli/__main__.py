@@ -275,6 +275,38 @@ def convert_topics_csv_to_xml(
 
 @cli.command()
 @argument(
+    "course_path",
+    type=PathType(
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        writable=False,
+        readable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@option(
+    "--pooling-depth",
+    type=int,
+    default=1000,
+    help="Pooling depth.",
+)
+def subsample_corpus(
+    course_path: Path,
+    pooling_depth: int,
+) -> None:
+    """
+    Create a subsample of a potentially huge corpus for experiments against a fixed set of corpora.
+    """
+    from cli.tirex import subsample_corpus
+    subsample_corpus(course_path / 'qrels.txt', course_path, pooling_depth)
+    print('foo')
+
+
+@cli.command()
+@argument(
     "topics_path",
     type=PathType(
         exists=True,
@@ -1230,7 +1262,7 @@ def create_tira_groups(
     pool = read_pooled_for_topics([path / "doccano-judgment-pool.jsonl"], topics)
     groups = group_names(pool, prefix).values()
 
-    for group in groups:
+    for group in [i for i in groups if 'tutors' not in i.lower()]:
         create_group(
             path / "tira-invites.json",
             tira_task_id,

@@ -17,7 +17,7 @@ from pyterrier.apply import generic
 from pyterrier.io import read_results, read_topics, write_results
 from tira.rest_api_client import Client
 from tqdm import tqdm
-from trectools import TrecPoolMaker, TrecRun
+from trectools import TrecPoolMaker, TrecRun, TrecQrel
 
 
 def _fetch_passage_ids(doc_id: str) -> list[str]:
@@ -370,6 +370,34 @@ def read_tira_invites(invite_path: Path):
 
     with open(invite_path, "r") as f:
         return json.load(f)
+
+
+def subsample_corpus(qrels_path: Path, pooling_path: Path, pooling_depth: int):
+    meta_data = json.load(open(pooling_path / 'metadata.json'))
+    qrels = TrecQrel(qrels_path)
+    query_ids = set([i for i in qrels.qrels_data['query'].unique()])
+    qrels_run = TrecRun()
+    qrels_run.run_data = qrels.qrels_data.copy()
+    del qrels_run.run_data['rel']
+    qrels_run.run_data["rank"] = 1
+    qrels_run.run_data["rank"] = qrels_run.run_data.groupby("query")["rank"].cumsum()
+    qrels_run.run_data["score"] = 1000 - qrels_run.run_data["rank"]
+
+    runs = []
+    for run in tqdm(pooling_path.glob("*-run.gz")):
+        runs += [TrecRun(run)]
+
+    runs += [qrels_run]
+    pool = TrecPoolMaker().make_pool(runs, strategy='topX', topX=pooling_depth).pool
+    all_docs = set()
+
+    for q in pool.keys():
+        if str(q) not in query_ids:
+            continue
+
+        for doc in pool[q]:
+            all_docs.add(doc)
+    print('Docs:' + str(len(all_docs)))
 
 
 def create_group(
