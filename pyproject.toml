@@ -12,7 +12,7 @@ dependencies = [
     "elasticsearch-dsl~=8.16",
     "ir_datasets~=0.5.6",
     "pandas~=2.2",
-    "pyterrier-dr~=0.3.0",
+    "pyterrier-dr~=0.4.1",
     "pyterrier-t5 @ git+https://github.com/terrierteam/pyterrier_t5.git@8caa9a28e6cd102c8e294a6a01a42a6ff8e41c76",
     "python-slugify~=8.0",
     "python-terrier~=0.11.0",
