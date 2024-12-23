@@ -15,7 +15,7 @@ dependencies = [
     "pyterrier-dr~=0.3.0",
     "pyterrier-t5 @ git+https://github.com/terrierteam/pyterrier_t5.git@8caa9a28e6cd102c8e294a6a01a42a6ff8e41c76",
     "python-slugify~=8.0",
-    "python-terrier~=0.11.0",
+    "python-terrier~=0.12.1",
     "requests~=2.32",
     "tira~=0.0.125",
     "urllib3~=2.2",
