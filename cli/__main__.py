@@ -302,7 +302,6 @@ def subsample_corpus(
     """
     from cli.tirex import subsample_corpus
     subsample_corpus(course_path / 'qrels.txt', course_path, pooling_depth)
-    print('foo')
 
 
 @cli.command()
@@ -1014,7 +1013,7 @@ def export_relevance_judgments(
     project_prefix = slugify(prefix)
 
     if len(pool_path) == 0:
-        return
+        raise ValueError("Empty pool path")
 
     doccano = DoccanoClient(doccano_url)
     doccano.login(
