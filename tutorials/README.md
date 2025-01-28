@@ -32,7 +32,7 @@ Our basic tutorials cover the most important concepts of information retrieval a
 | Hyperparameter tuning | [🔗](tutorial-hyperparameter-tuning.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-hyperparameter-tuning.ipynb?quickstart=1) |
 | Statistical analysis | [🔗](tutorial-statistical-analysis.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-statistical-analysis.ipynb?quickstart=1) |
 | Learning to rank ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) |
-| Boolean Retrieval Index | [🔗](tutorial-boolean-retrieval.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-boolean-retrieval.ipynb?quickstart=1) |
+| Building a boolean search engine | [🔗](tutorial-boolean-retrieval.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-boolean-retrieval.ipynb?quickstart=1) |
 | _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
 More complex topics that might not be suited to every IR course are still covered in our research-oriented tutorials. These tutorials are often more complex and require more prior knowledge, so they are best suited for Master's students:
