@@ -6,6 +6,7 @@ from itertools import chain
 from json import dump, dumps, load, loads
 from os import environ
 from pathlib import Path
+from pandas import read_xml
 from statistics import mean, median
 from typing import Collection, Iterator
 
@@ -371,9 +372,66 @@ def read_tira_invites(invite_path: Path):
     with open(invite_path, "r") as f:
         return json.load(f)
 
+def to_xml_query(query):
+    appendix = ""
+    try:
+        appendix = f"""  <description>{query.description}</description>
+  <narrative>{query.narrative}</narrative>
+"""
+    except:
+        pass
+
+    return f""" <topic number="{query.query_id}">
+  <query>
+   {query.default_text()}
+  </query>
+  <original_query>
+   <query_id>
+     {query.query_id}
+   </query_id>{appendix}
+   <text>
+     {query.default_text()}
+   </text>
+  </original_query>
+ </topic>
+"""
+
+def to_jsonl_query(query):
+    ret = {"qid": query.query_id, "query": query.default_text()}
+    ret["original_query"] = ret.copy()
+    return json.dumps(ret)
 
 def subsample_corpus(qrels_path: Path, pooling_path: Path, pooling_depth: int):
+    inputs_dir = pooling_path / 'subsampled-dataset' / 'inputs'
+    truths_dir = pooling_path / 'subsampled-dataset' / 'truths'
+    if (inputs_dir / 'documents.jsonl.gz').exists():
+        return
     meta_data = json.load(open(pooling_path / 'metadata.json'))
+    dataset = irds_load(meta_data['ir_datasets_id'])
+    docs_store = dataset.docs_store()
+    queries_dict = {}
+    
+    if dataset.has_queries():
+        for i in dataset.queries_iter():
+            assert i.query_id not in queries_dict
+            queries_dict[i.query_id] = i
+    else:
+        queries_df = read_xml(qrels_path.parent / 'topics.xml', dtype=str).rename(columns={"number": "query_id"})
+        for _, i in queries_df.iterrows():
+            i = i.to_dict()
+            class TmpQuery():
+                def __init__(self, i):
+                    self.title = i["title"]
+                    self.query_id = i["query_id"]
+                    self.narrative = i["narrative"]
+                    self.description = i["description"]
+
+                def default_text(self):
+                    return self.title
+
+            i = TmpQuery(i)
+            queries_dict[i.query_id] = i
+
     qrels = TrecQrel(qrels_path)
     query_ids = set([i for i in qrels.qrels_data['query'].unique()])
     qrels_run = TrecRun()
@@ -391,13 +449,38 @@ def subsample_corpus(qrels_path: Path, pooling_path: Path, pooling_depth: int):
     pool = TrecPoolMaker().make_pool(runs, strategy='topX', topX=pooling_depth).pool
     all_docs = set()
 
+    queries_jsonl_format = []
+    queries_xml_format = []
     for q in pool.keys():
         if str(q) not in query_ids:
             continue
 
+        queries_jsonl_format += [to_jsonl_query(queries_dict[q])]
+        queries_xml_format += [to_xml_query(queries_dict[q])]
+
         for doc in pool[q]:
             all_docs.add(doc)
+
+    inputs_dir.mkdir(exist_ok=True, parents=True)
+    truths_dir.mkdir(exist_ok=True, parents=True)
+    for json_file in [inputs_dir / 'queries.jsonl', truths_dir / 'queries.jsonl' ]:
+        with open(json_file, 'w') as f:
+            f.write('\n'.join(queries_jsonl_format))
+
+    for xml_file in [inputs_dir / 'queries.xml', truths_dir / 'queries.xml' ]:
+        with open(xml_file, 'w') as f:
+            f.write('<topics>\n' + ''.join(queries_xml_format) + '\n</topics>')
+
     print('Docs:' + str(len(all_docs)))
+    with gzip_open(inputs_dir / 'documents.jsonl.gz', 'wt') as f:
+        for doc in tqdm(all_docs):
+            try:
+                doc_text = docs_store.get(doc).default_text()
+            except:
+                print('skip due to error')
+                continue
+            f.write(json.dumps({"docno": doc, "text": doc_text}) + '\n')
+            f.flush()
 
 
 def create_group(
