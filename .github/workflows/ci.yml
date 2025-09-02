@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v4     
+        uses: actions/checkout@v5     
       - name: 🧰 Setup GitHub Pages
         uses: actions/configure-pages@v5
       - name: 🧰 Install Python
