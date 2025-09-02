@@ -57,7 +57,7 @@ jobs:
           yarn build
           cp src/resources/ir-lab-guidelines-sose-2024.pdf dist/
       - name: 📤 Upload web app artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: dashboard/dist/
       - name: 🚀 Deploy to GitHub Pages
