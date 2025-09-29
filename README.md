@@ -4,7 +4,7 @@
 [![Issues](https://img.shields.io/github/issues/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues)
 [![Pull requests](https://img.shields.io/github/issues-pr/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/pulls)
 [![Commit activity](https://img.shields.io/github/commit-activity/m/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/commits)
-[![Maintenance](https://img.shields.io/maintenance/yes/2024?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/graphs/contributors)
+[![Maintenance](https://img.shields.io/maintenance/yes/2025?style=flat-square)](https://github.com/tira-io/teaching-ir-with-shared-tasks/graphs/contributors)
 [![License](https://img.shields.io/github/license/tira-io/teaching-ir-with-shared-tasks?style=flat-square)](LICENSE)
 
 # 🧪 Teaching IR with Shared Tasks
