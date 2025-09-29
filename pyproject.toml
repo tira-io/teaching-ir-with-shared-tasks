@@ -30,7 +30,7 @@ tests = [
     "mypy~=1.5",
     "pandas-stubs~=2.2",
     "pytest~=8.0",
-    "pytest-cov~=6.0",
+    "pytest-cov~=7.0",
     "ruff~=0.13.1",
     "types-tqdm~=4.66",
 ]
