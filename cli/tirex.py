@@ -240,6 +240,9 @@ def pool_documents(
                     docs_store[l["doc_id"]] = l
 
         with open(path / "topic-mapping.jsonl", "r") as f:
+            doc_count = 0
+            no_main_content = 0
+            skipped_long = 0
             for i in f:
                 i = json.loads(i)
                 group = i["account"]
@@ -248,6 +251,15 @@ def pool_documents(
                         if document not in docs_store:
                             print(f"Skip document with id {document}")
                             continue
+                        from bs4 import BeautifulSoup
+                        main_content = BeautifulSoup(docs_store.get(document)["main_content"], features="html.parser").get_text()
+                        if len(main_content) < 10:
+                            main_content = "No Main Content"
+                            no_main_content += 1
+                        if len(main_content) > 7*1000:
+                            main_content = main_content[:7*1000]
+                            skipped_long += 1
+                        doc_count += 1
                         file.write(
                             dumps(
                                 {
@@ -259,11 +271,12 @@ def pool_documents(
                                      "doc_id": document,
                                      "url": docs_store.get(document)["url"],
                                      "title": docs_store.get(document)["title"],
-                                     "text": docs_store.get(document)["main_content"],
+                                     "text": main_content,
                         }
                     )
                     + "\n"
                 )
+            print(f"Docs to judge {doc_count}. No main content {no_main_content}. Truncated: {skipped_long}")
 
 
 def read_tira_invites(invite_path: Path):

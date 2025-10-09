@@ -14,6 +14,7 @@ from zipfile import ZipFile
 from annotated_types import Len
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
+import json
 from chatnoir_api.model import Index
 from click import Context, Parameter
 from click import Path as PathType
@@ -512,7 +513,7 @@ def prepare_relevance_judgments(
 
     groups: set[str] = set(pool["group"].to_list())
     echo(f"Found {len(groups)} groups: {', '.join(sorted(groups))}")
-    raise ValueError("ff")
+
     # Create mapping of groups to usernames and project names.
     group_user_names: Mapping[str, str] = {
         group: _user_name(project_prefix, group) for group in groups
@@ -536,14 +537,17 @@ def prepare_relevance_judgments(
     }
     if len(non_existing_group_user_names) > 0:
         echo(f"Creating {len(non_existing_group_user_names)} missing users...")
-        for group, user_name in non_existing_group_user_names.items():
-            password = _generate_password()
-            new_user = doccano.create_user(
-                username=user_name,
-                password=password,
-            )
-            group_users[group] = new_user
-            echo(f"Created user '{user_name}' with password '{password}'.")
+        with open("doccano-accounts.jsonl", "a") as f:
+            for group, user_name in non_existing_group_user_names.items():    
+                password = _generate_password()
+                new_user = doccano.create_user(
+                    username=user_name,
+                    password=password,
+                )
+                group_users[group] = new_user
+                echo(f"Created user '{user_name}' with password '{password}'.")
+                f.write(json.dumps({"user": user_name, "password": password}) + '\n')
+                f.flush()
 
     # Create missing projects.
     projects: Mapping[str, Project] = {
@@ -609,76 +613,34 @@ def prepare_relevance_judgments(
 
     echo(f"Preparing {len(group_projects)} projects...")
     current_user = doccano.user_details.get_current_user_details()
+    finished_groups = set()
+    with open("finished-groups", "r") as f:
+        for l in f:
+            if len(l) < 2:
+                continue
+            finished_groups.add(l.strip())
     for group, project in group_projects.items():
+        if group in finished_groups:
+            print(f"skip group {group}")
+            continue
         echo(f"Preparing labels for project '{project.name}'.")
         existing_labels: Sequence[LabelType] = doccano.list_label_types(
             project_id=project.id,
             type="category",
         )
-        compatible_label_ids: list[int] = []
-        label_relevant: LabelType | None = next(
-            (label for label in existing_labels if label.text == _LABEL_RELEVANT), None
-        )
-        if label_relevant is not None:
-            doccano.update_label_type(
-                project_id=project.id,
-                label_type_id=label_relevant.id,
-                type="category",
-                text=_LABEL_RELEVANT,
-                prefix_key=None,
-                suffix_key=_LABEL_KEY_RELEVANT,
-                color=_LABEL_COLOR_RELEVANT,
-            )
-            compatible_label_ids.append(label_relevant.id)
-        else:
-            doccano.create_label_type(
-                project_id=project.id,
-                type="category",
-                text=_LABEL_RELEVANT,
-                prefix_key=None,
-                suffix_key=_LABEL_KEY_RELEVANT,
-                color=_LABEL_COLOR_RELEVANT,
-            )
-        label_not_relevant: LabelType | None = next(
-            (label for label in existing_labels if label.text == _LABEL_NOT_RELEVANT),
-            None,
-        )
-        if label_not_relevant is not None:
-            doccano.update_label_type(
-                project_id=project.id,
-                label_type_id=label_not_relevant.id,
-                type="category",
-                text=_LABEL_NOT_RELEVANT,
-                prefix_key=None,
-                suffix_key=_LABEL_KEY_NOT_RELEVANT,
-                color=_LABEL_COLOR_NOT_RELEVANT,
-            )
-            compatible_label_ids.append(label_not_relevant.id)
-        else:
-            doccano.create_label_type(
-                project_id=project.id,
-                type="category",
-                text=_LABEL_NOT_RELEVANT,
-                prefix_key=None,
-                suffix_key=_LABEL_KEY_NOT_RELEVANT,
-                color=_LABEL_COLOR_NOT_RELEVANT,
-            )
-        incompatible_label_ids: Sequence[int] = [
-            label.id
-            for label in existing_labels
-            if label.id not in compatible_label_ids
-        ]
-        if len(incompatible_label_ids) > 0:
-            confirm(
-                f"Found {len(incompatible_label_ids)} incompatible labels "
-                f"for project '{project}'. Delete labels",
-                abort=True,
-            )
-            doccano.bulk_delete_label_types(
-                project_id=project_id,
-                label_type_ids=incompatible_label_ids,
-                type="category",
-            )
+        for label in existing_labels:
+            doccano.delete_label_type(project_id=project.id, label_type_id=label.id, type="category")
+        
+        with open(path.parent/'doccano-label-configs.json', 'r') as f:
+            for label in json.loads(f.read()):
+                doccano.create_label_type(
+                    project_id=project.id,
+                    type="category",
+                    text=label["text"],
+                    prefix_key=None,
+                    suffix_key=label['suffixKey'],
+                    color=label['backgroundColor'],
+                )
 
         echo(f"Preparing annotators for project '{project.name}'.")
         existing_members: Sequence[Member] = doccano.list_members(project_id=project.id)
@@ -811,20 +773,18 @@ def prepare_relevance_judgments(
         else:
             existing_annotations = DataFrame(columns=["query_id", "doc_id", "label"])
 
-        group_pools.append = group_pool.merge(
-            existing_labels, on=["query_id", "doc_id"]
-        )
-
-        # doccano.bulk_delete_examples(
-        #     project_id=project.id,
-        #     example_ids=[],  # Delete all.
+        # group_pools.append = group_pool.merge(
+        #    existing_labels, on=["query_id", "doc_id"]
         # )
+
+        doccano.bulk_delete_examples(project_id=project.id, example_ids=[])
         # TODO: Instead update existing data and migrate annotations?
 
         if "label" not in group_pool.columns:
             group_pool["label"] = group_pool["query"].map(lambda i: [])
         echo(f"Uploading {len(group_pool)} documents to project '{project.name}'...")
-        with NamedTemporaryFile() as tmp_file:
+
+        with NamedTemporaryFile(delete=False) as tmp_file:
             tmp_path = Path(tmp_file.name)
             group_pool.to_json(
                 tmp_path,
@@ -833,6 +793,7 @@ def prepare_relevance_judgments(
                 mode="w",
             )
             tmp_file.flush()
+            print(tmp_path)
             status = doccano.data_import.upload(
                 project_id=project.id,
                 file_paths=[str(tmp_path)],
@@ -859,7 +820,10 @@ def prepare_relevance_judgments(
             )
         else:
             echo(f"Uploaded {len(group_pool)} documents to project '{project.name}'.")
-
+        with open("finished-groups", "a") as f:
+            f.write(group + '\n')
+            f.flush()
+        raise ValueError(group)
 
 @cli.command()
 @option(
