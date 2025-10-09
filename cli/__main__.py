@@ -823,7 +823,6 @@ def prepare_relevance_judgments(
         with open("finished-groups", "a") as f:
             f.write(group + '\n')
             f.flush()
-        raise ValueError(group)
 
 @cli.command()
 @option(
