@@ -306,48 +306,15 @@ def subsample_corpus(
 
 @cli.command()
 @argument(
-    "topics_path",
-    type=PathType(
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=False,
-        readable=True,
-        resolve_path=True,
-        allow_dash=False,
-        path_type=Path,
-    ),
-)
-@argument(
-    "pooling_path",
+    "directory",
     type=PathType(
         exists=True,
         file_okay=False,
         dir_okay=True,
-        writable=True,
-        readable=True,
         resolve_path=True,
         allow_dash=False,
         path_type=Path,
     ),
-)
-@option(
-    "--retrieval-index",
-    type=str,
-    default="msmarco-passage-v2.1",
-    help="The ChatNoir index to retrieve from.",
-)
-@option(
-    "--feedback-index",
-    default="msmarco-document-v2.1",
-    type=str,
-    help="The ChatNoir index from which feedback-documents are labeled.",
-)
-@option(
-    "--corpus-offset",
-    type=int,
-    default=1500,
-    help="The offset for the corpus.",
 )
 @option(
     "--pooling-depth",
@@ -356,11 +323,7 @@ def subsample_corpus(
     help="Pooling depth.",
 )
 def pool_documents(
-    topics_path: Path,
-    pooling_path: Path,
-    retrieval_index: Index,
-    feedback_index: Index,
-    corpus_offset: int,
+    directory: Path,
     pooling_depth: int,
 ) -> None:
     """
@@ -369,11 +332,7 @@ def pool_documents(
     from cli.tirex import pool_documents
 
     pool_documents(
-        topics_path=topics_path,
-        pooling_path=pooling_path,
-        retrieval_index=retrieval_index,
-        feedback_index=feedback_index,
-        corpus_offset=corpus_offset,
+        path=directory,
         pooling_depth=pooling_depth,
     )
 
@@ -503,7 +462,7 @@ def read_topics(topics_path: Path):
     type=str,
 )
 @argument(
-    "topics_path",
+    "path",
     type=PathType(
         exists=True,
         file_okay=True,
@@ -514,20 +473,6 @@ def read_topics(topics_path: Path):
         allow_dash=False,
         path_type=Path,
     ),
-)
-@argument(
-    "pool_path",
-    type=PathType(
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=False,
-        readable=True,
-        resolve_path=True,
-        allow_dash=False,
-        path_type=Path,
-    ),
-    nargs=-1,
 )
 def prepare_relevance_judgments(
     doccano_url: str,
@@ -536,8 +481,7 @@ def prepare_relevance_judgments(
     guidelines_path: Path | None,
     extra_supervisors: Sequence[str],
     prefix: str,
-    topics_path: Path,
-    pool_path: Sequence[Path],
+    path: Path,
 ) -> None:
     """
     Prepare the relevance judgments on Doccano for pooled documents stored in JSON Lines files.
@@ -563,14 +507,12 @@ def prepare_relevance_judgments(
     )
     echo("Successfully authenticated with Doccano API.")
 
-    topics = read_topics(topics_path)
-
     # Read the pooled documents.
-    pool = read_pooled_for_topics(pool_path, topics)
+    pool = read_json(path, lines=True)
 
     groups: set[str] = set(pool["group"].to_list())
     echo(f"Found {len(groups)} groups: {', '.join(sorted(groups))}")
-
+    raise ValueError("ff")
     # Create mapping of groups to usernames and project names.
     group_user_names: Mapping[str, str] = {
         group: _user_name(project_prefix, group) for group in groups

@@ -9,10 +9,11 @@ from pathlib import Path
 from pandas import read_xml
 from statistics import mean, median
 from typing import Collection, Iterator
+import gzip
 
 from chatnoir_api.model import Index
 from ir_datasets import load as irds_load
-from pandas import DataFrame
+from pandas import DataFrame, read_csv
 from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, Transformer
 from pyterrier.apply import generic
 from pyterrier.io import read_results, read_topics, write_results
@@ -61,23 +62,23 @@ def _iter_re_rankers() -> Iterator[tuple[str, Transformer]]:
 
 def get_judgment_pool(
     pooling_path: Path,
-    topics_path: Path,
     pooling_depth,
-    all_doc_ids: set[str],
 ):
     output_path = pooling_path / "judgment-pool.json"
     if not output_path.exists():
-        relevant_documents_per_topic = read_topics(
-            filename=str(topics_path),
-            format="trecxml",
-            tags=["relevant_docnos"],
-            tokenise=False,
-        )
+        config_data = json.load(open(pooling_path / "config.json"))
+        
+        if config_data["topics"].endswith(".xml"):
+            relevant_documents_per_topic = read_topics(
+                filename=str(topics_path),
+                format="trecxml",
+                tags=["relevant_docnos"],
+                tokenise=False,
+            )
+        else:
+            relevant_documents_per_topic = read_csv(pooling_path/"manual.csv")
         runs = []
-        for run in chain(
-            pooling_path.glob("pyterrier-*-run.gz"),
-            pooling_path.glob("neural-*-run.gz"),
-        ):
+        for run in glob(str(pooling_path) +"/" + config_data["runs"]):
             runs += [TrecRun(run)]
 
         pool = TrecPoolMaker().make_pool(runs, strategy="topX", topX=pooling_depth).pool
@@ -97,26 +98,7 @@ def get_judgment_pool(
         for _, t in tqdm(
             list(relevant_documents_per_topic.iterrows()), "Expansion Docs"
         ):
-            doc_ids_for_query = set()
-            relevant_docnos: Collection[str] = set(
-                [i.strip() for i in t["query"].split(",")]
-            )
-            relevant_docnos = sorted([i for i in relevant_docnos if len(i) > 3])
-
-            for relevant_doc in relevant_docnos:
-                found = False
-                for doc_id in all_doc_ids:
-                    if doc_id.startswith(relevant_doc + "#"):
-                        doc_ids_for_query.add(doc_id)
-                        found = True
-                if not found:
-                    for doc_id in _fetch_passage_ids(relevant_doc):
-                        doc_ids_for_query.add(doc_id)
-            for doc_id in doc_ids_for_query:
-                pool[t.qid].add(doc_id)
-
-            if len(doc_ids_for_query) == 0 and len(relevant_docnos) != 0:
-                print("Missing relevant docs for topic", relevant_docnos)
+            pool[str(t.qid)].add(str(t.doc_id))
 
         with output_path.open("wb") as file:
             file.write(dumps({k: list(v) for k, v in pool.items()}).encode("UTF-8"))
@@ -200,164 +182,84 @@ def load_topics_dict(
 
 
 def pool_documents(
-    pooling_path: Path,
-    topics_path: Path,
-    retrieval_index: Index,
-    feedback_index: Index,
-    corpus_offset: int,
+    path: Path,
     pooling_depth: int,
 ):
-    for query_type in ("title", "description"):
-        topics = load_topics(
-            topics_path,
-            query_type,
-            tokenise=False,
-        )
-
-        for retrieval_model in ["default", "bm25"]:
-            output_path = (
-                pooling_path
-                / f"corpus-chatnoir-{retrieval_model}-on-{query_type}-run.gz"
-            )
-            if output_path.exists():
-                continue
-            from chatnoir_pyterrier import ChatNoirRetrieve
-
-            chatnoir = ChatNoirRetrieve(
-                index=retrieval_index,
-                retrieval_system=retrieval_model,
-                num_results=1500,
-                verbose=True,
-            )
-            results = chatnoir(topics)
-            write_results(results, str(output_path))
-
-    reformulated_feedback_documents_path = (
-        pooling_path / "reformulated-feedback-documents.jsonl"
-    )
-    if not reformulated_feedback_documents_path.exists():
-        with reformulated_feedback_documents_path.open("wt") as file:
-            dump({}, file)
-
-    #    for _, t in tqdm(list(relevant_documents_per_topic.iterrows()), 'Expansion Docs'):
-    #        relevant_docnos = t['query'].split(',')
-    #        for relevant_doc in relevant_docnos:
-    #            reformulated_documents = load(open(f'{directory}/reformulated-feedback-documents.jsonl', 'r'))
-    #            if relevant_doc in reformulated_documents:
-    #                continue
-    #
-    #            relevant_doc = relevant_doc.strip()
-    #            if len(relevant_doc) < 3:
-    #                continue
-    #            tf = term_vectors(trec_id=relevant_doc, index=feedback_index)
-
-    all_doc_ids: set[str] = set()
-    for query_type in ["title", "description"]:
-        for retrieval_model in ["default", "bm25"]:
-            output_path = (
-                pooling_path
-                / f"corpus-chatnoir-{retrieval_model}-on-{query_type}-run.gz"
-            )
-            results = read_results(str(output_path))
-            results = results[results["rank"] <= corpus_offset]
-            for doc in results["docno"]:
-                all_doc_ids.add(doc)
-    print("Corpus-size", len(all_doc_ids))
-
-    for retrieval_model in ["BM25", "PL2", "DirichletLM", "TF_IDF", "Hiemstra_LM"]:
-        output_path = pooling_path / f"pyterrier-{retrieval_model}-run.gz"
-        if output_path.exists():
-            continue
-        index = get_index(pooling_path)
-        retriever = BatchRetrieve(index, wmodel=retrieval_model)
-        topics = load_topics(
-            topics_path=topics_path,
-            tag="title",
-            tokenise=True,
-        )
-        results = retriever(topics)
-        write_results(results, str(output_path))
-
-    for retrieval_model, reranker in tqdm(
-        iterable=_iter_re_rankers(),
-        desc="Re-Rankers",
-    ):
-        for query_type in ["title", "description"]:
-            output_path = (
-                pooling_path / f"neural-{retrieval_model}-on{query_type}-run.gz"
-            )
-            if output_path.exists():
-                continue
-
-            documents = {
-                i["docno"]: i["text"] for i in get_documents(pooling_path=pooling_path)
-            }
-
-            def add_text(df: DataFrame) -> DataFrame:
-                df["text"] = df["docno"].apply(lambda i: documents[i])
-                return df
-
-            topics = load_topics(
-                topics_path=topics_path,
-                tag=query_type,
-                tokenise=False,
-            )
-            first_stage = read_results(str(pooling_path / "pyterrier-BM25-run.gz"))
-            first_stage = Transformer.from_df(first_stage)
-            first_stage = first_stage >> generic(add_text)
-            first_stage = first_stage >> reranker()
-
-            results = first_stage(topics)
-            write_results(results, str(output_path))
-
     judgment_pool = get_judgment_pool(
-        pooling_path=pooling_path,
-        topics_path=topics_path,
-        pooling_depth=pooling_depth,
-        all_doc_ids=all_doc_ids,
+        pooling_path=path,
+        pooling_depth=pooling_depth
     )
 
-    doccano_judgment_pool_path = pooling_path / "doccano-judgment-pool.jsonl"
+    doccano_judgment_pool_path = path / "doccano-judgment-pool.jsonl"
     if doccano_judgment_pool_path.exists():
         print(f'Exists "{doccano_judgment_pool_path}". I do not override')
         return
 
-    topic_to_title = load_topics_dict(
-        topics_path=topics_path,
-        tag="title",
-        tokenise=False,
-    )
-    topic_to_group = load_topics_dict(
-        topics_path=topics_path,
-        tag="group",
-        tokenise=False,
-    )
-    topic_to_description = load_topics_dict(
-        topics_path=topics_path,
-        tag="description",
-        tokenise=False,
-    )
-    topic_to_narrative = load_topics_dict(
-        topics_path=topics_path,
-        tag="narrative",
-        tokenise=False,
-    )
+    config_data = json.load(open(path / "config.json"))
+    topics_path = path / config_data["topics"]
+
+    if str(topics_path).endswith(".xml"):
+        topic_to_title = load_topics_dict(
+            topics_path=topics_path,
+            tag="title",
+            tokenise=False,
+        )
+        topic_to_group = load_topics_dict(
+            topics_path=topics_path,
+            tag="group",
+            tokenise=False,
+        )
+        topic_to_description = load_topics_dict(
+            topics_path=topics_path,
+            tag="description",
+            tokenise=False,
+        )
+        topic_to_narrative = load_topics_dict(
+            topics_path=topics_path,
+            tag="narrative",
+            tokenise=False,
+        )
+    else:
+        topic_to_title = {}
+        topic_to_description = {}
+        topic_to_narrative = {}
+        for _, i in read_csv(topics_path).iterrows():
+            qid = str(i["qid"])
+            topic_to_title[qid] = i["query"]
+            topic_to_description[qid] = i["description"]
+            topic_to_narrative[qid] = i["narrative"]
 
     with doccano_judgment_pool_path.open("wt") as file:
-        docs_store = irds_load("msmarco-segment-v2.1").docs_store()
+        if 'irds-id' in config_data:
+            docs_store = irds_load(config_data["irds-id"]).docs_store()
+        else:
+            docs_store = {}
+            with gzip.open(path / "corpus.jsonl.gz", "rt") as f:
+                for l in f:
+                    l = json.loads(l)
+                    docs_store[l["doc_id"]] = l
 
-        for topic in tqdm(judgment_pool, "Doccano Pool"):
-            for document in judgment_pool[topic]:
-                file.write(
-                    dumps(
-                        {
-                            "group": topic_to_group[topic],
-                            "query_id": topic,
-                            "query": topic_to_title[topic],
-                            "description": topic_to_description[topic],
-                            "narrative": topic_to_narrative[topic],
-                            "doc_id": document,
-                            "text": docs_store.get(document).default_text(),
+        with open(path / "topic-mapping.jsonl", "r") as f:
+            for i in f:
+                i = json.loads(i)
+                group = i["account"]
+                for topic in i["topics"]:
+                    for document in judgment_pool[topic]:
+                        if document not in docs_store:
+                            print(f"Skip document with id {document}")
+                            continue
+                        file.write(
+                            dumps(
+                                {
+                                    "group": group,
+                                     "query_id": topic,
+                                     "query": topic_to_title[topic],
+                                     "description": topic_to_description[topic],
+                                     "narrative": topic_to_narrative[topic],
+                                     "doc_id": document,
+                                     "url": docs_store.get(document)["url"],
+                                     "title": docs_store.get(document)["title"],
+                                     "text": docs_store.get(document)["main_content"],
                         }
                     )
                     + "\n"
