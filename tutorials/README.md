@@ -2,7 +2,7 @@
 
 Hands-on tutorials to kick-start the development and evaluation of information retrieval systems.
 
-In this directory, we provide plenty Jupyter notebooks that guide students through specific aspects of information retrieval experimentation starting from [data exploration](tutorial-ir-datasets.ipynb) over [simple retrieval approaches](tutorial-query-expansion.ipynb) to [statistical analysis](tutorial-statistical-analysis.ipynb).
+In this directory, we provide plenty Jupyter notebooks that guide students through specific aspects of information retrieval experimentation, starting from [data exploration](tutorial-ir-datasets.ipynb), over [simple retrieval approaches](tutorial-query-expansion.ipynb), to [statistical analysis](tutorial-statistical-analysis.ipynb).
 
 The fastest and easiest way to run our tutorials is to use Github Codespaces. Just click on the button below which will start a remote session with everything installed already:
 
@@ -10,7 +10,7 @@ The fastest and easiest way to run our tutorials is to use Github Codespaces. Ju
 
 ## Recommended order of the tutorials
 
-As the tutorials cover contents of different difficulties, we recommend that you start with these basic tutorials:
+As the tutorials cover content of different difficulties, we recommend that you start with these basic tutorials:
 
 1. The [PyTerrier tutorial](https://github.com/terrier-org/ecir2021tutorial#contents), in particular [Part 1](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part1.pdf) and [Part 2](https://github.com/terrier-org/ecir2021tutorial/blob/main/slides/part2.pdf).
 2. Our ["Topics, documents, and relevance judgments"](tutorial-ir-datasets.ipynb). This tutorial will help you with Stages 1 and 2 of our course.
@@ -33,7 +33,7 @@ Our basic tutorials cover the most important concepts of information retrieval a
 | Statistical analysis | [🔗](tutorial-statistical-analysis.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-statistical-analysis.ipynb?quickstart=1) |
 | Learning to rank ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/2) |
 | Building a boolean search engine | [🔗](tutorial-boolean-retrieval.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-boolean-retrieval.ipynb?quickstart=1) |
-| _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
+| _Anything missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
 More complex topics that might not be suited to every IR course are still covered in our research-oriented tutorials. These tutorials are often more complex and require more prior knowledge, so they are best suited for Master's students:
 
@@ -52,7 +52,7 @@ More complex topics that might not be suited to every IR course are still covere
 | Genre Classification (work in progress)|  [🔗](tutorial-genre-classification.ipynb) | ⏳ |
 | Corpus Graph (work in progress)|  [🔗](tutorial-corpus-graph.ipynb) | ⏳ |
 | Re-ranking with cross-encoders or bi-encoders ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3)) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/3) |
-| _Anyhting missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
+| _Anything missing? [Propose new tutorial.](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/new)_ | | |
 
 Of course, this list can never be exhaustive, as paradigms shift and technologies change.
 However, we are very happy about any contribution from the open science community!
