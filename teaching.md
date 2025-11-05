@@ -32,6 +32,8 @@ Now, we want to export the topics from Google Forms and convert it to a machine-
 
 After having downloaded the CSV file from Google, convert the topics to an XML file like so:
 
+ToDo: the documentation is outdated here a bit. I lastly described it step-by-step here: [https://github.com/OpenWebSearch/wows-code/tree/main/ecir26/collection#setting-up-doccano-step-by-step](https://github.com/OpenWebSearch/wows-code/tree/main/ecir26/collection#setting-up-doccano-step-by-step). I will do this again and then integrate it here.
+
 ```shell
 teaching-ir convert-topics-csv-to-xml /path/to/topics.csv topics.xml
 ```
