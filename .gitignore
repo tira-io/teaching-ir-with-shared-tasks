@@ -166,3 +166,5 @@ coauthors.txt
 pool.jsonl
 **/*run.gz
 qrels.txt
+.*cache
+

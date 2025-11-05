@@ -165,11 +165,23 @@ def _chatnoir_cache_urls_to_docnos(*url: str) -> str:
         path_type=Path,
     ),
 )
+@option(
+    "--from-date",
+    type=str,
+    default=None,
+)
+@option(
+    "--filter-university",
+    type=str,
+    default=None,
+)
 def convert_topics_csv_to_xml(
     csv_path: Path,
     topics_path: Path,
     release: bool,
     coauthors_path: Path | None,
+    from_date: str | None,
+    filter_university: str | None,
 ) -> None:
     """
     Convert a topics spread sheet exported from Google Forms as CSV to a topics XML file.
@@ -195,7 +207,7 @@ def convert_topics_csv_to_xml(
         },
         inplace=True,
     )
-    df["timestamp"] = to_datetime(df["timestamp"])
+    df["timestamp"] = to_datetime(df["timestamp"], format="%d.%m.%Y %H:%M:%S")
 
     # Normalize strings.
     df["title"] = df["title"].str.strip()
@@ -222,12 +234,23 @@ def convert_topics_csv_to_xml(
         lambda x: True if x == "Yes" else False
     )
 
-    print(df)
+    print(f"Found {len(df)} topics.")
 
     # Remove empty topics.
     df = df[(df["title"] != "") & df["title"].notna()]
     df = df[(df["description"] != "") & df["description"].notna()]
     df = df[(df["narrative"] != "") & df["narrative"].notna()]
+
+    # Filter by submission year.
+    if from_date is not None:
+        from_date_parsed = to_datetime(from_date, format="%Y-%m-%d", errors="raise")
+        df = df[df["timestamp"] >= from_date_parsed]
+        print(f"Filtered topics from date {from_date_parsed.date()}: {len(df)} topics remain.")
+
+    # Filter by university.
+    if filter_university is not None:
+        df = df[df["university"] == filter_university]
+        print(f"Filtered topics from university '{filter_university}': {len(df)} topics remain.")
 
     # Anonymize for release.
     if release:
