@@ -60,8 +60,12 @@ This will then also export a list with newline-separated names of coauthors to i
 
 Create top-k pools of documents retrieved by TIREx baselines (using the previously exported `topics.xml` file).
 
+Please create a `config.json` file with the following credentials:
+
+
+
 ```shell
-teaching-ir pool-documents --pooling-depth 10 topics.xml pooling/
+teaching-ir pool-documents directory
 ```
 
 > TODO: Explain parameters.
