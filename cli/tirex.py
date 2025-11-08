@@ -12,11 +12,13 @@ from typing import Collection, Iterator
 import gzip
 
 from chatnoir_api.model import Index
+from chatnoir_api import cache_contents
 from ir_datasets import load as irds_load
 from pandas import DataFrame, read_csv
 from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, Transformer
 from pyterrier.apply import generic
 from pyterrier.io import read_results, read_topics, write_results
+from chatnoir_pyterrier import ChatNoirRetrieve, Feature
 from tira.rest_api_client import Client
 from tqdm import tqdm
 from trectools import TrecPoolMaker, TrecRun, TrecQrel
@@ -70,7 +72,7 @@ def get_judgment_pool(
         
         if config_data["topics"].endswith(".xml"):
             relevant_documents_per_topic = read_topics(
-                filename=str(topics_path),
+                filename=pooling_path / config_data["topics"],
                 format="trecxml",
                 tags=["relevant_docnos"],
                 tokenise=False,
@@ -114,31 +116,59 @@ def get_judgment_pool(
     return ret
 
 
-def get_documents(pooling_path: Path):
-    documents_path = pooling_path / "documents.jsonl.gz"
-    if not documents_path.exists():
-        docs_store = irds_load("msmarco-segment-v2.1").docs_store()
-        all_docs = set()
-        for file_name in glob(f"{pooling_path}/corpus-chatnoir*run.gz"):
-            run = TrecRun(file_name).run_data
-            for doc in run["docid"]:
-                all_docs.add(doc)
-        print("docs size", len(all_docs))
+def chatnoir_retrieve(field, topics_path, run_dir, index, model, depth):
+    target_file = run_dir / f"run-chatnoir-{field}-{model}-{depth}.gz"
 
-        with gzip_open(documents_path, "wt") as file:
+    if target_file.exists():
+        return
+
+    topics = load_topics(topics_path=topics_path, tag=field, tokenise=False)
+    chatnoir = ChatNoirRetrieve(index=index, search_method=model, features=[], verbose=True, num_results=depth, page_size=depth)
+    run = chatnoir(topics)
+    run_dir.mkdir(parents=True, exist_ok=True)
+    write_results(run, target_file)
+    
+
+def get_documents(pooling_path: Path):
+    config_data = json.load(open(pooling_path / "config.json"))
+    run_path = pooling_path / config_data["runs"]
+    documents_path = pooling_path / "documents.jsonl.gz"
+    
+    def docs_failsave():
+        ret =  []
+        try:
+        
+            with gzip_open(documents_path, "rt") as file:
+                for line in file:
+                    try:
+                        ret.expand(loads(line))
+                    except: pass
+        except:
+            pass
+
+        return ret
+
+    covered_docs = set([str(i["doc_id"]) for doc in docs_failsave()])
+
+    all_docs = set()
+    for file_name in glob(f"{run_path}/*.gz"):
+        run = TrecRun(file_name).run_data
+        for doc in run["docid"].unique():
+            if doc not in covered_docs:
+                all_docs.add(doc)
+    print("docs size", len(all_docs))
+    if len(all_docs) > 0:
+        with gzip_open(documents_path, "at") as file:
             for doc in tqdm(all_docs, "Load Docs"):
-                doc = docs_store.get(doc)
-                file.write(
-                    dumps({"docno": doc.doc_id, "text": doc.default_text()}) + "\n"
-                )
+                contents = cache_contents(doc, index=config_data["chatnoir-index"])
+                contents = json.loads(contents)
+                orig = contents["original_document"]
+                file.write(dumps({"docno": contents["docno"], "text": contents["text"], "title": orig["title"], "url": orig["url"]}) + "\n")
                 file.flush()
 
-    ret = []
+    return docs_failsave()
 
-    with gzip_open(documents_path, "rt") as file:
-        for line in file:
-            ret += [loads(line)]
-    return ret
+
 
 
 def get_index(pooling_path: Path):
@@ -185,6 +215,18 @@ def pool_documents(
     path: Path,
     pooling_depth: int,
 ):
+    config_data = json.load(open(path / "config.json"))
+    topics_path = path / config_data["topics"]
+    run_path = path / config_data["runs"]
+
+    get_documents(path)
+    raise ValueError("fooo")
+    chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "bm25", 1000)
+    chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "bm25", 1000)
+    chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "default", 25)
+    chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "default", 25)
+
+    raise ValueError("sa")
     judgment_pool = get_judgment_pool(
         pooling_path=path,
         pooling_depth=pooling_depth
@@ -194,9 +236,6 @@ def pool_documents(
     if doccano_judgment_pool_path.exists():
         print(f'Exists "{doccano_judgment_pool_path}". I do not override')
         return
-
-    config_data = json.load(open(path / "config.json"))
-    topics_path = path / config_data["topics"]
 
     if str(topics_path).endswith(".xml"):
         topic_to_title = load_topics_dict(
@@ -223,7 +262,10 @@ def pool_documents(
         topic_to_title = {}
         topic_to_description = {}
         topic_to_narrative = {}
+        print(topics_path)
         for _, i in read_csv(topics_path).iterrows():
+            print(i)
+            raise ValueError(i["qid"], i["query"])
             qid = str(i["qid"])
             topic_to_title[qid] = i["query"]
             topic_to_description[qid] = i["description"]
