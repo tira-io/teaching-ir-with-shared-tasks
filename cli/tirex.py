@@ -15,7 +15,8 @@ from chatnoir_api.model import Index
 from chatnoir_api import cache_contents
 from ir_datasets import load as irds_load
 from pandas import DataFrame, read_csv
-from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, Transformer
+from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, Transformer, IndexFactory
+from pyterrier.terrier import Retriever as pt_retriever
 from pyterrier.apply import generic
 from pyterrier.io import read_results, read_topics, write_results
 from chatnoir_pyterrier import ChatNoirRetrieve, Feature
@@ -77,12 +78,14 @@ def get_judgment_pool(
                 tags=["relevant_docnos"],
                 tokenise=False,
             )
+            relevant_documents_per_topic["doc_id"] = relevant_documents_per_topic["query"]
         else:
             relevant_documents_per_topic = read_csv(pooling_path/"manual.csv")
         runs = []
-        for run in glob(str(pooling_path) +"/" + config_data["runs"]):
+        for run in glob(str(pooling_path) +"/" + config_data["runs"] + "/*.gz"):
             runs += [TrecRun(run)]
 
+        print(f"pool {len(runs)} runs.")
         pool = TrecPoolMaker().make_pool(runs, strategy="topX", topX=pooling_depth).pool
         pool_sizes = []
         for k in pool:
@@ -100,7 +103,8 @@ def get_judgment_pool(
         for _, t in tqdm(
             list(relevant_documents_per_topic.iterrows()), "Expansion Docs"
         ):
-            pool[str(t.qid)].add(str(t.doc_id))
+            for doc_id in t.doc_id.split(","):
+                pool[str(t.qid)].add(str(doc_id))
 
         with output_path.open("wb") as file:
             file.write(dumps({k: list(v) for k, v in pool.items()}).encode("UTF-8"))
@@ -127,7 +131,20 @@ def chatnoir_retrieve(field, topics_path, run_dir, index, model, depth):
     run = chatnoir(topics)
     run_dir.mkdir(parents=True, exist_ok=True)
     write_results(run, target_file)
-    
+
+   
+def pyterrier_retrieve(field, topics_path, run_dir, index, wmodel, depth):
+    target_file = run_dir / f"run-pt-{field}-{wmodel}-{depth}.gz"
+
+    if target_file.exists():
+        return
+
+    topics = load_topics(topics_path=topics_path, tag=field, tokenise=True)
+    retriever = pt_retriever(index, wmodel=wmodel, num_results=depth, verbose=True)
+    run = retriever(topics)
+    run_dir.mkdir(parents=True, exist_ok=True)
+    write_results(run, target_file)
+
 
 def get_documents(pooling_path: Path):
     config_data = json.load(open(pooling_path / "config.json"))
@@ -136,19 +153,15 @@ def get_documents(pooling_path: Path):
     
     def docs_failsave():
         ret =  []
-        try:
-        
-            with gzip_open(documents_path, "rt") as file:
-                for line in file:
-                    try:
-                        ret.expand(loads(line))
-                    except: pass
-        except:
-            pass
+        with gzip_open(documents_path, "rt") as file:
+            for line in file:
+                try:
+                    ret.append(loads(line))
+                except: pass
 
         return ret
 
-    covered_docs = set([str(i["doc_id"]) for doc in docs_failsave()])
+    covered_docs = set([str(doc["docno"]) for doc in docs_failsave()])
 
     all_docs = set()
     for file_name in glob(f"{run_path}/*.gz"):
@@ -219,14 +232,16 @@ def pool_documents(
     topics_path = path / config_data["topics"]
     run_path = path / config_data["runs"]
 
-    get_documents(path)
-    raise ValueError("fooo")
     chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "bm25", 1000)
     chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "bm25", 1000)
     chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "default", 25)
-    chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "default", 25)
+    chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "default", 10)
+    index = get_index(path)
 
-    raise ValueError("sa")
+    for model in ["BM25", "PL2", "TF_IDF", "DirichletLM", "Hiemstra_LM", "DFRee", "Dl", "DLH", "DPH", "Tf", "LGD"]:
+        for field in ["title", "description"]:
+            pyterrier_retrieve(field, topics_path, run_path, index, model, 1000)
+
     judgment_pool = get_judgment_pool(
         pooling_path=path,
         pooling_depth=pooling_depth
@@ -276,10 +291,10 @@ def pool_documents(
             docs_store = irds_load(config_data["irds-id"]).docs_store()
         else:
             docs_store = {}
-            with gzip.open(path / "corpus.jsonl.gz", "rt") as f:
+            with gzip.open(path / "documents.jsonl.gz", "rt") as f:
                 for l in f:
                     l = json.loads(l)
-                    docs_store[l["doc_id"]] = l
+                    docs_store[l["docno"]] = l
 
         with open(path / "topic-mapping.jsonl", "r") as f:
             doc_count = 0

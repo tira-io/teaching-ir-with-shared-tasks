@@ -56,19 +56,33 @@ This will then also export a list with newline-separated names of coauthors to i
 
 ## Run the pooling via ChatNoir and TIREx
 
-> TODO: The documentation is outdated here a bit. I lastly described it step-by-step here: [https://github.com/OpenWebSearch/wows-code/tree/main/ecir26/collection#setting-up-doccano-step-by-step](https://github.com/OpenWebSearch/wows-code/tree/main/ecir26/collection#setting-up-doccano-step-by-step). I will do this again and then integrate it here.
+If you want to look at some recent iterations of this pattern, please have a look here: [https://github.com/OpenWebSearch/wows-code/tree/main/ecir26/collection#setting-up-doccano-step-by-step](https://github.com/OpenWebSearch/wows-code/tree/main/ecir26/collection#setting-up-doccano-step-by-step).
 
 Create top-k pools of documents retrieved by TIREx baselines (using the previously exported `topics.xml` file).
 
-Please create a `config.json` file with the following credentials:
+Please create a `config.json` file with the following details:
 
+```
+{
+    "topics": "THE_NAME_OF_THE_TOPICS_FILE",
+    "runs": "runs",
+    "team-mapping": "topic-mapping.jsonl",
+    "chatnoir-index": "THE_CHATNOIR_INDEX"
+}
+```
+
+Please create a file `{"account": "ir-25-fsu-51", "topics": ["51"]}` with lines like:
+
+```
+{"account": "ir-25-fsu-51", "topics": ["51"]}
+```
+
+Now, you can run the pooling
 
 
 ```shell
-teaching-ir pool-documents directory
+teaching-ir pool-documents --pooling-depth XX directory
 ```
-
-> TODO: Explain parameters.
 
 ## Prepare relevance judgments on Doccano
 
