@@ -71,7 +71,7 @@ Please create a `config.json` file with the following details:
 }
 ```
 
-Please create a file `{"account": "ir-25-fsu-51", "topics": ["51"]}` with lines like:
+Please create a file `topic-mapping.jsonl` with lines like:
 
 ```
 {"account": "ir-25-fsu-51", "topics": ["51"]}
@@ -91,16 +91,12 @@ We also include tools that ease uploading pooled documents and downloading relev
 Simply prepare the relevance judgments in Doccano like so:
 
 ```shell
-teaching-ir prepare-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username <USERNAME> --doccano-password <PASSWORD> --supervisor-member <SUPERVISORNAME> <PREFIX> topics.xml pooling/doccano-judgment-pool.jsonl
+teaching-ir prepare-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username <USERNAME> --doccano-password <PASSWORD> <PREFIX> doccano-judgment-pool.jsonl
 ```
 
-This will use the pooled documents from the `pooling/` directory and the topics from `topics.xml` to create for each student team:
-
-- an account to log in to Doccano
-- a project with the team's batch of query-document pairs to judge
+This will use the pooled documents from the `doccano-judgment-pool.jsonl` file to create for each account of the `topic-mapping.jsonl` file an account to log in to Doccano together with the batch of query-document pairs to judge.
 
 The student teams can now work on their relevance judgments.
-(The `--supervisor-member` option is optional but can be useful to give the supervisors' Doccano users access to the students' annotations.)
 
 ## Export relevance judgments
 
