@@ -88,6 +88,29 @@ teaching-ir pool-documents --pooling-depth XX directory
 
 We also include tools that ease uploading pooled documents and downloading relevance judgments to/from the Doccano annotation platform.
 
+Create a file `doccano-label-configs.json` with contents like:
+
+```
+[
+  {
+    "id": 11340,
+    "text": "Not Relevant (0)",
+    "prefixKey": null,
+    "suffixKey": "0",
+    "backgroundColor": "#D33115",
+    "textColor": "#ffffff"
+  },
+  {
+    "id": 11351,
+    "text": "Relevant (1)",
+    "prefixKey": null,
+    "suffixKey": "1",
+    "backgroundColor": "#194D33",
+    "textColor": "#ffffff"
+  }
+]
+```
+
 Simply prepare the relevance judgments in Doccano like so:
 
 ```shell
