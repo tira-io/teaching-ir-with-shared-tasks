@@ -63,6 +63,20 @@ def _iter_re_rankers() -> Iterator[tuple[str, Transformer]]:
     yield "ance", lambda: Ance(verbose=True)
 
 
+def topic_to_relevant_docs(p):
+    config_data = json.load(open(p / "config.json"))
+    if config_data["topics"].endswith(".xml"):
+        relevant_documents_per_topic = read_topics(
+            filename=p / config_data["topics"],
+            format="trecxml",
+            tags=["relevant_docnos"],
+            tokenise=False,
+        )
+        relevant_documents_per_topic["doc_id"] = relevant_documents_per_topic["query"]
+    else:
+        relevant_documents_per_topic = read_csv(p/"manual.csv")
+    return relevant_documents_per_topic
+
 def get_judgment_pool(
     pooling_path: Path,
     pooling_depth,
@@ -70,17 +84,8 @@ def get_judgment_pool(
     output_path = pooling_path / "judgment-pool.json"
     if not output_path.exists():
         config_data = json.load(open(pooling_path / "config.json"))
-        
-        if config_data["topics"].endswith(".xml"):
-            relevant_documents_per_topic = read_topics(
-                filename=pooling_path / config_data["topics"],
-                format="trecxml",
-                tags=["relevant_docnos"],
-                tokenise=False,
-            )
-            relevant_documents_per_topic["doc_id"] = relevant_documents_per_topic["query"]
-        else:
-            relevant_documents_per_topic = read_csv(pooling_path/"manual.csv")
+        relevant_documents_per_topic = topic_to_relevant_docs(pooling_path)
+
         runs = []
         for run in glob(str(pooling_path) +"/" + config_data["runs"] + "/*.gz"):
             runs += [TrecRun(run)]
@@ -169,6 +174,14 @@ def get_documents(pooling_path: Path):
         for doc in run["docid"].unique():
             if doc not in covered_docs:
                 all_docs.add(doc)
+
+    relevant_documents_per_topic = topic_to_relevant_docs(pooling_path)
+    for _, t in relevant_documents_per_topic.iterrows():
+        for doc_id in t.doc_id.split(","):
+            print("-->", doc_id)
+            if doc_id not in covered_docs:
+                all_docs.add(doc_id)
+
     print("docs size", len(all_docs))
     if len(all_docs) > 0:
         with gzip_open(documents_path, "at") as file:
@@ -180,8 +193,6 @@ def get_documents(pooling_path: Path):
                 file.flush()
 
     return docs_failsave()
-
-
 
 
 def get_index(pooling_path: Path):
@@ -236,6 +247,7 @@ def pool_documents(
     chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "bm25", 1000)
     chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "default", 25)
     chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "default", 10)
+    get_documents(path)
     index = get_index(path)
 
     for model in ["BM25", "PL2", "TF_IDF", "DirichletLM", "Hiemstra_LM", "DFRee", "Dl", "DLH", "DPH", "Tf", "LGD"]:
@@ -308,8 +320,7 @@ def pool_documents(
                         if document not in docs_store:
                             print(f"Skip document with id {document}")
                             continue
-                        from bs4 import BeautifulSoup
-                        main_content = BeautifulSoup(docs_store.get(document)["main_content"], features="html.parser").get_text()
+                        main_content = docs_store.get(document)["text"]
                         if len(main_content) < 10:
                             main_content = "No Main Content"
                             no_main_content += 1
