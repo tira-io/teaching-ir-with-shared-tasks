@@ -178,7 +178,6 @@ def get_documents(pooling_path: Path):
     relevant_documents_per_topic = topic_to_relevant_docs(pooling_path)
     for _, t in relevant_documents_per_topic.iterrows():
         for doc_id in t.doc_id.split(","):
-            print("-->", doc_id)
             if doc_id not in covered_docs:
                 all_docs.add(doc_id)
 
