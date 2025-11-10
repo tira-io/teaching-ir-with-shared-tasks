@@ -942,7 +942,7 @@ def export_qrels_from_doccano(doccano_url: str, doccano_username: str, doccano_p
     help="Username to authenticate with Doccano.",
 )
 @option(
-    "-u",
+    "-p",
     "--doccano-password",
     type=str,
     required=True,
