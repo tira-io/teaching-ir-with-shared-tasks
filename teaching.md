@@ -126,7 +126,7 @@ The student teams can now work on their relevance judgments.
 Export the relevance judgments as [qrels](https://trec.nist.gov/data/qrels_eng/) from Doccano like so:
 
 ```shell
-teaching-ir export-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username <USERNAME> --doccano-password <PASSWORD> <PREFIX> topics.xml pooling/doccano-judgment-pool.jsonl qrels.txt
+teaching-ir export-relevance-judgments --doccano-url https://doccano.web.webis.de/ --doccano-username <USERNAME> --doccano-password <PASSWORD> <PREFIX> directory
 ```
 
 ## Clean up
