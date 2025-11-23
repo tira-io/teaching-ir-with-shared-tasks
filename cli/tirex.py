@@ -213,12 +213,14 @@ def load_topics(
     tag: str,
     tokenise: bool,
 ) -> DataFrame:
-    return read_topics(
-        filename=str(topics_path),
-        format="trecxml",
-        tags=[tag],
-        tokenise=tokenise,
-    )
+    if str(topics_path).endswith(".xml"):
+        return read_topics(filename=str(topics_path), format="trecxml", tags=[tag], tokenise=tokenise)
+    else:
+        assert tokenise == False
+        ret = read_csv(topics_path)
+        ret["title"] = ret["query"]
+        ret["query"] = ret[tag]
+        return ret
 
 
 def load_topics_dict(
@@ -234,6 +236,15 @@ def load_topics_dict(
     return {row["qid"]: row["query"] for _, row in ret.iterrows()}
 
 
+def read_account_to_topics(path: Path):
+    ret = {}
+    with open(path / "topic-mapping.jsonl", "r") as f:
+        for i in f:
+            i = json.loads(i)
+            assert i["account"] not in ret
+            ret[i["account"]] = i["topics"]
+    return ret
+
 def pool_documents(
     path: Path,
     pooling_depth: int,
@@ -242,8 +253,8 @@ def pool_documents(
     topics_path = path / config_data["topics"]
     run_path = path / config_data["runs"]
 
-    chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "bm25", 1000)
-    chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "bm25", 1000)
+    chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "bm25", 100)
+    chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "bm25", 100)
     chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "default", 25)
     chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "default", 10)
     get_documents(path)
