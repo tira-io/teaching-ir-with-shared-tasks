@@ -44,6 +44,7 @@ More complex topics that might not be suited to every IR course are still covere
 | Query segmentation | [🔗](tutorial-query-segmentation.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-segmentation.ipynb?quickstart=1) |
 | Query performance prediction | [🔗](tutorial-query-performance-prediction.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-performance-prediction.ipynb?quickstart=1) |
 | Classification of medical/health queries and documents | [🔗](tutorial-medical-classification.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-medical-classification.ipynb?quickstart=1) |
+| PyTerrier Artifacts | [🔗](tutorial-pyterrier-artifacts.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-pyterrier-artifacts.ipynb?quickstart=1) |
 | Entity linking ([work in progress](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/4)) |  [🔗](tutorial-entity-linking-in-progress.ipynb) | [⏳](https://github.com/tira-io/teaching-ir-with-shared-tasks/issues/4) |
 | Query Intent Prediction (work in progress)|  [🔗](tutorial-query-intent-prediction.ipynb) | ⏳ |
 | Query Spelling Correction (work in progress)|  [🔗](tutorial-spelling-correction.ipynb) | ⏳ |
