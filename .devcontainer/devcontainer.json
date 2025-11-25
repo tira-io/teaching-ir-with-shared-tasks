@@ -1,5 +1,5 @@
 {
-  "image": "webis/ir-lab-wise-2023:0.0.3",
+  "image": "webis/ir-lab-wise-2025:0.0.1",
   "customizations": {
     "vscode": {
       "extensions": [
