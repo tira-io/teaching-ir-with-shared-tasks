@@ -29,6 +29,7 @@ Our basic tutorials cover the most important concepts of information retrieval a
 | Stopword lists | [🔗](tutorial-stopword-lists.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-stopword-lists.ipynb?quickstart=1) |
 | Stemming | [🔗](tutorial-stemming.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-stemming.ipynb?quickstart=1) |
 | Lemmatization | [🔗](tutorial-lemmatization.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-lemmatization.ipynb?quickstart=1) |
+| Tokenization | [🔗](tutorial-tokenization.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-tokenization.ipynb?quickstart=1) |
 | Query expansion | [🔗](tutorial-query-expansion.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-query-expansion.ipynb?quickstart=1) |
 | Hyperparameter tuning | [🔗](tutorial-hyperparameter-tuning.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-hyperparameter-tuning.ipynb?quickstart=1) |
 | Statistical analysis | [🔗](tutorial-statistical-analysis.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-statistical-analysis.ipynb?quickstart=1) |
