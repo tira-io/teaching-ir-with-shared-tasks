@@ -168,3 +168,5 @@ pool.jsonl
 qrels.txt
 .*cache
 
+.DS_Store
+
