@@ -988,45 +988,22 @@ def export_relevance_judgments(
     qrel_mapping = json.loads(open(directory / "doccano-label-configs.json").read())
     qrel_mapping = {k["text"]: int(k["text"].split("(")[-1].split(")")[0]) for k in qrel_mapping}
     print(qrel_mapping)
+
     qrels["judged"] = qrels["label"].map(lambda x: 1 if len(x) > 0 else 0)
     qrels["unjudged"] = qrels["label"].map(lambda x: 0 if len(x) > 0 else 1)
     print(qrels[["project", "judged", "unjudged"]].groupby("project").agg(sum).sort_values("unjudged", ascending=False).head(40))
     
     qrels["label"] = qrels["label"].map(lambda x: x[0] if len(x) > 0 else None)
-    raise ValueError("aas")
+
     qrels = qrels[qrels["label"].notna()]
-    qrels["label"] = qrels["label"].map(
-        {
-            _LABEL_RELEVANT: 1,
-            _LABEL_NOT_RELEVANT: 0,
-        }
-    )
+    qrels["label"] = qrels["label"].map(qrel_mapping)
     qrels = qrels[qrels["label"].notna()]
 
-    pool = pool.merge(
-        qrels,
-        how="left",
-        on=["query_id", "doc_id"],
-        suffixes=("_pool", None),
-    )
-    unjudged_pool = pool[pool["label"].isna()]
-    if len(unjudged_pool) > 0:
-        echo(f"Found {len(unjudged_pool)} unjudged documents from pool.")
-        if confirm("Report unjudged documents", default=True):
-            for group, group_unjudged_pool in unjudged_pool.groupby("group"):
-                echo(
-                    f"\tGroup '{group}': {len(group_unjudged_pool)} unjudged documents."
-                )
-
+    qrels_path = Path(directory) / "qrels.txt"
     echo(f"Export qrels file to {qrels_path}.")
     qrels["Q0"] = 0
     qrels = qrels[["query_id", "Q0", "doc_id", "label"]]
-    qrels.to_csv(
-        qrels_path,
-        sep=" ",
-        index=False,
-        header=False,
-    )
+    qrels.to_csv(qrels_path, sep=" ", index=False, header=False)
 
 
 @cli.command()
