@@ -24,7 +24,6 @@ dependencies = [
     "trectools~=0.0.50",
     "tqdm~=4.67",
 ]
-dynamic = ["version"]
 
 [project.optional-dependencies]
 tests = [
