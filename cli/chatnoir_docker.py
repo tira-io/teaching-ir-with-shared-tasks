@@ -355,10 +355,28 @@ def kubernetes_manifest(
     on `hostname_pattern` and the cache/document view on
     `cache_hostname_pattern` (both with '{course}' replaced by `course_name`),
     so that both are reachable from the outside on the default HTTPS port.
+
+    The Deployment's startup command patches the image's baked-in
+    SEARCH_FRONTEND_URL/CACHE_FRONTEND_URL to the real public hostnames
+    above, so links shown in search results (e.g. cache_uri) point at the
+    actual deployment instead of the image's default http://127.0.0.1:*/.
     """
     app_name = f"chatnoir-{slugify(course_name)}"
     search_host = hostname_pattern.format(course=slugify(course_name))
     cache_host = cache_hostname_pattern.format(course=slugify(course_name))
+    settings_file = "/opt/chatnoir-web/chatnoir/chatnoir/local_settings.py"
+    # The image bakes SEARCH_FRONTEND_URL/CACHE_FRONTEND_URL as
+    # http://127.0.0.1:8000/ and :8001/, used to build links (e.g. cache_uri)
+    # shown in search results. Patch them to the real public hostnames below
+    # before starting the image's regular entrypoint/command, without
+    # touching the already-baked SEARCH_INDICES in that same file.
+    startup_script = (
+        f"sed -i \"s#^SEARCH_FRONTEND_URL = .*#SEARCH_FRONTEND_URL = "
+        f"'https://{search_host}/'#\" {settings_file} && "
+        f"sed -i \"s#^CACHE_FRONTEND_URL = .*#CACHE_FRONTEND_URL = "
+        f"'https://{cache_host}/'#\" {settings_file} && "
+        f'exec /docker-entrypoint-all-in-one.sh supervisord -n -c /etc/supervisord.conf'
+    )
     return f"""\
 apiVersion: apps/v1
 kind: Deployment
@@ -380,6 +398,9 @@ spec:
       containers:
         - name: {app_name}
           image: {image_tag}
+          command: ["/bin/sh", "-c"]
+          args:
+            - {json.dumps(startup_script)}
           ports:
             - containerPort: 8000
               name: search
