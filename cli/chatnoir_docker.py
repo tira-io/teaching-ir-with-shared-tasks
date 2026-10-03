@@ -362,6 +362,8 @@ def kubernetes_manifest(
     SEARCH_FRONTEND_URL/CACHE_FRONTEND_URL to the real public hostnames
     above, so links shown in search results (e.g. cache_uri) point at the
     actual deployment instead of the image's default http://127.0.0.1:*/.
+    It also works around a static-map path bug in the image's own
+    wsgi-web-cache.ini that otherwise breaks CSS/images on the cache view.
     """
     app_name = f"chatnoir-{slugify(course_name)}"
     search_host = hostname_pattern.format(course=slugify(course_name))
@@ -372,7 +374,16 @@ def kubernetes_manifest(
     # shown in search results. Patch them to the real public hostnames below
     # before starting the image's regular entrypoint/command, without
     # touching the already-baked SEARCH_INDICES in that same file.
+    #
+    # The image's own wsgi-web-cache.ini (which serves the cache/document
+    # view on port 8001) has a wrong static-map path
+    # (/opt/chatnoir-web/chatnoir/chatnoir_static instead of the real
+    # /opt/chatnoir-web/chatnoir_static), causing CSS/images to 404 there.
+    # Work around it with a symlink, since this can't be fixed in the image.
     startup_script = (
+        "mkdir -p /opt/chatnoir-web/chatnoir && "
+        "ln -sfn /opt/chatnoir-web/chatnoir_static "
+        "/opt/chatnoir-web/chatnoir/chatnoir_static && "
         f"sed -i \"s#^SEARCH_FRONTEND_URL = .*#SEARCH_FRONTEND_URL = "
         f"'https://{search_host}/'#\" {settings_file} && "
         f"sed -i \"s#^CACHE_FRONTEND_URL = .*#CACHE_FRONTEND_URL = "
