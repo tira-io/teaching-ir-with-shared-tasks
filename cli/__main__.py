@@ -32,6 +32,7 @@ from slugify import slugify
 from tqdm import tqdm
 
 from cli import __version__ as app_version
+from cli import chatnoir_docker
 
 
 def print_version(
@@ -135,6 +136,15 @@ _DEFAULT_DOCCANO_LABEL_CONFIGS = [
         path_type=Path,
     ),
 )
+@argument("course_name", type=str)
+@option(
+    "--chatnoir-image-repository",
+    "chatnoir_image_repository",
+    type=str,
+    default=chatnoir_docker._DEFAULT_RESULT_IMAGE_REPOSITORY,
+    show_default=True,
+    help="Image repository that 'build-chatnoir' commits/tags the course's finished ChatNoir image to (tagged with COURSE_NAME).",
+)
 @option(
     "--corpora-base",
     "corpora_base_dirname",
@@ -174,6 +184,8 @@ _DEFAULT_DOCCANO_LABEL_CONFIGS = [
 )
 def init_directory(
     directory: Path,
+    course_name: str,
+    chatnoir_image_repository: str,
     corpora_base_dirname: str,
     topics_filename: str,
     runs_dirname: str,
@@ -185,11 +197,15 @@ def init_directory(
     steps of the shared task (pooling, relevance judgment preparation and
     export, etc.), so that it does not need to be assembled by hand.
 
+    COURSE_NAME identifies this course's run (e.g., "wise-2026"); it is used
+    as the Docker image tag for the ChatNoir image built by build-chatnoir.
+
     This creates, inside DIRECTORY:
 
     \b
     - config.json, pointing to the corpora base directory, topics file,
-      runs directory, and team mapping file
+      runs directory, and team mapping file, and storing the course name
+      and ChatNoir image repository
     - (initially empty) corpora/ and runs/ directories
     - an (initially empty) team-mapping file to fill in once
       topics have been submitted and accounts assigned
@@ -217,6 +233,8 @@ def init_directory(
     echo(f"Created directory '{corpora_base_path}'.")
 
     config = {
+        "course-name": course_name,
+        "chatnoir-image-repository": chatnoir_image_repository,
         "corpora-base": corpora_base_dirname,
         "topics": topics_filename,
         "runs": runs_dirname,
@@ -241,6 +259,121 @@ def init_directory(
     echo(f"Wrote '{label_configs_path}'.")
 
     echo(f"Initialized directory '{directory}'.")
+
+
+@cli.command()
+@argument(
+    "directory",
+    type=PathType(
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        resolve_path=True,
+        path_type=Path,
+    ),
+)
+@option(
+    "--chatnoir-image",
+    default=chatnoir_docker._DEFAULT_CHATNOIR_IMAGE,
+    show_default=True,
+    help="Docker image bundling Elasticsearch, MinIO, and ChatNoir (see docker/all-in-one in the chatnoir-web repo).",
+)
+@option(
+    "--indexer-image",
+    default=chatnoir_docker._DEFAULT_INDEXER_IMAGE,
+    show_default=True,
+    help="Docker image of the chatnoir-ir-datasets-indexer.",
+)
+def build_chatnoir(
+    directory: Path,
+    chatnoir_image: str,
+    indexer_image: str,
+) -> None:
+    """
+    Start ChatNoir (bundled with Elasticsearch and MinIO in a single Docker
+    container) and index all corpora found in DIRECTORY (as set up by
+    init-directory) into it with the chatnoir-ir-datasets-indexer Docker
+    image, so that they can be searched through the ChatNoir UI.
+
+    DIRECTORY must already contain a config.json (see init-directory), with
+    corpora placed under its corpora-base directory, each in its own
+    subdirectory with a documents.jsonl file (one JSON object per line, with
+    docno/url/title/text fields).
+
+    Both Docker images must already be built locally (or otherwise available
+    to the local Docker daemon) before running this command.
+
+    Once indexing is done, the resulting container is committed to a Docker
+    image (tagged with this course's course-name, see init-directory) and
+    then stopped and removed, so that the course's ChatNoir deployment is
+    fully captured in that image. Two tags are created, a versioned one
+    (<course-name>-<5 random digits>) and a '-latest' alias; both still need
+    to be pushed manually (instructions are printed at the end).
+    """
+    with (directory / "config.json").open("rt") as file:
+        config = json.load(file)
+    corpora_base_path = directory / config["corpora-base"]
+
+    if "course-name" not in config:
+        raise ValueError(
+            "config.json has no 'course-name'. Re-run 'teaching-ir init-directory "
+            f"{directory} <COURSE_NAME>' or add a \"course-name\" entry to "
+            f"'{directory / 'config.json'}' by hand."
+        )
+    course_name = config["course-name"]
+    image_repository = config.get(
+        "chatnoir-image-repository", chatnoir_docker._DEFAULT_RESULT_IMAGE_REPOSITORY
+    )
+    version_suffix = "".join(choice(digits) for _ in range(5))
+    image_tag_versioned = f"{image_repository}:{course_name}-{version_suffix}"
+    image_tag_latest = f"{image_repository}:{course_name}-latest"
+
+    corpora = chatnoir_docker.discover_corpora(corpora_base_path)
+    if not corpora:
+        raise FileNotFoundError(
+            f"No corpora with a documents.jsonl file found in '{corpora_base_path}'."
+        )
+    echo(f"Found {len(corpora)} corpora: {', '.join(c.directory.name for c in corpora)}")
+
+    container_name = chatnoir_docker.container_name_for(directory)
+    network_name = chatnoir_docker.network_name_for(container_name)
+    ports = {port: None for port in chatnoir_docker._CONTAINER_PORTS}
+
+    chatnoir_docker.ensure_chatnoir_container(container_name, network_name, chatnoir_image, ports)
+    chatnoir_docker.wait_for_elasticsearch(container_name)
+
+    es_host = f"http://{container_name}:9200"
+    s3_endpoint = f"http://{container_name}:9000"
+    for corpus in corpora:
+        chatnoir_docker.index_corpus(network_name, es_host, s3_endpoint, indexer_image, corpus)
+    chatnoir_docker.refresh_indices(container_name, corpora)
+
+    needs_restart = chatnoir_docker.update_search_indices(container_name, corpora)
+    if needs_restart:
+        chatnoir_docker.restart_container(container_name)
+        chatnoir_docker.wait_for_elasticsearch(container_name)
+
+    chatnoir_docker.commit_and_remove_container(
+        container_name, network_name, [image_tag_versioned, image_tag_latest]
+    )
+
+    echo("")
+    echo(
+        f"Built ChatNoir image for course '{course_name}': "
+        f"{image_tag_versioned} (also tagged as {image_tag_latest})"
+    )
+    echo("")
+    echo("To start it locally, run:")
+    echo(f"  docker run --rm --net host --name {container_name} {image_tag_latest}")
+    echo(
+        "  (then open http://127.0.0.1:8000/ for search, "
+        "http://127.0.0.1:8001/ for the cache/view; get a demo API key with "
+        f"'docker exec {container_name} cat /opt/chatnoir-web/demo-apikey.txt')"
+    )
+    echo("")
+    echo("To push both tags (requires 'docker login ghcr.io' with access to the repository), run:")
+    echo(f"  docker push {image_tag_versioned}")
+    echo(f"  docker push {image_tag_latest}")
 
 
 _session = session()

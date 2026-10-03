@@ -26,8 +26,10 @@ Please also refer to the `teaching-ir` command's help (i.e., run `teaching-ir --
 Create a new directory (usually on Ceph) with the basic configuration files used by all later steps:
 
 ```shell
-teaching-ir init-directory /path/to/course-directory
+teaching-ir init-directory <PATH-TO-COURSE-DIRECTORY> <COURSE-NAME>
 ```
+
+COURSE-NAME identifies this course's run (e.g., `wise-2026`) and is later used as the Docker image tag for the ChatNoir image built by `build-chatnoir`.
 
 Run `teaching-ir init-directory --help` for the available options. All subsequent `teaching-ir` commands operate on this directory.
 
@@ -37,7 +39,33 @@ Run `teaching-ir init-directory --help` for the available options. All subsequen
 
 ## Setting up ChatNoir for the submitted corpora
 
-TODO: Bot, describe this.
+Assume that you have placed the corpora that you have extracted from the google form above in the directory `<PATH-TO-COURSE-DIRECTORY>/corpora`. The command `tree corpora/` should then give something like:
+
+```
+corpora/
+├── corpus-01
+│   ├── documents.jsonl
+│   └── metadata.yml
+├── corpus-02
+│   ├── documents.jsonl
+│   └── metadata.yml
+└── corpus-03
+    ├── documents.jsonl
+    └── metadata.yml
+```
+
+Next, please build the ChatNoir Indexes:
+
+```
+teaching-ir build-chatnoir <PATH-TO-COURSE-DIRECTORY>
+```
+
+This starts an all-in-one ChatNoir container, indexes all the corpora above
+into it, then commits the result to a Docker image (tagged with this
+course's course-name) and removes the container again. The command's
+output tells you how to start that image locally and how to push it
+(e.g., to `ghcr.io`) so others can use it.
+
 
 ## Setting up topic submission
 
