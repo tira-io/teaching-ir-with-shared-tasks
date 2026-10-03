@@ -20,9 +20,29 @@ Please also refer to the `teaching-ir` command's help (i.e., run `teaching-ir --
     pip install -e .
     ```
 
+
+## Setting up a directory with configurations etc. (usually in Ceph)
+
+Create a new directory (usually on Ceph) with the basic configuration files used by all later steps:
+
+```shell
+teaching-ir init-directory /path/to/course-directory
+```
+
+Run `teaching-ir init-directory --help` for the available options. All subsequent `teaching-ir` commands operate on this directory.
+
+## Setting up Corpora submissions
+
+> TODO: Link a Google Forms template.
+
+## Setting up ChatNoir for the submitted corpora
+
+TODO: Bot, describe this.
+
 ## Setting up topic submission
 
 > TODO: Link a Google Forms template.
+
 
 ## Collecting and converting topics
 

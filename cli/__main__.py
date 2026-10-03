@@ -94,6 +94,155 @@ def cli() -> None:
     pass
 
 
+_DEFAULT_TOPICS_FILENAME = "topics.xml"
+_DEFAULT_RUNS_DIRNAME = "runs"
+_DEFAULT_CORPORA_BASE_DIRNAME = "corpora"
+_DEFAULT_TEAM_MAPPING_FILENAME = "topic-mapping.jsonl"
+_DOCCANO_LABEL_CONFIGS_FILENAME = "doccano-label-configs.json"
+# Matches the "relevant"/"not relevant" label scheme already assumed by
+# `export_relevance_judgments` (which parses the judgment value out of the
+# trailing "(N)" in the label text).
+_DEFAULT_DOCCANO_LABEL_CONFIGS = [
+    {
+        "id": None,
+        "text": "Not Relevant (0)",
+        "prefixKey": None,
+        "suffixKey": "0",
+        "backgroundColor": "#D33115",
+        "textColor": "#ffffff",
+    },
+    {
+        "id": None,
+        "text": "Relevant (1)",
+        "prefixKey": None,
+        "suffixKey": "1",
+        "backgroundColor": "#194D33",
+        "textColor": "#ffffff",
+    },
+]
+
+
+@cli.command()
+@argument(
+    "directory",
+    type=PathType(
+        exists=False,
+        file_okay=False,
+        dir_okay=True,
+        writable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@option(
+    "--corpora-base",
+    "corpora_base_dirname",
+    type=str,
+    default=_DEFAULT_CORPORA_BASE_DIRNAME,
+    show_default=True,
+    help="Name (relative to DIRECTORY, usually on Ceph) of the directory where this course's submitted corpora/data files are stored.",
+)
+@option(
+    "--topics",
+    "topics_filename",
+    type=str,
+    default=_DEFAULT_TOPICS_FILENAME,
+    show_default=True,
+    help="Filename (relative to DIRECTORY) of the topics XML file created later by convert-topics-csv-to-xml.",
+)
+@option(
+    "--runs",
+    "runs_dirname",
+    type=str,
+    default=_DEFAULT_RUNS_DIRNAME,
+    show_default=True,
+    help="Name (relative to DIRECTORY) of the directory that will hold retrieval runs.",
+)
+@option(
+    "--team-mapping",
+    "team_mapping_filename",
+    type=str,
+    default=_DEFAULT_TEAM_MAPPING_FILENAME,
+    show_default=True,
+    help="Filename (relative to DIRECTORY) of the account-to-topics mapping file.",
+)
+@option(
+    "--force/--no-force",
+    default=False,
+    help="Overwrite configuration files that already exist in DIRECTORY.",
+)
+def init_directory(
+    directory: Path,
+    corpora_base_dirname: str,
+    topics_filename: str,
+    runs_dirname: str,
+    team_mapping_filename: str,
+    force: bool,
+) -> None:
+    """
+    Set up a new DIRECTORY with the basic configuration needed by the later
+    steps of the shared task (pooling, relevance judgment preparation and
+    export, etc.), so that it does not need to be assembled by hand.
+
+    This creates, inside DIRECTORY:
+
+    \b
+    - config.json, pointing to the corpora base directory, topics file,
+      runs directory, and team mapping file
+    - (initially empty) corpora/ and runs/ directories
+    - an (initially empty) team-mapping file to fill in once
+      topics have been submitted and accounts assigned
+    - doccano-label-configs.json with the default relevant/not-relevant
+      label scheme used when preparing and exporting relevance judgments
+    """
+    config_path = directory / "config.json"
+    team_mapping_path = directory / team_mapping_filename
+    label_configs_path = directory / _DOCCANO_LABEL_CONFIGS_FILENAME
+    runs_path = directory / runs_dirname
+    corpora_base_path = directory / corpora_base_dirname
+
+    if not force:
+        existing = [path for path in (config_path, team_mapping_path, label_configs_path) if path.exists()]
+        if len(existing) > 0:
+            raise FileExistsError(
+                f"Refusing to overwrite existing file(s): {', '.join(str(path) for path in existing)}. "
+                "Use --force to overwrite."
+            )
+
+    directory.mkdir(parents=True, exist_ok=True)
+    runs_path.mkdir(parents=True, exist_ok=True)
+    echo(f"Created directory '{runs_path}'.")
+    corpora_base_path.mkdir(parents=True, exist_ok=True)
+    echo(f"Created directory '{corpora_base_path}'.")
+
+    config = {
+        "corpora-base": corpora_base_dirname,
+        "topics": topics_filename,
+        "runs": runs_dirname,
+        "team-mapping": team_mapping_filename,
+    }
+    with config_path.open("wt") as file:
+        json.dump(config, file, indent=4)
+        file.write("\n")
+    echo(f"Wrote '{config_path}'.")
+
+    if not team_mapping_path.exists():
+        team_mapping_path.touch()
+    echo(
+        f"Created empty '{team_mapping_path}'. "
+        'Fill in once topics have been submitted, with one JSON object per line, e.g.: '
+        '{"account": "ir-25-fsu-51", "topics": ["51"]}'
+    )
+
+    with label_configs_path.open("wt") as file:
+        json.dump(_DEFAULT_DOCCANO_LABEL_CONFIGS, file, indent=4)
+        file.write("\n")
+    echo(f"Wrote '{label_configs_path}'.")
+
+    echo(f"Initialized directory '{directory}'.")
+
+
 _session = session()
 _cache = FileCache(".web_cache", forever=True)
 _session = CacheControl(_session, _cache)
