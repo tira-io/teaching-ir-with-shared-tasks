@@ -9,13 +9,11 @@ dependencies = [
     "chatnoir-pyterrier~=3.3",
     "click~=8.1",
     # Temporary fix of https://github.com/doccano/doccano-client/issues/158
-    "doccano-client @ git+https://github.com/janheinrichmerker/doccano-client.git@125476a9f52705665a0f788262fd9ce139d539ae",
+    # (fork also fixes an invalid PEP 440 pyyaml version specifier that broke pip installs)
+    "doccano-client @ git+https://github.com/mam10eks/doccano-client.git@8b03549b838e326e5500e0d57c03c104edf2ab37",
     # "doccano-client~=1.2.8",
     "ir_datasets~=0.5.11",
     "pandas~=2.3",
-    "pyterrier-dr~=0.6.2",
-    "pyterrier-t5~=0.2.1",
-    "pyterrier-caching~=0.5.4",
     "python-slugify~=8.0",
     "python-terrier~=0.13.2",
     "requests~=2.32",

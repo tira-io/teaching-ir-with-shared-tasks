@@ -8,14 +8,14 @@ from os import environ
 from pathlib import Path
 from pandas import read_xml
 from statistics import mean, median
-from typing import Collection, Iterator
+from typing import Collection
 import gzip
 
 from chatnoir_api.model import Index
 from chatnoir_api import cache_contents
 from ir_datasets import load as irds_load
 from pandas import DataFrame, read_csv
-from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, Transformer, IndexFactory
+from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, IndexFactory
 from pyterrier.terrier import Retriever as pt_retriever
 from pyterrier.apply import generic
 from pyterrier.io import read_results, read_topics, write_results
@@ -50,17 +50,6 @@ def _fetch_passage_ids(doc_id: str) -> list[str]:
     )
     ids = {result.warc_trec_id for result in results}
     return sorted(ids)
-
-
-def _iter_re_rankers() -> Iterator[tuple[str, Transformer]]:
-    try:
-        from pyterrier_dr import Ance, TctColBert
-        from pyterrier_t5 import MonoT5ReRanker
-    except:
-        pass
-    yield "mono-t5", lambda: MonoT5ReRanker(verbose=True)
-    yield "colbert", lambda: TctColBert(verbose=True)
-    yield "ance", lambda: Ance(verbose=True)
 
 
 def topic_to_relevant_docs(p):
