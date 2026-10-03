@@ -309,6 +309,11 @@ def build_chatnoir(
     fully captured in that image. Two tags are created, a versioned one
     (<course-name>-<5 random digits>) and a '-latest' alias; both still need
     to be pushed manually (instructions are printed at the end).
+
+    A Kubernetes manifest (Deployment, Service, Ingress exposing search and
+    the cache/document view on two public hostnames) is also written to
+    kubernetes.yaml in the course directory, along with a 'kubectl apply'
+    instruction to deploy it once the '-latest' image has been pushed.
     """
     with (directory / "config.json").open("rt") as file:
         config = json.load(file)
@@ -374,6 +379,14 @@ def build_chatnoir(
     echo("To push both tags (requires 'docker login ghcr.io' with access to the repository), run:")
     echo(f"  docker push {image_tag_versioned}")
     echo(f"  docker push {image_tag_latest}")
+
+    manifest = chatnoir_docker.kubernetes_manifest(course_name, image_tag_latest)
+    manifest_path = directory / "kubernetes.yaml"
+    manifest_path.write_text(manifest)
+    echo("")
+    echo(f"Wrote a Kubernetes manifest (Deployment, Service, Ingress) to '{manifest_path}'.")
+    echo("To deploy it (requires the image to already be pushed and public), run:")
+    echo(f"  kubectl apply -f {manifest_path}")
 
 
 _session = session()

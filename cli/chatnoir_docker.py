@@ -37,6 +37,16 @@ _S3_BUCKET = "course-corpora"
 _CONTAINER_PORTS = (8000, 8001, 9200, 9000, 9001)
 _HEALTH_CHECK_TIMEOUT_SECONDS = 180
 _HEALTH_CHECK_INTERVAL_SECONDS = 2
+# Kubernetes defaults for the manifest printed/written by `build-chatnoir`
+# (see the Webis cluster conventions for public services).
+_DEFAULT_KUBERNETES_NAMESPACE = "services-demos"
+_DEFAULT_KUBERNETES_HOSTNAME_PATTERN = "{course}.web.webis.de"
+_DEFAULT_KUBERNETES_CACHE_HOSTNAME_PATTERN = "{course}-cache.web.webis.de"
+# Kubernetes defaults for the manifest printed/written by `build-chatnoir`
+# (see the Webis cluster conventions for public services).
+_DEFAULT_KUBERNETES_NAMESPACE = "services-demos"
+_DEFAULT_KUBERNETES_HOSTNAME_PATTERN = "{course}.web.webis.de"
+_DEFAULT_KUBERNETES_CACHE_HOSTNAME_PATTERN = "{course}-cache.web.webis.de"
 
 
 class Corpus(NamedTuple):
@@ -329,3 +339,99 @@ def commit_and_remove_container(
     _run(["docker", "rm", container_name])
     subprocess.run(["docker", "network", "rm", network_name], capture_output=True)
     echo(f"Stopped and removed container '{container_name}'.")
+
+
+def kubernetes_manifest(
+    course_name: str,
+    image_tag: str,
+    namespace: str = _DEFAULT_KUBERNETES_NAMESPACE,
+    hostname_pattern: str = _DEFAULT_KUBERNETES_HOSTNAME_PATTERN,
+    cache_hostname_pattern: str = _DEFAULT_KUBERNETES_CACHE_HOSTNAME_PATTERN,
+) -> str:
+    """
+    Builds a public Deployment + Service + Ingress Kubernetes manifest that
+    runs `image_tag` (expected to be a public image, e.g. the '-latest' tag
+    produced by `commit_and_remove_container`) and exposes ChatNoir search
+    on `hostname_pattern` and the cache/document view on
+    `cache_hostname_pattern` (both with '{course}' replaced by `course_name`),
+    so that both are reachable from the outside on the default HTTPS port.
+    """
+    app_name = f"chatnoir-{slugify(course_name)}"
+    search_host = hostname_pattern.format(course=slugify(course_name))
+    cache_host = cache_hostname_pattern.format(course=slugify(course_name))
+    return f"""\
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {app_name}
+  namespace: {namespace}
+  labels:
+    app: {app_name}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {app_name}
+  template:
+    metadata:
+      labels:
+        app: {app_name}
+    spec:
+      containers:
+        - name: {app_name}
+          image: {image_tag}
+          ports:
+            - containerPort: 8000
+              name: search
+            - containerPort: 8001
+              name: cache
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {app_name}
+  namespace: {namespace}
+  labels:
+    app: {app_name}
+spec:
+  selector:
+    app: {app_name}
+  ports:
+    - name: search
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    - name: cache
+      port: 8001
+      protocol: TCP
+      targetPort: 8001
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {app_name}
+  namespace: {namespace}
+spec:
+  ingressClassName: "nginx-external"
+  rules:
+    - host: {search_host}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {app_name}
+                port:
+                  number: 8000
+    - host: {cache_host}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {app_name}
+                port:
+                  number: 8001
+"""

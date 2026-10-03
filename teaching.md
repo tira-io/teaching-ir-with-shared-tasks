@@ -66,6 +66,16 @@ course's course-name) and removes the container again. The command's
 output tells you how to start that image locally and how to push it
 (e.g., to `ghcr.io`) so others can use it.
 
+It also writes a Kubernetes manifest (Deployment, Service, Ingress) to
+`kubernetes.yaml` in the course directory, exposing the search UI and the
+cache/document view on two public hostnames. Once the image has been
+pushed, deploy it with:
+
+```
+kubectl apply -f <PATH-TO-COURSE-DIRECTORY>/kubernetes.yaml
+```
+
+
 
 ## Setting up topic submission
 
