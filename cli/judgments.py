@@ -115,10 +115,7 @@ _alphabet = ascii_letters + digits
 
 
 def _generate_password(length: int = 10) -> str:
-    password = ""
-    for _ in range(length):
-        password += "".join(choice(_alphabet))
-    return password
+    return "".join(choice(_alphabet) for _ in range(length))
 
 
 _DEFAULT_PROJECT_DESCRIPTION = """

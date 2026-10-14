@@ -25,12 +25,13 @@ except ImportError:  # pragma: no cover - PyYAML is pulled in transitively.
 _DEFAULT_CHATNOIR_IMAGE = "chatnoir-complete:local"
 _DEFAULT_INDEXER_IMAGE = "chatnoir-ir-datasets-indexer:local"
 _DEFAULT_RESULT_IMAGE_REPOSITORY = "ghcr.io/tira-io/teaching-ir-with-shared-tasks/chatnoir"
+# Elasticsearch credentials baked into the chatnoir-complete image by default.
 _DEFAULT_ES_USERNAME = "chatnoir"
-_DEFAULT_ES_PASSWORD = "chatnoir"
+_DEFAULT_ES_PASSWORD = "chatnoir"  # nosec B105
 # MinIO root credentials baked into the chatnoir-complete image by default
 # (see docker/all-in-one/local_settings.template.py in chatnoir-web).
 _DEFAULT_S3_ACCESS_KEY = "chatnoir"
-_DEFAULT_S3_SECRET_KEY = "chatnoirchatnoir"
+_DEFAULT_S3_SECRET_KEY = "chatnoirchatnoir"  # nosec B105
 # Shared bucket all course corpora are uploaded to (one object per corpus),
 # analogous to multi-corpus buckets like 'corpora-tirex-small'.
 _S3_BUCKET = "course-corpora"
@@ -168,7 +169,8 @@ def _corpus_display_name(directory: Path, corpus_id: str) -> str:
             name = metadata.get("dataset", {}).get("name")
             if name:
                 return str(name)
-        except Exception:  # noqa: BLE001 - metadata is best-effort only.
+        except Exception:  # noqa: BLE001  # nosec B110
+            # Metadata is best-effort only.
             pass
     return corpus_id
 
