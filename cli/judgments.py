@@ -31,10 +31,7 @@ from requests.exceptions import RequestException, Timeout
 from slugify import slugify
 from tqdm import tqdm
 
-
-def _user_name(project_prefix: str, group: str) -> str:
-    group = slugify(group)
-    return f"{project_prefix}-{group}"
+from cli.utils import group_user_name
 
 
 _ProjectName: TypeAlias = Annotated[str, Len(min_length=1, max_length=100)]
@@ -185,7 +182,7 @@ def prepare_relevance_judgments(
 
     # Create mapping of groups to usernames and project names.
     group_user_names: Mapping[str, str] = {
-        group: _user_name(project_prefix, group) for group in groups
+        group: group_user_name(project_prefix, group) for group in groups
     }
     group_project_names: Mapping[str, str] = {
         group: _project_name(project_prefix, group) for group in groups

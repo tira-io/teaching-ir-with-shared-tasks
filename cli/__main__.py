@@ -54,13 +54,13 @@ def read_pooled_for_topics(pool_path: Sequence[Path], topics: DataFrame):
 
 
 def group_names(pool: DataFrame, project_prefix: str) -> Mapping[str, str]:
-    from cli.judgments import _user_name
+    from cli.utils import group_user_name
 
     groups: set[str] = set((i for i in pool["group"].to_list() if i))
     echo(f"Found {len(groups)} groups: {', '.join(sorted(groups))}")
 
     # Create mapping of groups to usernames and project names.
-    return {group: _user_name(project_prefix, group) for group in groups}
+    return {group: group_user_name(project_prefix, group) for group in groups}
 
 
 @group()
@@ -549,7 +549,7 @@ def read_topics(topics_path: Path):
     help="Username to authenticate with Doccano.",
 )
 @option(
-    "-u",
+    "-p",
     "--doccano-password",
     type=str,
     required=True,
@@ -724,7 +724,7 @@ def export_relevance_judgments(
     help="Username to authenticate with Doccano.",
 )
 @option(
-    "-u",
+    "-p",
     "--doccano-password",
     type=str,
     required=True,
