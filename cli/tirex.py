@@ -1,360 +1,209 @@
-import json
-import time
-from glob import glob
+from dataclasses import dataclass
+from functools import reduce
 from gzip import open as gzip_open
-from itertools import chain
-from json import dump, dumps, load, loads
-from os import environ
+from json import  dumps, load, loads
 from pathlib import Path
-from pandas import read_xml
-from statistics import mean, median
-from typing import Collection, Iterator
-import gzip
+from time import sleep
+from typing import Any
 
-from chatnoir_api.model import Index
-from chatnoir_api import cache_contents
-from ir_datasets import load as irds_load
-from pandas import DataFrame, read_csv
-from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, Transformer, IndexFactory
-from pyterrier.terrier import Retriever as pt_retriever
-from pyterrier.apply import generic
-from pyterrier.io import read_results, read_topics, write_results
+from chatnoir_api import cache_contents, Index
 from chatnoir_pyterrier import ChatNoirRetrieve, Feature
+from ir_datasets import load as irds_load
+from pandas import DataFrame, read_csv, read_xml, concat
+from pyterrier import IndexFactory, IterDictIndexer, Indexer, Transformer
+from pyterrier.io import read_topics
+from pyterrier.terrier import Retriever
+from pyterrier.terrier.rewrite import tokenise
+from pyterrier_caching import RetrieverCache
 from tira.rest_api_client import Client
 from tqdm import tqdm
 from trectools import TrecPoolMaker, TrecRun, TrecQrel
 
 
-def _fetch_passage_ids(doc_id: str) -> list[str]:
-    from elasticsearch_dsl import Search, connections
-    from elasticsearch_dsl.query import Prefix
+@dataclass(frozen=True)
+class ChatNoirContents(Transformer):
+    """PyTerrier transformer to get document contents from ChatNoir cache based on the document ID."""
 
-    try:
-        connections.get_connection()
-    except KeyError:
-        # FIXME: The Elasticsearch connection should not be hardcoded.
-        connections.configure(
-            default={
-                "hosts": ["https://elasticsearch.srv.webis.de:9200"],
-                "retry_on_timeout": True,
-                "http_auth": (environ["ES_USER"], environ["ES_PASSWORD"]),
-                "timeout": 30,
-            }
-        )
+    index: Index
 
-    # FIXME: The Elasticsearch index should not be hardcoded.
-    results = (
-        Search()
-        .index("chatnoir_meta_complete_msmarco_document_v2.1_segmented")
-        .query(Prefix(warc_trec_id=f"{doc_id}#"))
-    )
-    ids = {result.warc_trec_id for result in results}
-    return sorted(ids)
-
-
-def _iter_re_rankers() -> Iterator[tuple[str, Transformer]]:
-    try:
-        from pyterrier_dr import Ance, TctColBert
-        from pyterrier_t5 import MonoT5ReRanker
-    except:
-        pass
-    yield "mono-t5", lambda: MonoT5ReRanker(verbose=True)
-    yield "colbert", lambda: TctColBert(verbose=True)
-    yield "ance", lambda: Ance(verbose=True)
-
-
-def topic_to_relevant_docs(p):
-    config_data = json.load(open(p / "config.json"))
-    if config_data["topics"].endswith(".xml"):
-        relevant_documents_per_topic = read_topics(
-            filename=p / config_data["topics"],
-            format="trecxml",
-            tags=["relevant_docnos"],
-            tokenise=False,
-        )
-        relevant_documents_per_topic["doc_id"] = relevant_documents_per_topic["query"]
-    else:
-        relevant_documents_per_topic = read_csv(p/"manual.csv")
-    return relevant_documents_per_topic
-
-def get_judgment_pool(
-    pooling_path: Path,
-    pooling_depth,
-):
-    output_path = pooling_path / "judgment-pool.json"
-    if not output_path.exists():
-        config_data = json.load(open(pooling_path / "config.json"))
-        relevant_documents_per_topic = topic_to_relevant_docs(pooling_path)
-
-        runs = []
-        for run in glob(str(pooling_path) +"/" + config_data["runs"] + "/*.gz"):
-            runs += [TrecRun(run)]
-
-        print(f"pool {len(runs)} runs.")
-        pool = TrecPoolMaker().make_pool(runs, strategy="topX", topX=pooling_depth).pool
-        pool_sizes = []
-        for k in pool:
-            pool_sizes += [len(pool[k])]
-
-        print(
-            "Pool sizes",
-            mean(pool_sizes),
-            "(Mean)",
-            ";",
-            median(pool_sizes),
-            "(Median).",
-        )
-
-        for _, t in tqdm(
-            list(relevant_documents_per_topic.iterrows()), "Expansion Docs"
+    def transform(self, inp: DataFrame) -> DataFrame:
+        docs = []
+        for _, row in tqdm(
+            inp.iterrows(), 
+            total=len(inp), 
+            desc="Get contents",
         ):
-            for doc_id in t.doc_id.split(","):
-                pool[str(t.qid)].add(str(doc_id))
+            docno = row["docno"]
+            contents = cache_contents(docno, index=self.index)
+            contents = loads(contents)
+            docs.append(
+                {
+                    **row.to_dict(),
+                    "text": contents["text"],
+                    "title": contents["original_document"]["title"],
+                    "url": contents["original_document"]["url"],
+                }
+            )
+        return DataFrame(docs)
 
-        with output_path.open("wb") as file:
-            file.write(dumps({k: list(v) for k, v in pool.items()}).encode("UTF-8"))
-
-    with output_path.open("rb") as file:
-        ret = load(file)
-    pool_sizes = []
-    for k in ret:
-        pool_sizes += [len(ret[k])]
-    print(
-        "Pool sizes", mean(pool_sizes), "(Mean)", ";", median(pool_sizes), "(Median)."
-    )
-    return ret
-
-
-def chatnoir_retrieve(field, topics_path, run_dir, index, model, depth):
-    target_file = run_dir / f"run-chatnoir-{field}-{model}-{depth}.gz"
-
-    if target_file.exists():
-        return
-
-    topics = load_topics(topics_path=topics_path, tag=field, tokenise=False)
-    chatnoir = ChatNoirRetrieve(index=index, search_method=model, features=[], verbose=True, num_results=depth, page_size=depth)
-    run = chatnoir(topics)
-    run_dir.mkdir(parents=True, exist_ok=True)
-    write_results(run, target_file)
-
-   
-def pyterrier_retrieve(field, topics_path, run_dir, index, wmodel, depth):
-    target_file = run_dir / f"run-pt-{field}-{wmodel}-{depth}.gz"
-
-    if target_file.exists():
-        return
-
-    topics = load_topics(topics_path=topics_path, tag=field, tokenise=True)
-    retriever = pt_retriever(index, wmodel=wmodel, num_results=depth, verbose=True)
-    run = retriever(topics)
-    run_dir.mkdir(parents=True, exist_ok=True)
-    write_results(run, target_file)
-
-
-def get_documents(pooling_path: Path):
-    config_data = json.load(open(pooling_path / "config.json"))
-    run_path = pooling_path / config_data["runs"]
-    documents_path = pooling_path / "documents.jsonl.gz"
-    
-    def docs_failsave():
-        ret =  []
-        with gzip_open(documents_path, "rt") as file:
-            for line in file:
-                try:
-                    ret.append(loads(line))
-                except: pass
-
-        return ret
-
-    covered_docs = set([str(doc["docno"]) for doc in docs_failsave()])
-
-    all_docs = set()
-    for file_name in glob(f"{run_path}/*.gz"):
-        run = TrecRun(file_name).run_data
-        for doc in run["docid"].unique():
-            if doc not in covered_docs:
-                all_docs.add(doc)
-
-    relevant_documents_per_topic = topic_to_relevant_docs(pooling_path)
-    for _, t in relevant_documents_per_topic.iterrows():
-        for doc_id in t.doc_id.split(","):
-            if doc_id not in covered_docs:
-                all_docs.add(doc_id)
-
-    print("docs size", len(all_docs))
-    if len(all_docs) > 0:
-        with gzip_open(documents_path, "at") as file:
-            for doc in tqdm(all_docs, "Load Docs"):
-                contents = cache_contents(doc, index=config_data["chatnoir-index"])
-                contents = json.loads(contents)
-                orig = contents["original_document"]
-                file.write(dumps({"docno": contents["docno"], "text": contents["text"], "title": orig["title"], "url": orig["url"]}) + "\n")
-                file.flush()
-
-    return docs_failsave()
-
-
-def get_index(pooling_path: Path):
-    index_path = pooling_path / "pyterrier-index"
-    if not index_path.exists():
-        documents = get_documents(pooling_path)
-
-        indexer = IterDictIndexer(
-            str(index_path.absolute()),
-            meta={"docno": 100, "text": 20480},
-        )
-        indexer.index(tqdm(documents, "Index"))
-
-    return IndexFactory.of(str(index_path.absolute()))
-
-
-def load_topics(
-    topics_path: Path,
-    tag: str,
-    tokenise: bool,
-) -> DataFrame:
-    if str(topics_path).endswith(".xml"):
-        return read_topics(filename=str(topics_path), format="trecxml", tags=[tag], tokenise=tokenise)
-    else:
-        assert tokenise == False
-        ret = read_csv(topics_path)
-        ret["title"] = ret["query"]
-        ret["query"] = ret[tag]
-        return ret
-
-
-def load_topics_dict(
-    topics_path: Path,
-    tag: str,
-    tokenise: bool,
-):
-    ret = load_topics(
-        topics_path=topics_path,
-        tag=tag,
-        tokenise=tokenise,
-    )
-    return {row["qid"]: row["query"] for _, row in ret.iterrows()}
-
-
-def read_account_to_topics(path: Path):
-    ret = {}
-    with open(path / "topic-mapping.jsonl", "r") as f:
-        for i in f:
-            i = json.loads(i)
-            assert i["account"] not in ret
-            ret[i["account"]] = i["topics"]
-    return ret
 
 def pool_documents(
-    path: Path,
+    topics_path: Path,
+    pooling_path: Path,
+    chatnoir_index: Index,
     pooling_depth: int,
-):
-    config_data = json.load(open(path / "config.json"))
-    topics_path = path / config_data["topics"]
-    run_path = path / config_data["runs"]
+    cache_path: Path,
+    chatnoir_default_depth: int = 10,
+    chatnoir_bm25_depth: int = 1000,
+) -> None:
+    # Use both title and description topics for retrieval (and ensure unique qids).
+    topics = concat([
+        read_topics(
+            filename=str(topics_path),
+            format="trecxml",
+            tags=["title"],
+            tokenise=False,
+        ).assign(
+            qid=lambda df: df["qid"] + "_title"
+        ),
+        read_topics(
+            filename=str(topics_path),
+            format="trecxml",
+            tags=["description"],
+            tokenise=False,
+        ).assign(
+            qid=lambda df: df["qid"] + "_description"
+        ),
+    ])
+    topics = topics.head(5)  # TODO remove
 
-    chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "bm25", 100)
-    chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "bm25", 100)
-    chatnoir_retrieve("title", topics_path, run_path, config_data["chatnoir-index"], "default", 25)
-    chatnoir_retrieve("description", topics_path, run_path, config_data["chatnoir-index"], "default", 10)
-    get_documents(path)
-    index = get_index(path)
+    # Step 1: Retrieve candidate documents from ChatNoir using different retrieval methods (ChatNoir default BM25F and plain BM25) and topics (title and description).
+    candidate_retreivers = [
+        RetrieverCache(
+            cache_path / f"chatnoir-default-top-{chatnoir_default_depth}",
+            ChatNoirRetrieve(
+                index=chatnoir_index, 
+                search_method="default",
+                verbose=True,
+                num_results=chatnoir_default_depth,
+                features=Feature.NONE
+            ),
+            on="qid",
+            # verbose=True,
+        ),
+        RetrieverCache(
+            cache_path / f"chatnoir-bm25-top-{chatnoir_bm25_depth}",
+            ChatNoirRetrieve(
+                index=chatnoir_index, 
+                search_method="bm25",
+                verbose=True,
+                num_results=chatnoir_bm25_depth,
+                features=Feature.NONE
+            ),
+            on="qid",
+            # verbose=True,
+        ),
+    ]
+    # Compute the set union of retrieved documents.
+    candidate_retriever: Transformer = reduce(
+        lambda a, b: a | b,
+        candidate_retreivers,
+    )
+    # Retrieve candidate documents and get unique document IDs.
+    candidate_document_ids = candidate_retriever.transform(topics)[["docno"]].drop_duplicates()
+    print(f"Retreived {len(candidate_document_ids)} candidate documents (IDs).")
 
-    for model in ["BM25", "PL2", "TF_IDF", "DirichletLM", "Hiemstra_LM", "DFRee", "Dl", "DLH", "DPH", "Tf", "LGD"]:
-        for field in ["title", "description"]:
-            pyterrier_retrieve(field, topics_path, run_path, index, model, 1000)
+    # Step 2: Fetch document contents from ChatNoir for the candidate document IDs.
+    chatnoir_contents = RetrieverCache(
+        cache_path / "chatnoir-contents",
+        ChatNoirContents(index=chatnoir_index),
+        on="docno",
+        verbose=True,
+    )
+    candidate_documents = chatnoir_contents.transform(candidate_document_ids)
+    print(f"Fetched contents of {len(candidate_documents)} candidate documents.")
 
-    judgment_pool = get_judgment_pool(
-        pooling_path=path,
-        pooling_depth=pooling_depth
+    # Step 3: Index the candidate documents using PyTerrier for further processing.
+    index_path = cache_path / "index"
+    index_path = index_path.resolve()
+    index_ref: Any
+    if not index_path.exists() or not any(index_path.iterdir()):
+        indexer: Indexer = IterDictIndexer(
+            str(index_path),
+            meta={
+                "docno": 100,
+                "text": 20480,
+            },
+        )
+        index_ref = indexer.index(row for _, row in candidate_documents.iterrows())  # type: ignore
+    else:
+        index_ref = IndexFactory.of(str(index_path))  # type: ignore
+    print(f"Indexed candidate documents at {index_path}.")
+
+    # Step 4: Retrieve documents from the indexed candidate documents using various retrieval models and topics (title and description).
+    retrievers = [
+        tokenise() >> RetrieverCache(
+            cache_path / f"pyterrier-{model}-top-1000",
+            Retriever(index_ref, wmodel=model, num_results=1000, verbose=True),
+            on="qid",
+            # verbose=True,
+        )
+        for model in ["BM25", "PL2", "TF_IDF", "DirichletLM", "Hiemstra_LM", "DFRee", "Dl", "DLH", "DPH", "Tf", "LGD"]
+    ] + candidate_retreivers
+    # Cut off retrievers at pooling depth.
+    retrievers = [retriever % pooling_depth for retriever in retrievers]
+    # Compute the set union of retrieved documents.
+    retriever: Transformer = reduce(
+        lambda a, b: a | b,
+        retrievers,
+    )
+    # Retrieve candidate documents and get unique document IDs.
+    document_ids = retriever.transform(topics)[["qid", "docno"]].drop_duplicates()
+    print(f"Retreived {len(document_ids)} documents (IDs).")
+
+    # Step 5: Add manually specified relevant documents to the final document IDs.
+    manual_relevant_document_ids = (
+        read_xml(topics_path)
+        .rename(columns={"number": "qid", "relevant_docnos": "docno"})[["qid", "docno"]]
+        .assign(docno=lambda df: df["docno"].str.split(","))
+        .explode("docno")
+        .drop_duplicates()
+        .dropna())
+    print(f"Adding {len(manual_relevant_document_ids)} manually specified relevant documents.")
+    print(manual_relevant_document_ids)
+
+    document_ids = concat([document_ids, manual_relevant_document_ids]).drop_duplicates()
+    print(f"Got {len(document_ids)} final documents (IDs).")
+
+    # Step 6: Fetch document contents from ChatNoir for the final document IDs.
+    documents = chatnoir_contents.transform(document_ids)
+    print(f"Fetched contents of {len(documents)} documents.")
+    print(documents.columns)
+
+    # Step 7: Add topic metadata (title, description, narrative).
+    topics_metadata = (
+        read_xml(topics_path)
+        .rename(columns={"number": "qid", "title": "query"})[["qid", "query", "description", "narrative"]])
+    print(topics_metadata)
+    documents = documents.merge(
+        topics_metadata,
+        how="left",
+        on="qid",
     )
 
-    doccano_judgment_pool_path = path / "doccano-judgment-pool.jsonl"
-    if doccano_judgment_pool_path.exists():
-        print(f'Exists "{doccano_judgment_pool_path}". I do not override')
-        return
+    # Step 8: Filter documents without text or with long text.
+    filter_no_text = documents["text"].isna()
+    documents = documents[~filter_no_text]
+    print(f"Filtered out {filter_no_text.sum()} documents without text ({len(documents)} documents remaining).")
+    filter_too_short = documents["text"].str.len() < 10
+    documents = documents[~filter_too_short]
+    print(f"Filtered out {filter_too_short.sum()} documents with text shorter than 10 characters ({len(documents)} documents remaining).")
+    filter_too_long = documents["text"].str.len() > 7000
+    documents = documents[~filter_too_long]
+    print(f"Filtered out {filter_too_long.sum()} documents with text longer than 7000 characters ({len(documents)} documents remaining).")
 
-    if str(topics_path).endswith(".xml"):
-        topic_to_title = load_topics_dict(
-            topics_path=topics_path,
-            tag="title",
-            tokenise=False,
-        )
-        topic_to_group = load_topics_dict(
-            topics_path=topics_path,
-            tag="group",
-            tokenise=False,
-        )
-        topic_to_description = load_topics_dict(
-            topics_path=topics_path,
-            tag="description",
-            tokenise=False,
-        )
-        topic_to_narrative = load_topics_dict(
-            topics_path=topics_path,
-            tag="narrative",
-            tokenise=False,
-        )
-    else:
-        topic_to_title = {}
-        topic_to_description = {}
-        topic_to_narrative = {}
-        print(topics_path)
-        for _, i in read_csv(topics_path).iterrows():
-            print(i)
-            raise ValueError(i["qid"], i["query"])
-            qid = str(i["qid"])
-            topic_to_title[qid] = i["query"]
-            topic_to_description[qid] = i["description"]
-            topic_to_narrative[qid] = i["narrative"]
-
-    with doccano_judgment_pool_path.open("wt") as file:
-        if 'irds-id' in config_data:
-            docs_store = irds_load(config_data["irds-id"]).docs_store()
-        else:
-            docs_store = {}
-            with gzip.open(path / "documents.jsonl.gz", "rt") as f:
-                for l in f:
-                    l = json.loads(l)
-                    docs_store[l["docno"]] = l
-
-        with open(path / "topic-mapping.jsonl", "r") as f:
-            doc_count = 0
-            no_main_content = 0
-            skipped_long = 0
-            for i in f:
-                i = json.loads(i)
-                group = i["account"]
-                for topic in i["topics"]:
-                    for document in judgment_pool[topic]:
-                        if document not in docs_store:
-                            print(f"Skip document with id {document}")
-                            continue
-                        main_content = docs_store.get(document)["text"]
-                        if len(main_content) < 10:
-                            main_content = "No Main Content"
-                            no_main_content += 1
-                        if len(main_content) > 7*1000:
-                            main_content = main_content[:7*1000]
-                            skipped_long += 1
-                        doc_count += 1
-                        file.write(
-                            dumps(
-                                {
-                                    "group": group,
-                                     "query_id": topic,
-                                     "query": topic_to_title[topic],
-                                     "description": topic_to_description[topic],
-                                     "narrative": topic_to_narrative[topic],
-                                     "doc_id": document,
-                                     "url": docs_store.get(document)["url"],
-                                     "title": docs_store.get(document)["title"],
-                                     "text": main_content,
-                        }
-                    )
-                    + "\n"
-                )
-            print(f"Docs to judge {doc_count}. No main content {no_main_content}. Truncated: {skipped_long}")
+    # Step 9: Save the judgment pool.
+    documents.to_json(pooling_path, orient="records", lines=True)
 
 
 def read_tira_invites(invite_path: Path):
@@ -363,7 +212,7 @@ def read_tira_invites(invite_path: Path):
             f.write("{}")
 
     with open(invite_path, "r") as f:
-        return json.load(f)
+        return load(f)
 
 def to_xml_query(query):
     appendix = ""
@@ -399,7 +248,7 @@ def subsample_corpus(qrels_path: Path, pooling_path: Path, pooling_depth: int):
     truths_dir = pooling_path / 'subsampled-dataset' / 'truths'
     if (inputs_dir / 'documents.jsonl.gz').exists():
         return
-    meta_data = json.load(open(pooling_path / 'metadata.json'))
+    meta_data = load(open(pooling_path / 'metadata.json'))
     dataset = irds_load(meta_data['ir_datasets_id'])
     docs_store = dataset.docs_store()
     queries_dict = {}
@@ -472,7 +321,7 @@ def subsample_corpus(qrels_path: Path, pooling_path: Path, pooling_depth: int):
             except:
                 print('skip due to error')
                 continue
-            f.write(json.dumps({"docno": doc, "text": doc_text}) + '\n')
+            f.write(dumps({"docno": doc, "text": doc_text}) + '\n')
             f.flush()
 
 
@@ -487,7 +336,7 @@ def create_group(
     tira = Client()
     if group_name not in all_invites:
         metadata_for_task = tira.metadata_for_task(tira_task_id)
-        time.sleep(1)
+        sleep(1)
         metadata_for_task = metadata_for_task["context"]["task"]
         allowed_teams = [
             i.strip() for i in metadata_for_task["allowed_task_teams"].split("\n")
@@ -500,7 +349,7 @@ def create_group(
             "task_teams": "\n".join(allowed_teams),
         }
         tira.modify_task(tira_task_id, task_modification)
-        time.sleep(1)
+        sleep(1)
         invite = tira.register_group(
             group_name,
             tira_task_id,
@@ -514,10 +363,10 @@ def create_group(
         with open(invite_path, "w") as f:
             f.write(json.dumps(all_invites))
         all_invites = read_tira_invites(invite_path)
-        time.sleep(8)
+        sleep(8)
 
     print(
         group_name
         + ": "
-        + json.dumps(all_invites[group_name]["context"]["created_group"])
+        + dumps(all_invites[group_name]["context"]["created_group"])
     )

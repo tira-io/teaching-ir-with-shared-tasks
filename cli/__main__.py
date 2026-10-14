@@ -330,15 +330,35 @@ def subsample_corpus(
 
 @cli.command()
 @argument(
-    "directory",
+    "topics_path",
     type=PathType(
         exists=True,
-        file_okay=False,
-        dir_okay=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        readable=True,
         resolve_path=True,
         allow_dash=False,
         path_type=Path,
     ),
+)
+@argument(
+    "pooling_path",
+    type=PathType(
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=False,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@option(
+    "--chatnoir-index",
+    type=str,
+    required=True,
 )
 @option(
     "--pooling-depth",
@@ -346,9 +366,40 @@ def subsample_corpus(
     default=10,
     help="Pooling depth.",
 )
+@option(
+    "--cache-path",
+    type=PathType(
+        exists=False,
+        file_okay=False,
+        dir_okay=True,
+        writable=True,
+        readable=False,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+    required=False,
+)
+@option(
+    "--chatnoir-default-depth",
+    type=int,
+    default=10,
+    help="ChatNoir candidate retrieval depth with 'default' search method.",
+)
+@option(
+    "--chatnoir-bm25-depth",
+    type=int,
+    default=1000,
+    help="ChatNoir candidate retrieval depth with 'bm25' search method.",
+)
 def pool_documents(
-    directory: Path,
+    topics_path: Path,
+    pooling_path: Path,
+    chatnoir_index: Index,
     pooling_depth: int,
+    cache_path: Path | None = None,
+    chatnoir_default_depth: int = 10,
+    chatnoir_bm25_depth: int = 1000,
 ) -> None:
     """
     Create top-k pools of documents retrieved by TIREx baselines using ChatNoir.
@@ -356,10 +407,14 @@ def pool_documents(
     from cli.tirex import pool_documents
 
     pool_documents(
-        path=directory,
+        topics_path=topics_path,
+        pooling_path=pooling_path,
+        chatnoir_index=chatnoir_index,
         pooling_depth=pooling_depth,
+        cache_path=cache_path if cache_path is not None else pooling_path.parent / ".pooling-cache",
+        chatnoir_default_depth=chatnoir_default_depth,
+        chatnoir_bm25_depth=chatnoir_bm25_depth,
     )
-
 
 def _user_name(project_prefix: str, group: str) -> str:
     group = slugify(group)
