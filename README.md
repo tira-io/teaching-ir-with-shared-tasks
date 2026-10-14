@@ -27,7 +27,7 @@ The resources are intended as a collection of supplementary materials for exerci
   - Showcases a single concept using small example data
   - Takes about 15 minutes per tutorial
   - Implemented as Jupyter notebooks in [GitHub Codespaces](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1)
-- A way to [archive finished courses](#archived-courses)
+- A way to [archive finished courses](#courses)
   - Explore topics, documents, relevance judgments, and submitted runs
   - Leaderboards encourage competition between students
   - Course results are easily re-usable for research
@@ -42,7 +42,7 @@ Read more about the resources in our accompanying research paper: \
   - [Dashboard](#dashboard)
   - [`ir_datasets` browser](#ir_datasets-browser)
   - [Tutorials](#tutorials)
-  - [Archived courses](#archived-courses)
+  - [Archived courses](#courses)
 - [Contributing](#contributing)
 - [Contact/License/Abstract](#contact)
 
@@ -59,14 +59,14 @@ Please watch our short screencast [showing our resources on YouTube](https://you
 The easiest way to start with the tutorials is to open this repository in GitHub Codespaces: \
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1) \
 This will install all the necessary software. Just wait until the editor window has fully loaded (i.e., no progress bars visible; may take a while). \
-The other resources (i.e., [dashboard](#dashboard), [`ir_datasets` browser](#ir_datasets-browser), and [archived courses](#archived-courses)) are static web apps that you can run in your web browser.
+The other resources (i.e., [dashboard](#dashboard), [`ir_datasets` browser](#ir_datasets-browser), and [archived courses](#courses)) are static web apps that you can run in your web browser.
 
 If you want to run the tutorials on your local machine, clone the repository and run `poetry install  --no-root`.
 
 ## Usage
 
 In the following, you will learn how to use each of the four main components of our resources:
-the [dashboard](#dashboard), the [`ir_datasets` browser](#ir_datasets-browser), the [tutorials](#tutorials), and the [archived courses](#archived-courses).
+the [dashboard](#dashboard), the [`ir_datasets` browser](#ir_datasets-browser), the [tutorials](#tutorials), and the [archived courses](#courses).
 The sections roughly follow the order as you would use the components in your course (either as a student or teacher).
 
 ### Dashboard
@@ -112,7 +112,7 @@ The finished courses have been archived on Zenodo and are accessible via GitHub 
 [Get in touch](#contact) to integrate your course too!
 
 | 📅 | Semester | Course | University | Browser | Source |
-|:-:|:--|:--|:--|:-:|:-:|
+| :-: | :-- | :-- | :-- | :-: | :-: |
 | ✅ | Summer semester 2023 | [Information Retrieval](https://temir.org/teaching/information-retrieval-ss23/information-retrieval-ss23.html) | [Leipzig University](https://leipzig.webis.de) | [🔗](https://tira-io.github.io/ir-lab-sose-23/) | [🔗](https://github.com/tira-io/ir-lab-sose-23) |
 | ✅ | Summer semester 2023 | [Advanced Information Retrieval](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung&veranstaltung.veranstid=213651&menuid=&topitem=functions&subitem=editlecture&language=en) |  [Friedrich-Schiller-Universität Jena](https://jena.webis.de) | [🔗](https://tira-io.github.io/ir-lab-sose-23/) | [🔗](https://github.com/tira-io/ir-lab-sose-23) |
 | ✅ | Winter semester 2023/2024 | [Advanced Information Retrieval](https://temir.org/teaching/information-retrieval-ws23/information-retrieval-ws23.html) | [Leipzig University](https://leipzig.webis.de) | [🔗](https://tira-io.github.io/ir-lab-ws-23/) | [🔗](https://github.com/tira-io/ir-lab-ws-23) |
@@ -128,10 +128,6 @@ The finished courses have been archived on Zenodo and are accessible via GitHub 
 | ✅ | Winter semester 2025/2026 | [Information Retrieval](https://temir.org/teaching/information-retrieval-ws25/information-retrieval-ws25.html) | [University of Kassel](https://temir.org/) | ⏳ | ⏳ |
 | ⏳ | Winter semester 2026/2027 | [Information Retrieval](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=257467&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung) | [Friedrich-Schiller-Universität Jena](https://jena.webis.de) |  ⏳ | ⏳ |
 | ⏳ | Winter semester 2026/2027 | [Information Retrieval](https://temir.org/teaching/information-retrieval-ws26/information-retrieval-ws26.html) | [University of Kassel](https://temir.org/) | ⏳ | ⏳ |
-
-https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=257467&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung
-
-
 | 🔜 | _soon_ | _**your** IR course_ | _[get in touch 💬](#contact)_ | 🔜 | 🔜 |
 
 Our accompanying [research paper](#citation) includes a case study and describes our experiences of using our resources in the IR courses of two universities over two semesters.
