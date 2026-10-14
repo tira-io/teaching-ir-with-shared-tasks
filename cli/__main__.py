@@ -1,5 +1,4 @@
 from importlib.resources import files
-from json import JSONDecodeError
 from pathlib import Path
 from secrets import choice
 from string import ascii_letters, digits
@@ -12,8 +11,6 @@ from webbrowser import open as open_webbrowser
 from zipfile import ZipFile
 
 from annotated_types import Len
-from cachecontrol import CacheControl
-from cachecontrol.caches.file_cache import FileCache
 import json
 from click import Context, Parameter
 from click import Path as PathType
@@ -25,8 +22,7 @@ from doccano_client.models.label_type import LabelType
 from doccano_client.models.member import Member
 from doccano_client.models.project import Project
 from doccano_client.models.user import User
-from pandas import DataFrame, concat, isna, read_csv, read_json, read_xml, to_datetime
-from requests import RequestException, session
+from pandas import DataFrame, concat, read_json, read_xml
 from slugify import slugify
 from tqdm import tqdm
 
@@ -388,32 +384,6 @@ def build_chatnoir(
     echo(f"  kubectl apply -f {manifest_path}")
 
 
-_session = session()
-_cache = FileCache(".web_cache", forever=True)
-_session = CacheControl(_session, _cache)
-
-
-def _chatnoir_cache_url_to_docno(url: str) -> str | None:
-    try:
-        response = _session.get(f"{url}&raw", timeout=60)
-        response.raise_for_status()
-    except RequestException:
-        return None
-    try:
-        json = response.json()
-    except JSONDecodeError:
-        return None
-    for key in ("doc_id", "docid", "docno"):
-        if key in json:
-            return json[key]
-    return None
-
-
-def _chatnoir_cache_urls_to_docnos(*url: str) -> str:
-    res = (_chatnoir_cache_url_to_docno(x) for x in url if not isna(x))
-    return ",".join(x for x in res if x is not None)
-
-
 @cli.command()
 @argument(
     "csv_path",
@@ -480,114 +450,15 @@ def convert_topics_csv_to_xml(
     """
     Convert a topics spread sheet exported from Google Forms as CSV to a topics XML file.
     """
-    df = read_csv(csv_path)
-    df.rename(
-        columns={
-            "Zeitstempel": "timestamp",
-            "Title": "title",
-            "Description": "description",
-            "Narrative": "narrative",
-            "Relevant document #1": "relevant_chatnoir_url_1",
-            "Relevant document #2": "relevant_chatnoir_url_2",
-            "Relevant document #3": "relevant_chatnoir_url_3",
-            "Irrelevant document #1": "irrelevant_chatnoir_url_1",
-            "Irrelevant document #2": "irrelevant_chatnoir_url_2",
-            "Irrelevant document #3": "irrelevant_chatnoir_url_3",
-            "Full name": "author",
-            "Group name": "group",
-            "University": "university",
-            "Do you consent to release your anonymized topic?": "consent_release",
-            "Do you want to be listed as co-author of the bundled dataset?": "consent_coauthor",
-        },
-        inplace=True,
-    )
-    df["timestamp"] = to_datetime(df["timestamp"], format="%d.%m.%Y %H:%M:%S")
-
-    # Normalize strings.
-    df["title"] = df["title"].str.strip()
-    df["description"] = df["description"].str.strip()
-    df["narrative"] = df["narrative"].str.strip()
-    df["author"] = df["author"].str.strip()
-    df["group"] = df["group"].str.strip()
-    df["university"] = df["university"].str.strip()
-    df["consent_release"] = df["consent_release"].str.strip()
-    df["consent_coauthor"] = df["consent_coauthor"].str.strip()
-
-    # Sort by submission timestamp.
-    df.sort_values("timestamp", inplace=True)
-    # And number the topics.
-    df["number"] = range(1, len(df) + 1)
-
-    # Consent to release data:
-    df["consent_release"] = df["consent_release"].map(
-        lambda x: True if x == "Yes" else False
-    )
-
-    # Consent to appear as co-author of dataset:
-    df["consent_coauthor"] = df["consent_coauthor"].map(
-        lambda x: True if x == "Yes" else False
-    )
-
-    print(f"Found {len(df)} topics.")
-
-    # Remove empty topics.
-    df = df[(df["title"] != "") & df["title"].notna()]
-    df = df[(df["description"] != "") & df["description"].notna()]
-    df = df[(df["narrative"] != "") & df["narrative"].notna()]
-
-    # Filter by submission year.
-    if from_date is not None:
-        from_date_parsed = to_datetime(from_date, format="%Y-%m-%d", errors="raise")
-        df = df[df["timestamp"] >= from_date_parsed]
-        print(f"Filtered topics from date {from_date_parsed.date()}: {len(df)} topics remain.")
-
-    # Filter by university.
-    if filter_university is not None:
-        df = df[df["university"] == filter_university]
-        print(f"Filtered topics from university '{filter_university}': {len(df)} topics remain.")
-
-    # Anonymize for release.
-    if release:
-        df = df[df["consent_release"]]
-        if coauthors_path is not None:
-            coauthors = df.loc[df["consent_coauthor"], "author"].sort_values().unique()
-            with coauthors_path.open("wt") as file:
-                file.writelines(f"{author}\n" for author in coauthors)
-        df.drop(columns=["author", "group", "university"], inplace=True)
-    elif coauthors_path is not None:
-        warn("Not exporting coauthors as release is disabled.")
-
-    # Drop consent columns.
-    df.drop(columns=["consent_release"], inplace=True)
-    df.drop(columns=["consent_coauthor"], inplace=True)
-
-    # Drop submission timestamps.
-    df.drop(columns=["timestamp"], inplace=True)
-
-    df["relevant_docnos"] = [
-        _chatnoir_cache_urls_to_docnos(*urls.values)
-        for _, urls in tqdm(
-            df[[f"relevant_chatnoir_url_{i}" for i in (1, 2, 3)]].iterrows(),
-            total=len(df),
-        )
-    ]
-    df.drop(columns=[f"relevant_chatnoir_url_{i}" for i in (1, 2, 3)], inplace=True)
-    df["irrelevant_docnos"] = [
-        _chatnoir_cache_urls_to_docnos(*urls.values)
-        for _, urls in tqdm(
-            df[[f"irrelevant_chatnoir_url_{i}" for i in (1, 2, 3)]].iterrows(),
-            total=len(df),
-        )
-    ]
-    df.drop(columns=[f"irrelevant_chatnoir_url_{i}" for i in (1, 2, 3)], inplace=True)
-
-    df.to_xml(
-        topics_path,
-        root_name="topics",
-        row_name="topic",
-        index=False,
-        attr_cols=["number"],
-        elem_cols=sorted(set(df.columns) - {"number"}),
+    from cli.topics import convert_topics_csv_to_xml
+    
+    convert_topics_csv_to_xml(
+        csv_path=csv_path,
+        topics_path=topics_path,
+        release=release,
+        coauthors_path=coauthors_path,
+        from_date=from_date,
+        filter_university=filter_university,
     )
 
 
