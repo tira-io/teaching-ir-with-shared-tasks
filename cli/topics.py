@@ -2,6 +2,7 @@
 Conversion of topics submitted via Google Forms (exported as CSV) to a
 `topics.xml` file, resolving ChatNoir cache URLs to document IDs.
 """
+
 from json import JSONDecodeError
 from pathlib import Path
 from warnings import warn
@@ -108,12 +109,16 @@ def convert_topics_csv_to_xml(
     if from_date is not None:
         from_date_parsed = to_datetime(from_date, format="%Y-%m-%d", errors="raise")
         df = df[df["timestamp"] >= from_date_parsed]
-        print(f"Filtered topics from date {from_date_parsed.date()}: {len(df)} topics remain.")
+        print(
+            f"Filtered topics from date {from_date_parsed.date()}: {len(df)} topics remain."
+        )
 
     # Filter by university.
     if filter_university is not None:
         df = df[df["university"] == filter_university]
-        print(f"Filtered topics from university '{filter_university}': {len(df)} topics remain.")
+        print(
+            f"Filtered topics from university '{filter_university}': {len(df)} topics remain."
+        )
 
     # Anonymize for release.
     if release:
