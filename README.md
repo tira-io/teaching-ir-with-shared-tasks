@@ -61,7 +61,7 @@ The easiest way to start with the tutorials is to open this repository in GitHub
 This will install all the necessary software. Just wait until the editor window has fully loaded (i.e., no progress bars visible; may take a while). \
 The other resources (i.e., [dashboard](#dashboard), [`ir_datasets` browser](#ir_datasets-browser), and [archived courses](#courses)) are static web apps that you can run in your web browser.
 
-If you want to run the tutorials on your local machine, clone the repository and run `poetry install  --no-root`.
+If you want to run the tutorials on your local machine, clone the repository and run `pip install -e '.[tutorials]'` (Python 3.10 or newer).
 
 ## Usage
 
