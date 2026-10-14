@@ -49,7 +49,7 @@ Read more about the resources in our accompanying research paper: \
 ## Screencast
 
 | [![Overview screencast on YouTube](docs/screenshot-screencast.png)](https://youtu.be/JvbiPoyjZoc) |
-|:-:|
+| :-: |
 | Overview screencast |
 
 Please watch our short screencast [showing our resources on YouTube](https://youtu.be/JvbiPoyjZoc) to get an overview of our teaching resources.

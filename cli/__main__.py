@@ -15,7 +15,6 @@ from annotated_types import Len
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
 import json
-from chatnoir_api.model import Index
 from click import Context, Parameter
 from click import Path as PathType
 from click import argument, confirm, echo, group, option
