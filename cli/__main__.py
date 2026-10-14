@@ -450,6 +450,114 @@ def convert_topics_csv_to_xml(
 
 @cli.command()
 @argument(
+    "csv_path",
+    type=PathType(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=False,
+        readable=True,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@argument(
+    "documents_path",
+    type=PathType(
+        exists=False,
+        file_okay=False,
+        dir_okay=True,
+        writable=True,
+        readable=False,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+    default="documents",
+)
+@option(
+    "--id",
+    "dataset_id",
+    type=str,
+    default="documents",
+    show_default=True,
+    help="ID of the merged document collection.",
+)
+@option(
+    "--name",
+    type=str,
+    default="Merged Document Collection",
+    show_default=True,
+    help="Name of the merged document collection.",
+)
+@option(
+    "--description",
+    type=str,
+    default="Merged collection of all submitted document collections.",
+    show_default=True,
+    help="Description of the merged document collection.",
+)
+@option(
+    "--release/--no-release",
+    type=bool,
+    default=False,
+)
+@option(
+    "--coauthors-path",
+    type=PathType(
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=False,
+        resolve_path=True,
+        allow_dash=False,
+        path_type=Path,
+    ),
+)
+@option(
+    "--from-date",
+    type=str,
+    default=None,
+)
+@option(
+    "--filter-university",
+    type=str,
+    default=None,
+)
+def convert_documents_csv(
+    csv_path: Path,
+    documents_path: Path,
+    dataset_id: str,
+    name: str,
+    description: str,
+    release: bool,
+    coauthors_path: Path | None,
+    from_date: str | None,
+    filter_university: str | None,
+) -> None:
+    """
+    Convert a document collections spread sheet exported from Google Forms as CSV to a documents directory containing all crawled document collections and their metadata.
+    The individual submitted documents.jsonl files are downloaded from Google Drive.
+    """
+    from cli.documents import convert_documents_csv
+
+    convert_documents_csv(
+        csv_path=csv_path,
+        documents_path=documents_path,
+        dataset_id=dataset_id,
+        name=name,
+        description=description,
+        release=release,
+        coauthors_path=coauthors_path,
+        from_date=from_date,
+        filter_university=filter_university,
+    )
+
+
+@cli.command()
+@argument(
     "course_path",
     type=PathType(
         exists=True,
