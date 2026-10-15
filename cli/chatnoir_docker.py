@@ -27,11 +27,11 @@ _DEFAULT_INDEXER_IMAGE = "chatnoir-ir-datasets-indexer:local"
 _DEFAULT_RESULT_IMAGE_REPOSITORY = "ghcr.io/tira-io/teaching-ir-with-shared-tasks/chatnoir"
 # Elasticsearch credentials baked into the chatnoir-complete image by default.
 _DEFAULT_ES_USERNAME = "chatnoir"
-_DEFAULT_ES_PASSWORD = "chatnoir"  # nosec B105
+_DEFAULT_ES_PASSWORD = "chatnoir"  # noqa: S105
 # MinIO root credentials baked into the chatnoir-complete image by default
 # (see docker/all-in-one/local_settings.template.py in chatnoir-web).
 _DEFAULT_S3_ACCESS_KEY = "chatnoir"
-_DEFAULT_S3_SECRET_KEY = "chatnoirchatnoir"  # nosec B105
+_DEFAULT_S3_SECRET_KEY = "chatnoirchatnoir"  # noqa: S105
 # Shared bucket all course corpora are uploaded to (one object per corpus),
 # analogous to multi-corpus buckets like 'corpora-tirex-small'.
 _S3_BUCKET = "course-corpora"
@@ -59,7 +59,7 @@ class Corpus(NamedTuple):
 
 
 def _run(command: Sequence[str], **kwargs: Any) -> subprocess.CompletedProcess:
-    return subprocess.run(command, check=True, text=True, **kwargs)
+    return subprocess.run(command, check=True, text=True, **kwargs)  # noqa: S603
 
 
 def container_name_for(directory: Path) -> str:
@@ -71,8 +71,8 @@ def network_name_for(container_name: str) -> str:
 
 
 def _ensure_network(network_name: str) -> None:
-    exists = subprocess.run(
-        ["docker", "network", "inspect", network_name],
+    exists = subprocess.run(  # noqa: S603
+        ["docker", "network", "inspect", network_name],  # noqa: S607
         capture_output=True,
         text=True,
     ).returncode == 0
@@ -82,8 +82,8 @@ def _ensure_network(network_name: str) -> None:
 
 
 def _container_status(container_name: str) -> Optional[str]:
-    result = subprocess.run(
-        ["docker", "inspect", "-f", "{{.State.Status}}", container_name],
+    result = subprocess.run(  # noqa: S603
+        ["docker", "inspect", "-f", "{{.State.Status}}", container_name],  # noqa: S607
         capture_output=True,
         text=True,
     )
@@ -147,8 +147,8 @@ def wait_for_elasticsearch(container_name: str) -> None:
     echo("Waiting for Elasticsearch to become available...")
     deadline = monotonic() + _HEALTH_CHECK_TIMEOUT_SECONDS
     while monotonic() < deadline:
-        result = subprocess.run(
-            ["docker", "exec", container_name, "curl", "-sf", "http://127.0.0.1:9200"],
+        result = subprocess.run(  # noqa: S603
+            ["docker", "exec", container_name, "curl", "-sf", "http://127.0.0.1:9200"],  # noqa: S607
             capture_output=True,
         )
         if result.returncode == 0:
@@ -169,7 +169,7 @@ def _corpus_display_name(directory: Path, corpus_id: str) -> str:
             name = metadata.get("dataset", {}).get("name")
             if name:
                 return str(name)
-        except Exception:  # noqa: BLE001  # nosec B110
+        except Exception:  # noqa: BLE001, S110
             # Metadata is best-effort only.
             pass
     return corpus_id
@@ -229,8 +229,8 @@ def index_corpus(
 def refresh_indices(container_name: str, corpora: Sequence[Corpus]) -> None:
     for corpus in corpora:
         for index in (corpus.meta_index, corpus.data_index):
-            subprocess.run(
-                ["docker", "exec", container_name, "curl", "-sf", "-X", "POST",
+            subprocess.run(  # noqa: S603
+                ["docker", "exec", container_name, "curl", "-sf", "-X", "POST",  # noqa: S607
                  f"http://127.0.0.1:9200/{index}/_refresh"],
                 capture_output=True,
             )
@@ -306,8 +306,8 @@ def update_search_indices(container_name: str, corpora: Sequence[Corpus]) -> boo
         )
     snippet = "\n".join(snippet_lines) + "\n"
 
-    subprocess.run(
-        ["docker", "exec", "-i", container_name, "sh", "-c",
+    subprocess.run(  # noqa: S603
+        ["docker", "exec", "-i", container_name, "sh", "-c",  # noqa: S607
          f"cat >> {_LOCAL_SETTINGS_PATH}"],
         input=snippet,
         text=True,
@@ -339,7 +339,7 @@ def commit_and_remove_container(
         _run(["docker", "tag", primary_tag, alias_tag])
     _run(["docker", "stop", container_name])
     _run(["docker", "rm", container_name])
-    subprocess.run(["docker", "network", "rm", network_name], capture_output=True)
+    subprocess.run(["docker", "network", "rm", network_name], capture_output=True)  # noqa: S603, S607
     echo(f"Stopped and removed container '{container_name}'.")
 
 
