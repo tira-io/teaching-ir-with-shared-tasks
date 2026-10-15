@@ -84,8 +84,7 @@ jobs:
     - name: 🧰 Install dependencies
       run: pip install .[tests]
     - name: 🧪 Test Python code
-      # Exit code 5 means no tests were collected; don't fail on that.
-      run: pytest --cov=cli cli || [ $? -eq 5 ]
+      run: pytest --cov=cli cli
   deploy-dashboard:
     name: "Deploy dashboard to GitHub Pages"
     environment:
