@@ -80,6 +80,8 @@ exclude_dirs = [
     "venv",
     ".venv",
 ]
+# The ChatNoir setup intentionally drives the `docker` CLI via subprocess (with argument lists, no shell).
+skips = ["B404", "B603", "B607"]
 
 [tool.bandit.assert_used]
 skips = ["**/test_*.py"]
