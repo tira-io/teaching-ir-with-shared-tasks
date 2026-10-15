@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(ruff check:*)",
+      "Bash(.venv/bin/ruff check:*)",
+      "Bash(mypy:*)",
+      "Bash(.venv/bin/mypy:*)",
+      "Bash(bandit:*)",
+      "Bash(.venv/bin/bandit:*)",
+      "Bash(pytest:*)",
+      "Bash(.venv/bin/pytest:*)",
+      "Bash(teaching-ir --help)",
+      "Bash(teaching-ir --version)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)"
+    ]
+  }
+}
