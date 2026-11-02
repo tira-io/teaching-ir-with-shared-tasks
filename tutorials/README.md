@@ -26,6 +26,7 @@ Our basic tutorials cover the most important concepts of information retrieval a
 | Topic | Jupyter Notebook | Open in Codespaces |
 |:--|:-:|:-:|
 | Topics, documents, and relevance judgments | [🔗](tutorial-ir-datasets.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-ir-datasets.ipynb?quickstart=1) |
+| Web crawling | [🔗](tutorial-web-crawling.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-web-crawling.ipynb?quickstart=1) |
 | Stopword lists | [🔗](tutorial-stopword-lists.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-stopword-lists.ipynb?quickstart=1) |
 | Stemming | [🔗](tutorial-stemming.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-stemming.ipynb?quickstart=1) |
 | Lemmatization | [🔗](tutorial-lemmatization.ipynb) | [💻](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks/tree/main/tutorials/tutorial-lemmatization.ipynb?quickstart=1) |

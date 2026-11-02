@@ -1,2 +1,4 @@
 .ipynb_checkpoints
 custom-stopwords.txt
+crawl.jsonl
+documents.jsonl
