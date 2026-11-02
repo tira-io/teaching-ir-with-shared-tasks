@@ -20,7 +20,7 @@ from slugify import slugify
 try:
     from yaml import safe_load as _yaml_safe_load  # type: ignore[import-untyped]
 except ImportError:  # pragma: no cover - PyYAML is pulled in transitively.
-    _yaml_safe_load = None
+    _yaml_safe_load = NotImplemented
 
 _DEFAULT_CHATNOIR_IMAGE = "chatnoir-complete:local"
 _DEFAULT_INDEXER_IMAGE = "chatnoir-ir-datasets-indexer:local"
@@ -163,7 +163,7 @@ def wait_for_elasticsearch(container_name: str) -> None:
 
 def _corpus_display_name(directory: Path, corpus_id: str) -> str:
     metadata_path = directory / "metadata.yml"
-    if metadata_path.is_file() and _yaml_safe_load is not None:
+    if metadata_path.is_file() and _yaml_safe_load is not NotImplemented:
         try:
             metadata = _yaml_safe_load(metadata_path.read_text()) or {}
             name = metadata.get("dataset", {}).get("name")
