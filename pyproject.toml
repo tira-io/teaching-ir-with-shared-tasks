@@ -1,7 +1,7 @@
 [project]
 name = "teaching-ir-with-shared-tasks"
 requires-python = ">=3.10,<4.0"
-version = "0.1.0"
+dynamic = ["version"]
 dependencies = [
     "annotated-types~=0.7.0",
     "cachecontrol[filecache]~=0.14.1",
@@ -33,6 +33,9 @@ tests = [
     "ruff~=0.13.1",
     "types-pyyaml~=6.0",
     "types-tqdm~=4.67",
+]
+tutorials = [
+    "ipykernel~=7.1",
 ]
 
 [project.scripts]
@@ -85,7 +88,3 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 log_cli = true
-
-[tool.poetry.group.dev.dependencies]
-ipykernel = "^7.1.0"
-

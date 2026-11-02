@@ -33,30 +33,27 @@ COURSE-NAME identifies this course's run (e.g., `wise-2026`) and is later used a
 
 Run `teaching-ir init-directory --help` for the available options. All subsequent `teaching-ir` commands operate on this directory.
 
-## Setting up Corpora submissions
+## Setting up document collection submissions
 
 > TODO: Link a Google Forms template.
 
-## Setting up ChatNoir for the submitted corpora
+## Converting and merging submitted document collections
 
-Assume that you have placed the corpora that you have extracted from the google form above in the directory `<PATH-TO-COURSE-DIRECTORY>/corpora`. The command `tree corpora/` should then give something like:
+> TODO: Describe CSV download from Google Sheets.
 
-```
-corpora/
-├── corpus-01
-│   ├── documents.jsonl
-│   └── metadata.yml
-├── corpus-02
-│   ├── documents.jsonl
-│   └── metadata.yml
-└── corpus-03
-    ├── documents.jsonl
-    └── metadata.yml
+After having downloaded the CSV file of the corpora submissions from Google, download the submitted `documents.jsonl` files from Google Drive and convert them like so:
+
+```shell
+teaching-ir convert-documents-csv /path/to/documents.csv <PATH-TO-COURSE-DIRECTORY>/documents
 ```
 
-Next, please build the ChatNoir Indexes:
+This creates one sub-directory per submitted corpus (with its `documents.jsonl` and `metadata.yml`), plus a merged `documents.jsonl` and `metadata.yml` for the joined document collection. Use `--release` (and optionally `--coauthors-path coauthors.txt`) to only export the document collections with consent to release and without author information (just as for the [topics below](#topics-for-public-release)).
 
-```
+## Setting up ChatNoir for the submitted document collections
+
+After you have bundled the document collections, next, build the ChatNoir indexes and container to be deployed for data exploration:
+
+```shell
 teaching-ir build-chatnoir <PATH-TO-COURSE-DIRECTORY>
 ```
 
@@ -71,16 +68,13 @@ It also writes a Kubernetes manifest (Deployment, Service, Ingress) to
 cache/document view on two public hostnames. Once the image has been
 pushed, deploy it with:
 
-```
+```shell
 kubectl apply -f <PATH-TO-COURSE-DIRECTORY>/kubernetes.yaml
 ```
-
-
 
 ## Setting up topic submission
 
 > TODO: Link a Google Forms template.
-
 
 ## Collecting and converting topics
 
@@ -120,7 +114,7 @@ Create top-k pools of documents retrieved by TIREx baselines (using the previous
 
 Please create a `config.json` file with the following details:
 
-```
+```json
 {
     "topics": "THE_NAME_OF_THE_TOPICS_FILE",
     "runs": "runs",
@@ -131,12 +125,11 @@ Please create a `config.json` file with the following details:
 
 Please create a file `topic-mapping.jsonl` with lines like:
 
-```
+```json
 {"account": "ir-25-fsu-51", "topics": ["51"]}
 ```
 
 Now, you can run the pooling
-
 
 ```shell
 teaching-ir pool-documents --pooling-depth XX directory
@@ -148,7 +141,7 @@ We also include tools that ease uploading pooled documents and downloading relev
 
 Create a file `doccano-label-configs.json` with contents like:
 
-```
+```json
 [
   {
     "id": 11340,
