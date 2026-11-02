@@ -25,23 +25,15 @@ def print_version(
     context.exit()
 
 
-def read_pooled_for_topics(pool_path: Sequence[Path], topics: DataFrame):
+def read_pooled_for_topics(pool_path: Sequence[Path], topics: DataFrame) -> DataFrame:
+    # Explicitly select only the columns we need.
+    columns = ["query_id", "query", "description", "narrative", "doc_id", "text"]
     ret = concat(
         read_json(
             path,
             lines=True,
-            dtype=str,
-        )[
-            [
-                # Explicitly select only the columns we need.
-                "query_id",
-                "query",
-                "description",
-                "narrative",
-                "doc_id",
-                "text",
-            ]
-        ]
+            dtype={column: str for column in columns},
+        )[columns]
         for path in tqdm(
             pool_path,
             desc="Read pooled documents",
@@ -909,11 +901,11 @@ def create_tira_groups(
     pool = read_pooled_for_topics([path / "doccano-judgment-pool.jsonl"], topics)
     groups = group_names(pool, prefix).values()
 
-    for group in [i for i in groups if 'tutors' not in i.lower()]:
+    for group_name in [i for i in groups if 'tutors' not in i.lower()]:
         create_group(
             path / "tira-invites.json",
             tira_task_id,
-            group,
+            group_name,
             affiliation_of_teams,
             country_of_teams,
         )

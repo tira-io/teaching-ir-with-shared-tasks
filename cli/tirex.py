@@ -2,24 +2,20 @@ import json
 import time
 from glob import glob
 from gzip import open as gzip_open
-from itertools import chain
-from json import dump, dumps, load, loads
+from json import JSONDecodeError, dumps, load, loads
 from os import environ
 from pathlib import Path
 from pandas import read_xml
 from statistics import mean, median
-from typing import Collection
 import gzip
 
-from chatnoir_api.model import Index
 from chatnoir_api import cache_contents
 from ir_datasets import load as irds_load
 from pandas import DataFrame, read_csv
-from pyterrier import BatchRetrieve, IndexFactory, IterDictIndexer, IndexFactory
+from pyterrier import IterDictIndexer, IndexFactory
 from pyterrier.terrier import Retriever as pt_retriever
-from pyterrier.apply import generic
-from pyterrier.io import read_results, read_topics, write_results
-from chatnoir_pyterrier import ChatNoirRetrieve, Feature
+from pyterrier.io import read_topics, write_results
+from chatnoir_pyterrier import ChatNoirRetrieve
 from tira.rest_api_client import Client
 from tqdm import tqdm
 from trectools import TrecPoolMaker, TrecRun, TrecQrel
@@ -150,8 +146,11 @@ def get_documents(pooling_path: Path):
         with gzip_open(documents_path, "rt") as file:
             for line in file:
                 try:
-                    ret.append(loads(line))
-                except: pass
+                    doc = loads(line)
+                except JSONDecodeError:
+                    # Skip partially written lines (e.g., from an interrupted run).
+                    continue
+                ret.append(doc)
 
         return ret
 
@@ -205,7 +204,8 @@ def load_topics(
     if str(topics_path).endswith(".xml"):
         return read_topics(filename=str(topics_path), format="trecxml", tags=[tag], tokenise=tokenise)
     else:
-        assert tokenise == False
+        if tokenise:
+            raise ValueError("Tokenisation is only supported for XML topics.")
         ret = read_csv(topics_path)
         ret["title"] = ret["query"]
         ret["query"] = ret[tag]
@@ -230,7 +230,8 @@ def read_account_to_topics(path: Path):
     with open(path / "topic-mapping.jsonl", "r") as f:
         for i in f:
             i = json.loads(i)
-            assert i["account"] not in ret
+            if i["account"] in ret:
+                raise ValueError(f"Duplicate account in topic mapping: {i['account']}")
             ret[i["account"]] = i["topics"]
     return ret
 
@@ -269,11 +270,6 @@ def pool_documents(
             tag="title",
             tokenise=False,
         )
-        topic_to_group = load_topics_dict(
-            topics_path=topics_path,
-            tag="group",
-            tokenise=False,
-        )
         topic_to_description = load_topics_dict(
             topics_path=topics_path,
             tag="description",
@@ -303,18 +299,18 @@ def pool_documents(
         else:
             docs_store = {}
             with gzip.open(path / "documents.jsonl.gz", "rt") as f:
-                for l in f:
-                    l = json.loads(l)
-                    docs_store[l["docno"]] = l
+                for line in f:
+                    doc = json.loads(line)
+                    docs_store[doc["docno"]] = doc
 
         with open(path / "topic-mapping.jsonl", "r") as f:
             doc_count = 0
             no_main_content = 0
             skipped_long = 0
-            for i in f:
-                i = json.loads(i)
-                group = i["account"]
-                for topic in i["topics"]:
+            for line in f:
+                mapping = json.loads(line)
+                group = mapping["account"]
+                for topic in mapping["topics"]:
                     for document in judgment_pool[topic]:
                         if document not in docs_store:
                             print(f"Skip document with id {document}")
@@ -360,7 +356,8 @@ def to_xml_query(query):
         appendix = f"""  <description>{query.description}</description>
   <narrative>{query.narrative}</narrative>
 """
-    except:
+    except AttributeError:
+        # Query has no description/narrative.
         pass
 
     return f""" <topic number="{query.query_id}">
@@ -395,7 +392,8 @@ def subsample_corpus(qrels_path: Path, pooling_path: Path, pooling_depth: int):
     
     if dataset.has_queries():
         for i in dataset.queries_iter():
-            assert i.query_id not in queries_dict
+            if i.query_id in queries_dict:
+                raise ValueError(f"Duplicate query ID: {i.query_id}")
             queries_dict[i.query_id] = i
     else:
         queries_df = read_xml(qrels_path.parent / 'topics.xml', dtype=str).rename(columns={"number": "query_id"})
@@ -458,7 +456,7 @@ def subsample_corpus(qrels_path: Path, pooling_path: Path, pooling_depth: int):
         for doc in tqdm(all_docs):
             try:
                 doc_text = docs_store.get(doc).default_text()
-            except:
+            except Exception:
                 print('skip due to error')
                 continue
             f.write(json.dumps({"docno": doc, "text": doc_text}) + '\n')
