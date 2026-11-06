@@ -74,7 +74,7 @@ This repository and the tutorials within are designed to be run and developed in
 As another alternative, you could start up a Jupyter server to edit a notebook with Docker (run the command within the cloned directory):
 
 ```shell
-docker run --rm  -it -p 8888:8888 --entrypoint jupyter -w /workspace -v ${PWD}:/workspace webis/ir-lab-wise-2025:0.0.1 notebook --allow-root --ip 0.0.0.0
+docker run --rm -it -p 8888:8888 --entrypoint jupyter -w /workspace -v ${PWD}:/workspace ghcr.io/tira-io/teaching-ir-with-shared-tasks notebook --allow-root --ip 0.0.0.0
 ```
 
 ## Contributing
@@ -83,14 +83,14 @@ With the plethora of new retrieval approaches emerging every year, it is hard fo
 
 To do so, just [open this repository in GitHub Codespaces](https://github.com/codespaces/new/tira-io/teaching-ir-with-shared-tasks?quickstart=1) (or clone it and open the repo in a [Dev container](https://containers.dev/) with your [favorite IDE](https://containers.dev/supporting)).
 
-Feel free to locally adapt the dev container image (`webis/ir-lab-wise-2025:0.0.1`, defined in [`.devcontainer/Dockerfile`](../.devcontainer/Dockerfile)) to your liking. If you think your changes might be helpful to others as well, please [let us know](#contact) so that we can adjust the public image.
-
-Staff can build and publish the image like this (replace `X.Y.Z` with the actual version):
+Feel free to locally adapt the dev container image (`ghcr.io/tira-io/teaching-ir-with-shared-tasks`, defined in [`.devcontainer/Dockerfile`](../.devcontainer/Dockerfile)) to your liking. To try out your changes, build the image locally (run from the repository root):
 
 ```shell
-docker build -t webis/ir-lab-wise-2023:X.Y.Z .
-docker push webis/ir-lab-wise-2023:X.Y.Z
+docker build -t ghcr.io/tira-io/teaching-ir-with-shared-tasks .devcontainer
 ```
+
+If you think your changes might be helpful to others as well, please [let us know](#contact) or create a pull request so that we can adjust the public image.
+The public image is built and published automatically with GitHub Actions when a new Git version ta (e.g., `1.0.0`) is pushed.
 
 ## Contact
 
