@@ -44,7 +44,7 @@ teaching-ir = "cli.__main__:cli"
 [build-system]
 requires = [
     "setuptools~=80.0",
-    "setuptools-scm~=9.2",    
+    "setuptools-scm~=10.3",    
 ]
 build-backend = "setuptools.build_meta"
 
