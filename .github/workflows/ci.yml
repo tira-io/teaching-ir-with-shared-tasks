@@ -69,12 +69,120 @@ jobs:
       run: pip install .[tests]
     - name: 🧪 Test Python code
       run: pytest --cov=cli cli
+  docker-build:
+    name: 🏗️ Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check-out
+        uses: actions/checkout@v7
+      - name: 🧰 Set up QEMU
+        uses: docker/setup-qemu-action@v4
+      - name: 🧰 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: 🏗️ Build Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .devcontainer
+          push: false
+  docker-publish:
+    name: 🚀 Publish Docker image
+    if: github.event_name == 'push' && endsWith(github.event.base_ref, 'main') && startsWith(github.ref, 'refs/tags')
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - python-code-check
+      - python-typing
+      - python-test
+      - docker-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check-out
+        uses: actions/checkout@v7
+      - name: 🧰 Set up QEMU
+        uses: docker/setup-qemu-action@v4
+      - name: 🧰 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: 🔑 Login to GitHub Packages
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: ℹ️ Extract image metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+      - name: 🚀 Build and push image
+        uses: docker/build-push-action@v7
+        with:
+          context: .devcontainer
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+  node-build-dashboard:
+    name: 🏗️ Build dashboard Node app
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check-out
+        uses: actions/checkout@v7
+      - name: 🧰 Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: 🧰 Install Python dependencies
+        run: python -m pip install pyyaml~=6.0
+      - name: 🏗️ Pre-process data
+        working-directory: dashboard/
+        run: python3 process_data.py
+      - name: 🧰 Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: dashboard/yarn.lock
+      - name: 🧰 Install Node dependencies
+        working-directory: dashboard/
+        run: yarn
+      - name: 🏗️ Build dashboard Node app
+        working-directory: dashboard/
+        run: |
+          yarn build
+          cp src/resources/ir-lab-guidelines-sose-2024.pdf dist/
+      - name: 📤 Upload app for GitHub Pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dashboard/dist/
+  node-check-dashboard:
+    name: 🔍 Check dashboard Node app code
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check-out
+        uses: actions/checkout@v7
+      - name: 🧰 Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: dashboard/yarn.lock
+      - name: 🧰 Install Node dependencies
+        working-directory: dashboard/
+        run: yarn
+      - name: 🔍 Check dashboard Node app code
+        working-directory: dashboard/
+        run: yarn lint
+  # TODO: Add a node-test-dashboard job (yarn test) once the dashboard has tests.
   deploy-dashboard:
-    name: "Deploy dashboard to GitHub Pages"
+    name: 🚀 Deploy dashboard to GitHub Pages
+    if: github.event_name == 'push' && endsWith(github.event.base_ref, 'main') && startsWith(github.ref, 'refs/tags')
+    needs:
+      - node-build-dashboard
+      - node-check-dashboard
     environment:
       name: GitHub Pages
       url: ${{ steps.deployment.outputs.page_url }}
-    if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
       pages: write
@@ -85,43 +193,8 @@ jobs:
       cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v6     
       - name: 🧰 Setup GitHub Pages
         uses: actions/configure-pages@v5
-      - name: 🧰 Install Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-      - name: 🧰 Install Python dependencies
-        run: python -m pip install pyyaml~=6.0
-      - name: 🏗️ Pre-process data
-        working-directory: dashboard
-        run: python3 process_data.py
-      - name: 🧰 Setup Node/Yarn
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: yarn
-          cache-dependency-path: dashboard/yarn.lock
-      - name: 🧰 Install Yarn dependencies
-        working-directory: dashboard
-        run: yarn
-      - name: 🧪 Lint dashboard web app
-        working-directory: dashboard
-        run: yarn lint
-      # - name: 🧪 Test dashboard web app
-      #   working-directory: dashboard
-      #   run: yarn test
-      - name: 🏗️ Build dashboard web app
-        working-directory: dashboard
-        run: |
-          yarn build
-          cp src/resources/ir-lab-guidelines-sose-2024.pdf dist/
-      - name: 📤 Upload web app artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: dashboard/dist/
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
