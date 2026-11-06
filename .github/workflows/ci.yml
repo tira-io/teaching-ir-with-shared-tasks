@@ -69,6 +69,59 @@ jobs:
       run: pip install .[tests]
     - name: 🧪 Test Python code
       run: pytest --cov=cli cli
+  docker-build:
+    name: 🏗️ Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check-out
+        uses: actions/checkout@v7
+      - name: 🧰 Set up QEMU
+        uses: docker/setup-qemu-action@v4
+      - name: 🧰 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: 🏗️ Build Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .devcontainer
+          push: false
+  docker-publish:
+    name: 🚀 Publish Docker image
+    if: github.event_name == 'push' && endsWith(github.event.base_ref, 'main') && startsWith(github.ref, 'refs/tags')
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - python-code-check
+      - python-typing
+      - python-test
+      - docker-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Check-out
+        uses: actions/checkout@v7
+      - name: 🧰 Set up QEMU
+        uses: docker/setup-qemu-action@v4
+      - name: 🧰 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: 🔑 Login to GitHub Packages
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: ℹ️ Extract image metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+      - name: 🚀 Build and push image
+        uses: docker/build-push-action@v7
+        with:
+          context: .devcontainer
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   deploy-dashboard:
     name: "Deploy dashboard to GitHub Pages"
     environment:
