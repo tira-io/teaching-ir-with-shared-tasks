@@ -12,7 +12,7 @@ dependencies = [
     # (fork also fixes an invalid PEP 440 pyyaml version specifier that broke pip installs)
     "doccano-client @ git+https://github.com/mam10eks/doccano-client.git@8b03549b838e326e5500e0d57c03c104edf2ab37",
     # "doccano-client~=1.2.8",
-    "ir_datasets~=0.5.11",
+    "ir_datasets~=0.6.3",
     "pandas~=2.3",
     "pyterrier[java]~=1.0",
     "python-slugify~=8.0",
