@@ -26,7 +26,7 @@ dependencies = [
 
 [project.optional-dependencies]
 tests = [
-    "mypy~=1.5",
+    "mypy~=2.4",
     "pandas-stubs~=2.3",
     "pytest~=9.2",
     "pytest-cov~=7.0",
