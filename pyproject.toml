@@ -3,7 +3,7 @@ name = "teaching-ir-with-shared-tasks"
 requires-python = ">=3.10,<4.0"
 dynamic = ["version"]
 dependencies = [
-    "annotated-types~=0.7.0",
+    "annotated-types~=0.8.0",
     "cachecontrol[filecache]~=0.14.4",
     "chatnoir-api~=3.4",
     "chatnoir-pyterrier~=3.4",
