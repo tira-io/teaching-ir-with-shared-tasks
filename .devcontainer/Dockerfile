@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:25.10
 
 # Install system dependencies
 RUN apt-get update \
