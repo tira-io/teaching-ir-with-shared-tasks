@@ -112,7 +112,15 @@ def _download_drive_file(url: str) -> Path:
     return path
 
 
-def _read_documents(paths: Iterable[Path]) -> Iterable[Mapping[str, Any]]:
+def _source(title: str, author: str) -> str:
+    """Human-readable source of a submitted collection, for warnings."""
+    return f"collection '{title}' by {author}"
+
+
+def _read_documents(
+    paths: Iterable[Path],
+    source: str | None = None,
+) -> Iterable[Mapping[str, Any]]:
     for path in paths:
         warned = False
         with (
@@ -134,6 +142,8 @@ def _read_documents(paths: Iterable[Path]) -> Iterable[Mapping[str, Any]]:
                     location = str(path)
                 else:
                     location = f"{path}:{line_number}"
+                if source is not None:
+                    location = f"{location} ({source})"
 
                 if line.strip() == b"":
                     continue
@@ -223,7 +233,11 @@ def _write_metadata(metadata: Mapping[str, Any], path: Path) -> None:
         )
 
 
-def _write_documents(documents: Iterable[Mapping[str, Any]], path: Path) -> int:
+def _write_documents(
+    documents: Iterable[Mapping[str, Any]],
+    path: Path,
+    source: str | None = None,
+) -> int:
     """
     Write documents to a JSONL file, skipping documents with duplicate docnos.
     Returns the number of written documents.
@@ -238,7 +252,8 @@ def _write_documents(documents: Iterable[Mapping[str, Any]], path: Path) -> int:
             docnos.add(document["docno"])
             file.write(dumps(document) + "\n")
     if num_duplicates > 0:
-        warn(f"Skipped {num_duplicates} documents with duplicate docnos in '{path}'.")
+        location = f"'{path}'" if source is None else f"'{path}' ({source})"
+        warn(f"Skipped {num_duplicates} documents with duplicate docnos in {location}.")
     return len(docnos)
 
 
@@ -353,19 +368,21 @@ def convert_documents_csv(
         desc="Convert document collections",
         unit="collection",
     ):
+        source = _source(row["title"], row["author"])
         try:
             downloaded_paths = [
                 _download_drive_file(url) for url in row["collection_urls"]
             ]
         except (RequestException, ValueError) as error:
-            warn(f"Skipping document collection '{row['id']}': {error}")
+            warn(f"Skipping {source}: {error}")
             continue
 
         collection_path = documents_path / row["id"]
         collection_path.mkdir(parents=True, exist_ok=True)
         num_documents = _write_documents(
-            _read_documents(downloaded_paths),
+            _read_documents(downloaded_paths, source=source),
             collection_path / "documents.jsonl",
+            source=source,
         )
         _write_metadata(
             _metadata(row.to_dict(), release),
