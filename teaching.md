@@ -47,6 +47,13 @@ After having downloaded the CSV file of the corpora submissions from Google, dow
 teaching-ir convert-documents-csv /path/to/documents.csv <PATH-TO-COURSE-DIRECTORY>/documents
 ```
 
+Files uploaded via the Google Form are private to the form owner, so the command cannot download them as is. Make the uploads temporarily public while running the command:
+
+1. In the Google Form, open the *Responses* tab and click *View in Drive* (or *View folder*) to open the uploads folder (named like `<FORM-TITLE> (File responses)` in the form owner's *My Drive*).
+2. Right-click the folder, choose *Share* → *Share*, set *General access* to *Anyone with the link* (Viewer), and click *Done*. The files in the folder and its sub-folders inherit this setting.
+3. Run the command above. Downloaded files are cached in `.drive_cache/` in the current directory, so re-runs do not need the folder to be public again.
+4. Set *General access* of the folder back to *Restricted*.
+
 This creates one sub-directory per submitted corpus (with its `documents.jsonl` and `metadata.yml`), plus a merged `documents.jsonl` and `metadata.yml` for the joined document collection. Use `--release` (and optionally `--coauthors-path coauthors.txt`) to only export the document collections with consent to release and without author information (just as for the [topics below](#topics-for-public-release)).
 
 ## Setting up ChatNoir for the submitted document collections
