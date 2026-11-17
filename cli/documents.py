@@ -102,21 +102,30 @@ def _download_drive_file(url: str) -> Path:
 
 def _read_documents(paths: Iterable[Path]) -> Iterable[Mapping[str, Any]]:
     for path in paths:
+        warned = False
         with path.open("rt", encoding="utf-8") as file:
             for line_number, line in enumerate(file, start=1):
+                # Only include the line number in the first warning per file, so that warnings can be de-duplicated.
+                if warned:
+                    location = str(path)
+                else:
+                    location = f"{path}:{line_number}"
+
                 if line.strip() == "":
                     continue
                 try:
                     document = loads(line)
                 except JSONDecodeError:
-                    warn(f"Skipping invalid JSON in {path}:{line_number}.")
+                    warn(f"Skipping invalid JSON in {location}.")
+                    warned = True
                     continue
                 missing = [field for field in _REQUIRED_FIELDS if field not in document]
                 if len(missing) > 0:
                     warn(
-                        f"Skipping document in {path}:{line_number} "
+                        f"Skipping document in {location} "
                         f"with missing fields: {', '.join(missing)}."
                     )
+                    warned = True
                     continue
                 yield document
 
