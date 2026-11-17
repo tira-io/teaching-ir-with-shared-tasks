@@ -29,6 +29,8 @@ _SEPARATOR_PATTERN = re_compile(r"[\s,;]+")
 # "12.10.2026 15:11:22", depending on the locale.
 _TIMESTAMP_FORMATS = ("%Y/%m/%d %I:%M:%S %p", "%d.%m.%Y %H:%M:%S")
 _REQUIRED_FIELDS = ("docno", "url", "title", "text")
+# Lists the downloaded files a collection was converted from, to skip it on re-runs.
+_SOURCES_MARKER_NAME = ".sources"
 
 
 def _str_representer(dumper: SafeDumper, data: str) -> Any:
@@ -233,6 +235,28 @@ def _write_metadata(metadata: Mapping[str, Any], path: Path) -> None:
         )
 
 
+def _sources_marker(paths: Iterable[Path]) -> str:
+    """List the downloaded files (by name and size in bytes), one per line."""
+    return "".join(f"{path.name} {path.stat().st_size}\n" for path in paths)
+
+
+def _is_up_to_date(collection_path: Path, sources_marker: str) -> bool:
+    """
+    Whether a collection was already converted from exactly these downloaded
+    files, with the same size.
+    """
+    documents_path = collection_path / "documents.jsonl"
+    marker_path = collection_path / _SOURCES_MARKER_NAME
+    if not documents_path.exists() or not marker_path.exists():
+        return False
+    return marker_path.read_text(encoding="utf-8") == sources_marker
+
+
+def _count_lines(path: Path) -> int:
+    with path.open("rb") as file:
+        return sum(chunk.count(b"\n") for chunk in iter(lambda: file.read(1024 * 1024), b""))
+
+
 def _write_documents(
     documents: Iterable[Mapping[str, Any]],
     path: Path,
@@ -379,17 +403,27 @@ def convert_documents_csv(
 
         collection_path = documents_path / row["id"]
         collection_path.mkdir(parents=True, exist_ok=True)
-        num_documents = _write_documents(
-            _read_documents(downloaded_paths, source=source),
-            collection_path / "documents.jsonl",
-            source=source,
-        )
+        marker_path = collection_path / _SOURCES_MARKER_NAME
+        sources_marker = _sources_marker(downloaded_paths)
+        up_to_date = _is_up_to_date(collection_path, sources_marker)
+        if up_to_date:
+            num_documents = _count_lines(collection_path / "documents.jsonl")
+        else:
+            # Remove the marker first, so that an interrupted run is not mistaken as complete.
+            marker_path.unlink(missing_ok=True)
+            num_documents = _write_documents(
+                _read_documents(downloaded_paths, source=source),
+                collection_path / "documents.jsonl",
+                source=source,
+            )
+            marker_path.write_text(sources_marker, encoding="utf-8")
         _write_metadata(
             _metadata(row.to_dict(), release),
             collection_path / "metadata.yml",
         )
         exported_ids.append(row["id"])
-        echo(f"Wrote {num_documents} documents to '{collection_path}'.")
+        verb = "Kept existing" if up_to_date else "Wrote"
+        echo(f"{verb} {num_documents} documents in '{collection_path}'.")
 
     merged_documents_path = documents_path / "documents.jsonl"
     num_merged_documents = _write_documents(
