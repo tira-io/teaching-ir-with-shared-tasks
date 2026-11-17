@@ -5,7 +5,7 @@ CSV) to a `documents/` directory, with one sub-directory (containing
 `documents.jsonl` and `metadata.yml` for the joined collection.
 """
 
-from json import JSONDecodeError, dumps, loads
+from json import dumps, loads
 from pathlib import Path
 from re import compile as re_compile
 from typing import Any, Iterable, Mapping
@@ -92,10 +92,22 @@ def _download_drive_file(url: str) -> Path:
         raise RequestException(
             f"Could not download file from Google Drive (is it shared publicly?): {url}"
         )
+    content_length = response.headers.get("Content-Length")
     temp_path = path.with_suffix(".part")
-    with temp_path.open("wb") as file:
+    with (
+        temp_path.open("wb") as file,
+        tqdm(
+            total=int(content_length) if content_length is not None else None,
+            desc=f"Download {file_id}",
+            unit="B",
+            unit_scale=True,
+            unit_divisor=1024,
+            leave=False,
+        ) as progress,
+    ):
         for chunk in response.iter_content(chunk_size=1024 * 1024):
             file.write(chunk)
+            progress.update(len(chunk))
     temp_path.rename(path)
     return path
 
@@ -103,19 +115,31 @@ def _download_drive_file(url: str) -> Path:
 def _read_documents(paths: Iterable[Path]) -> Iterable[Mapping[str, Any]]:
     for path in paths:
         warned = False
-        with path.open("rt", encoding="utf-8") as file:
+        with (
+            path.open("rb") as file,
+            tqdm(
+                total=path.stat().st_size,
+                # Downloads are named by file ID, merged inputs by collection directory.
+                desc=f"Read {path.parent.name if path.name == 'documents.jsonl' else path.name}",
+                unit="B",
+                unit_scale=True,
+                unit_divisor=1024,
+                leave=False,
+            ) as progress,
+        ):
             for line_number, line in enumerate(file, start=1):
+                progress.update(len(line))
                 # Only include the line number in the first warning per file, so that warnings can be de-duplicated.
                 if warned:
                     location = str(path)
                 else:
                     location = f"{path}:{line_number}"
 
-                if line.strip() == "":
+                if line.strip() == b"":
                     continue
                 try:
                     document = loads(line)
-                except JSONDecodeError:
+                except ValueError:  # Invalid JSON or invalid UTF-8.
                     warn(f"Skipping invalid JSON in {location}.")
                     warned = True
                     continue
