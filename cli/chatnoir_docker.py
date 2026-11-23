@@ -22,8 +22,9 @@ try:
 except ImportError:  # pragma: no cover - PyYAML is pulled in transitively.
     _yaml_safe_load = NotImplemented
 
-_DEFAULT_CHATNOIR_IMAGE = "chatnoir-complete:local"
-_DEFAULT_INDEXER_IMAGE = "chatnoir-ir-datasets-indexer:local"
+_IMAGE_REGISTRY = "ghcr.io/tira-io/teaching-ir-with-shared-tasks"
+_DEFAULT_CHATNOIR_IMAGE = f"{_IMAGE_REGISTRY}/chatnoir-complete:0.0.1"
+_DEFAULT_INDEXER_IMAGE = f"{_IMAGE_REGISTRY}/chatnoir-ir-datasets-indexer:0.0.1"
 _DEFAULT_RESULT_IMAGE_REPOSITORY = "ghcr.io/tira-io/teaching-ir-with-shared-tasks/chatnoir"
 # Elasticsearch credentials baked into the chatnoir-complete image by default.
 _DEFAULT_ES_USERNAME = "chatnoir"

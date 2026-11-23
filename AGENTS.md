@@ -42,7 +42,7 @@ Most commands operate on a **course directory** whose `config.json` is written b
 ## Gotchas
 
 - `pool-documents` additionally needs `chatnoir-index` (and optionally `irds-id`) in `config.json`, which `init-directory` does not write; it also hard-codes `topic-mapping.jsonl` instead of reading `team-mapping`. It never overwrites an existing `doccano-judgment-pool.jsonl`.
-- `build-chatnoir` expects the Docker images `chatnoir-complete:local` and `chatnoir-ir-datasets-indexer:local` to already exist locally, and discovers corpora as subdirectories of `corpora-base` that contain a `documents.jsonl` (`docno`/`url`/`title`/`text` per line).
+- `build-chatnoir` defaults to the Docker images `ghcr.io/tira-io/teaching-ir-with-shared-tasks/{chatnoir-complete,chatnoir-ir-datasets-indexer}:0.0.1` (publish locally built `:local` images there with [scripts/publish-chatnoir-images.sh](scripts/publish-chatnoir-images.sh)), and discovers corpora as subdirectories of `corpora-base` that contain a `documents.jsonl` (`docno`/`url`/`title`/`text` per line).
 - Doccano credentials can come from `DOCCANO_URL`, `DOCCANO_USERNAME`, `DOCCANO_PASSWORD` env vars (otherwise prompted).
 - Topic/document CSV column names are tied to the Google Forms (some German, e.g. `Zeitstempel`).
 - `doccano-client` is pinned to a git fork (see comment in [pyproject.toml](pyproject.toml)); don't swap it for the PyPI release.
